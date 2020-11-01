@@ -3,19 +3,14 @@ from spotipy.oauth2 import SpotifyOAuth
 
 class Member:
 
-    def __init__(self, ID):
-        self.ID = ID
+    def __init__(self, ID, SECRET, REDIRECT):
+        self.client_id = ID
+        self.client_secret = SECRET
+        self.redirect_uri = REDIRECT
 
     # Shows a user's playlists (code from the spotipy docs)
     def getSpotifyPlaylists(self):
-        spotifyPlaylists = []
-        
         scope = 'playlist-read-private'
-        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(self.client_id, self.client_secret, self.redirect_uri, scope=scope))
 
-        results = sp.current_user_playlists(limit=50)\
-
-        for i, item in enumerate(results['items']):
-            print("%d %s" % (i, item['name']))
-        
-        return spotifyPlaylists
+        return sp.current_user_playlists(limit=50)
