@@ -11,10 +11,11 @@ def main():
     # print out each of the users saved playlists
     playlists = me.getSpotifyPlaylists()
 
-    # manually check if the playlists are correct
+    # display the results from the API
     print(playlists)
     response = input("Are the playlists returned correct? (yes/no)")
     
+    # check with the user if the results are correct
     if(response == "yes" or response == "y"):
         print("test passed")
     else:
