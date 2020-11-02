@@ -1,7 +1,8 @@
-class Playlist:
-    def __init__(self, type):
-        self.type = type    
+import spotipy
 
-    def getSongs(self):
-        playlistSongs = []
-        return playlistSongs
+class Playlist:
+    def __init__(self, playlistID):
+        self.ID = playlistID
+
+    def addSong(self, user, playlistID, items):
+        user.getSpotifyHook().playlist_add_items(playlist_id=playlistID, items=items, position=0)
