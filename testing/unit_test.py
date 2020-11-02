@@ -1,3 +1,4 @@
+import os
 from proof_of_concept import Playlist
 from proof_of_concept import Song
 from proof_of_concept import Member
@@ -21,3 +22,9 @@ def test_getSpotifyPlaylists():
     assert playlists['items'][0]['name'] == "testing0"
     assert playlists['items'][1]['name'] == "testing1"
     assert playlists['items'][2]['name'] == "testing2"
+
+    # delete the caches (probably not the proper or ideal way to do this but good enough for testing)
+    if os.path.exists(".cache"):
+        os.remove(".cache")
+    else:
+        print("The file does not exist")
