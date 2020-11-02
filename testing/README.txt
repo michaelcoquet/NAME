@@ -28,7 +28,4 @@ How to run:
         https://example.com/callback?code=.............
     this URL must be copy and pasted as input to the test app once requested
 
- - After all of this, the test will make a request from the Spotify API
-   to return all (up to a limit of 50) the test users playlists 
-   (in this case testing0, testing1, testing2) and assert that these 
-   playlists are indeed being returned properly
+ - After all of this, all of the unit tests will then run
