@@ -1,1 +1,1 @@
-from .SongSimilarity import SongSimilarity
+from .song_similarity import SongSimilarity
