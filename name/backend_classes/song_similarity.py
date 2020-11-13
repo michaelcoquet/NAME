@@ -9,20 +9,20 @@ class SongSimilarity:
         """
         self.songs = songs
         self.features = features
-        self.featureMappings = {"duration_ms": self.calculate_duration_ms_similarity,
+        self.feature_mappings = {"duration_ms": self.calculate_duration_ms_similarity,
                                  "key": self.calculate_key_similarity} # add the rest
 
     def compare_all(self):
         """ Compares all songs in the songlist, returning similarity scores for all the given features
         """
         features = self.features
-        featureMappings = self.featureMappings
+        featureMappings = self.feature_mappings
         songs = self.songs
         scores = {}
 
         # Calculate similarity separately for each feature in the features list
         for feature in features: 
-            scores[feature] = featureMappings[feature]()
+            scores[feature] = feature_mappings[feature]()
         
         # We might want to weight the results for each feature score, but for now
         # just return the mean value
