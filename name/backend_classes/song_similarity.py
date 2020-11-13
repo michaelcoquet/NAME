@@ -16,7 +16,7 @@ class SongSimilarity:
         """ Compares all songs in the songlist, returning similarity scores for all the given features
         """
         features = self.features
-        featureMappings = self.feature_mappings
+        feature_mappings = self.feature_mappings
         songs = self.songs
         scores = {}
 
