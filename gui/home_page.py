@@ -54,7 +54,7 @@ class HomePage(tk.Frame):
         self.app_title["text"] = "N.A.M.E"
         self.app_title.grid(row=0, column=1)
 
-        self.create_playlist = tk.Button(upper_menu)
+        self.create_playlist = tk.Button(upper_menu, state=tk.DISABLED)
         self.create_playlist["text"] = "Create Playlist"
         self.create_playlist.grid(row=1, column=0)
 
@@ -72,7 +72,7 @@ class HomePage(tk.Frame):
         self.filters_dropdown.grid(row=2, column=0)
 
         self.song_search = tk.Entry(upper_menu)
-        self.song_search.insert(0, "Find a Song")
+        self.song_search.insert(0, "Song title")
         self.song_search.grid(row=2, column=1)
 
         self.song_search_button = tk.Button(upper_menu)
@@ -87,7 +87,7 @@ class HomePage(tk.Frame):
         self.remove_all.pack(side=tk.LEFT)
 
         self.create_similarity_playlist = tk.Button(lower_menu,
-            text="Create Similarity Playlist", command=self.open_sim_progress)
+            text="Find Similar Songs", command=self.open_sim_progress)
         self.create_similarity_playlist.pack(side=tk.RIGHT)
 
     # function to open a new window
