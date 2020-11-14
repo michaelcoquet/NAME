@@ -3,8 +3,9 @@ class SongSimilarity:
     def __init__(self, songs, features):
         """ Instantiation function. 
         songs: a list of songs for which similarity must be calculated
-        features: a list of features for which similarity should be calculated (e.g. tempo)
-        feature_mappings: a dictionary that maps specific feature names to the method that will compute
+        features: a list of features for which similarity should be
+        calculated (e.g. tempo) feature_mappings: a dictionary that
+        maps specific feature names to the method that will compute
         the similarity score calculation for that particular feature
         """
         self.songs = songs
