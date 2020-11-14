@@ -32,8 +32,8 @@ class SongSimilarity:
         return similarity
 
     def calculate_duration_ms_similarity(self):
-        """
-        Calculates the similarity score for the duration_ms feature.
+        """ Calculates the similarity score for the duration_ms
+        feature.
         """
         return 0
 
