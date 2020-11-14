@@ -38,7 +38,5 @@ class SongSimilarity:
         return 0
 
     def calculate_key_similarity(self):
-        """
-        Calculates the similarity score for the key feature. 
-        """
+        """ Calculates the similarity score for the key feature. """ 
         return 0
