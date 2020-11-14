@@ -13,7 +13,7 @@ class HomePage(tk.Frame):
     Args:
         tk (Frame): main home page screen (no spotify account linked)
     """
-    max_songs = "6"
+    max_songs = 6
 
     # pylint: disable=too-many-instance-attributes
     # theres going to be lots of instance attributes for this class
@@ -108,10 +108,11 @@ class HomePage(tk.Frame):
         l_1 = tk.Label(self.win, text="Finding Similar Songs!")
         l_1.pack(side=tk.TOP)
 
-        self.l_songs_found = tk.Label(self.win, text="Songs found...   0/" + self.max_songs)
+        self.l_songs_found = tk.Label(self.win, text="Songs found...   0/" \
+                                            + str(self.max_songs))
         self.l_songs_found.pack(side=tk.TOP)
 
-        self.progress = tk.ttk.Progressbar(self.win, orient=tk.HORIZONTAL, length=200,
+        self.progress = ttk.Progressbar(self.win, orient=tk.HORIZONTAL, length=200,
             mode="determinate")
 
         self.progress.pack(pady=10)
@@ -133,37 +134,43 @@ class HomePage(tk.Frame):
 
         self.progress['value'] = 20
         count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" + self.max_songs
+        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
+                                        + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
 
         self.progress['value'] = 40
         count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" + self.max_songs
+        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
+                                        + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
 
         self.progress['value'] = 50
         count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" + self.max_songs
+        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
+                                        + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
 
         self.progress['value'] = 60
         count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" + self.max_songs
+        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
+                                        + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
 
         self.progress['value'] = 80
         count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" + self.max_songs
+        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
+                                        + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
 
         self.progress['value'] = 100
         count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" + self.max_songs
+        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
+                                        + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
 
