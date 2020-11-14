@@ -13,7 +13,8 @@ class SongSimilarity:
                                  "key": self.calculate_key_similarity} # add the rest
 
     def compare_all(self):
-        """ Compares all songs in the songlist, returning similarity scores for all the given features
+        """ Compares all songs in the songlist, returning similarity
+        scores for all the given features
         """
         features = self.features
         feature_mappings = self.feature_mappings
