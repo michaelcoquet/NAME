@@ -66,9 +66,11 @@ class HomePage(tk.Frame):
         self.get_song_info["text"] = "Get Song Info"
         self.get_song_info.grid(row=1, column=2)
 
+        # TODO: add the proper filters to the dropdown list
         variable = StringVar(upper_menu)
         variable.set("Filters") # default value
-        self.filters_dropdown = tk.OptionMenu(upper_menu, variable, "one", "two", "three")
+        self.filters_dropdown = tk.OptionMenu(upper_menu, variable, "one", "two", "three",
+                                                    command=self.filter_function)
         self.filters_dropdown.grid(row=2, column=0)
 
         self.song_search = tk.Entry(upper_menu)
@@ -123,9 +125,10 @@ class HomePage(tk.Frame):
         self.search_update()
 
     def search_update(self):
-        """TODO: connect with song similarity search
-            This is where the song similarity search should be connected
-            and progress bar updated
+        """ TODO: link this with the search function in a way that it can be updated likely will
+                  require multithreading to avoid the app hanging during search
+
+                  for now just do a little simulation, notice the hang with time.sleep
         """
         count = 0
         self.progress.update()
@@ -181,6 +184,14 @@ class HomePage(tk.Frame):
         """
         msg = "Would you like to remove all songs in the list?"
         return bool(messagebox.askyesno("Remove All", msg))
+
+    @staticmethod #remove later
+    def filter_function():
+        """ Filters available for the user to search with
+            TODO: link the users choice of filter with the search function for now just return
+                  anything
+        """
+        return 1
 
     def close_window(self):
         """override window closing event
