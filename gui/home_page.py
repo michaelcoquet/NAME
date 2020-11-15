@@ -12,14 +12,14 @@ class HomePage(tk.Frame):
     """ Could possibly be a splash screen but for now this is the home page screen
 
     Args:
-        tk (Frame): main home page screen (no spotify account linked)
+        tk (Frame): parent frame (root in this case)
     """
     max_songs = 6
 
     # pylint: disable=too-many-instance-attributes
     # theres going to be lots of instance attributes for this class
 
-    def __init__(self, master=None):
+    def __init__(self, master):
         super().__init__(master)
         self.master = master
         self.win = None
@@ -92,8 +92,6 @@ class HomePage(tk.Frame):
             text="Find Similar Songs", command=self.open_sim_progress)
         self.create_similarity_playlist.pack(side=tk.RIGHT)
 
-    # function to open a new window
-    # on a button click
     def open_sim_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
            creation
@@ -126,7 +124,7 @@ class HomePage(tk.Frame):
 
     def search_update(self):
         """ TODO: link this with the search function in a way that it can be updated likely will
-                  require multithreading to avoid the app hanging during search
+                  require multithreading to avoid the app hanging during search, possibly fork()
 
                   for now just do a little simulation, notice the hang with time.sleep
         """
