@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import StringVar
 from tkinter import Grid
+from tkinter import messagebox
 
 
 class HomePage(tk.Frame):
@@ -30,7 +31,6 @@ class HomePage(tk.Frame):
     def create_widgets(self):
         """create the home page widgets
         """
-
         #make home frame
         self.home_frame = tk.Frame(self.master)
         self.home_frame.grid(row=0, column=0, sticky="nsew")
@@ -82,7 +82,7 @@ class HomePage(tk.Frame):
         self.song_listbox = tk.Listbox(self.home_frame)
         self.song_listbox.grid(row=1, column=0, sticky="nsew")
 
-        self.remove_all = tk.Button(lower_menu)
+        self.remove_all = tk.Button(lower_menu, command=self.rem_all_alert)
         self.remove_all["text"] = "Remove all"
         self.remove_all.pack(side=tk.LEFT)
 
@@ -174,7 +174,13 @@ class HomePage(tk.Frame):
         self.progress.update()
         time.sleep(1)
 
-
+    @staticmethod #remove later
+    def rem_all_alert():
+        """ Remove all songs from the working list if the user agrees
+            TODO: add logic to clear the list, for now just return the users boolean response
+        """
+        msg = "Would you like to remove all songs in the list?"
+        return bool(messagebox.askyesno("Remove All", msg))
 
     def close_window(self):
         """override window closing event
