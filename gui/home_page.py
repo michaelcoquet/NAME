@@ -29,11 +29,12 @@ class HomePage(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        """create the home page widgets
+        """ create the home page widgets
         """
         #make home frame
         self.home_frame = tk.Frame(self.master)
         self.home_frame.grid(row=0, column=0, sticky="nsew")
+        self.home_frame.tkraise()
 
         upper_menu = tk.Frame(self.home_frame)
         upper_menu.grid(row=0, column=0, sticky="ew")
@@ -43,6 +44,7 @@ class HomePage(tk.Frame):
         #set up grid
         Grid.columnconfigure(self.home_frame, 0, weight=1)
         Grid.rowconfigure(self.home_frame, 1, weight=1)
+        Grid.columnconfigure(lower_menu, 1, weight=1)
 
         self.grid(padx="10", pady="10")
 
@@ -54,17 +56,20 @@ class HomePage(tk.Frame):
         self.app_title["text"] = "N.A.M.E"
         self.app_title.grid(row=0, column=1)
 
-        self.create_playlist = tk.Button(upper_menu, state=tk.DISABLED)
+        self.create_playlist = tk.Button(upper_menu)
         self.create_playlist["text"] = "Create Playlist"
         self.create_playlist.grid(row=1, column=0)
+        self.create_playlist["state"] = tk.DISABLED
 
-        self.compare_songs = tk.Button(upper_menu)
+        self.compare_songs = tk.Button(upper_menu, command= lambda: self.switch_frame(0))
         self.compare_songs["text"] = "Compare Songs"
         self.compare_songs.grid(row=1, column=1)
 
         self.get_song_info = tk.Button(upper_menu)
         self.get_song_info["text"] = "Get Song Info"
         self.get_song_info.grid(row=1, column=2)
+
+        self.song_sim_score_label = tk.Label(upper_menu)
 
         # TODO: add the proper filters to the dropdown list
         variable = StringVar(upper_menu)
@@ -84,13 +89,20 @@ class HomePage(tk.Frame):
         self.song_listbox = tk.Listbox(self.home_frame)
         self.song_listbox.grid(row=1, column=0, sticky="nsew")
 
-        self.remove_all = tk.Button(lower_menu, command=self.rem_all_alert)
-        self.remove_all["text"] = "Remove all"
-        self.remove_all.pack(side=tk.LEFT)
+        self.remove_all_button = tk.Button(lower_menu, command=self.rem_all_alert)
+        self.remove_all_button["text"] = "Remove all"
+        self.remove_all_button.grid(row=0, column=0)
+
+        self.start_over_button = tk.Button(lower_menu, command=self.start_over)
+        self.start_over_button["text"] = "Start Over"
+
+        self.get_stats_button = tk.Button(lower_menu, text="Get Stats", command=self.get_stats)
+        self.get_stats_button.grid(row=0, column=2)
 
         self.create_similarity_playlist = tk.Button(lower_menu,
             text="Find Similar Songs", command=self.open_sim_progress)
-        self.create_similarity_playlist.pack(side=tk.RIGHT)
+        self.create_similarity_playlist.grid(row=0, column=2)
+
 
     def open_sim_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
@@ -174,6 +186,52 @@ class HomePage(tk.Frame):
                                         + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
+
+    def switch_frame(self, frame_id):
+        """ Change the home frame to the given frame
+
+        Args:
+            frame_id (integer): give a frame_id which will correspond to a specific frame to be
+                               displayed in place of the home frame
+        """
+        if frame_id == 0:
+            # frame_id[0] = Compare Songs set up the frame for comparing two or more songs
+            self.song_search.delete(0, 20)
+            self.song_search.insert(0, "two or more songs")
+            self.create_similarity_playlist.grid_forget()
+            self.get_stats_button.grid(row=0, column=2)
+            self.compare_songs["state"] = tk.DISABLED
+            self.create_playlist["state"] = tk.NORMAL
+            self.start_over_button.grid_forget()
+            self.remove_all_button.grid(row=0, column=0)
+            self.song_sim_score_label.grid_forget()
+            self.filters_dropdown.grid(row=2, column=0)
+            self.song_search.grid(row=2, column=1)
+            self.song_search_button.grid(row=2, column=2)
+        elif frame_id == 1:
+            # frame_id[1] = get stats frame for displaying similarity comparison of two or more
+            #  songs
+            self.remove_all_button.grid_forget()
+            self.start_over_button.grid(row=0, column=0)
+            self.get_stats_button.grid_forget()
+            self.filters_dropdown.grid_forget()
+            self.song_search_button.grid_forget()
+            self.song_search.grid_forget()
+            self.song_sim_score_label["text"] = "These songs are X% similar"
+            self.song_sim_score_label.grid(row=2, column=0, columnspan=3)
+        else:
+            print("error")
+
+    def get_stats(self):
+        """ button to get the comparison info for the selected songs
+            TODO: link this to the song comparison function for now do nothing
+        """
+        self.switch_frame(1)
+
+    def start_over(self):
+        """ button to reset the compare selected songs frame
+        """
+        self.switch_frame(0)
 
     @staticmethod #remove later
     def rem_all_alert():
