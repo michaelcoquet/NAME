@@ -18,9 +18,11 @@ class HomePage(tk.Frame):
     # pylint: disable=too-many-instance-attributes
     # theres going to be lots of instance attributes for this class
 
-    def __init__(self, master):
-        super().__init__(master)
-        self.master = master
+    def __init__(self, parent, container):
+        tk.Frame.__init__(self, parent)
+        self.parent = parent
+        self.container = container
+        self.id = id # the frameID
         self.win = None
         self.home_frame = None
         self.progress = None
@@ -37,7 +39,7 @@ class HomePage(tk.Frame):
     def init_member_menu(self):
         """ make the menu for when a user links their spotify account
         """
-        self.member_menu = tk.Menu(self.master)
+        self.member_menu = tk.Menu(self.container)
 
         self.my_account_menu = tk.Menu(self.member_menu, tearoff=0)
         self.my_account_menu.add_command(label="Member Home", command=self.member_home)
@@ -59,9 +61,9 @@ class HomePage(tk.Frame):
     def init_guest_menu(self):
         """ make the default menu for guest users
         """
-        self.guest_menu = tk.Menu(self.master)
+        self.guest_menu = tk.Menu(self.container)
         self.guest_menu.add_command(label="Login", command=self.login)
-        self.master.config(menu=self.guest_menu)
+        self.container.config(menu=self.guest_menu)
 
     def init_upper_grid(self):
         """[summary]
@@ -128,7 +130,7 @@ class HomePage(tk.Frame):
         """ create the home page widgets
         """
         #make home frame
-        self.home_frame = tk.Frame(self.master)
+        self.home_frame = tk.Frame(self.parent)
         self.home_frame.grid(row=0, column=0, sticky="nsew")
         self.home_frame.tkraise()
 
@@ -274,7 +276,7 @@ class HomePage(tk.Frame):
         elif frame_id == 2:
             # frame_id[2] = login, this is for when a guest has successfully linked
             #               their spotify account
-            self.master.config(menu=self.member_menu)
+            self.container.config(menu=self.member_menu)
         elif frame_id == 3:
             # frame_id[3] = home page, home page for guest/member to search for similar songs
             print("TODO")
