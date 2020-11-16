@@ -240,7 +240,8 @@ class HomePage(tk.Frame):
 
     def switch_frame(self, frame_id):
         """ Change the home frame to the given frame
-
+            TODO: this needs a better way to switch between frames given certain events, as
+                  in a finite state machine, good enough for now though
         Args:
             frame_id (integer): give a frame_id which will correspond to a specific frame to be
                                displayed in place of the home frame
