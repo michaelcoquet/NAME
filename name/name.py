@@ -3,7 +3,8 @@
 """
 import tkinter as tk
 from tkinter import Grid
-from gui import HomePage
+from gui import SearchPageFrame
+from gui import CompareSongsFrame
 
 class Name(tk.Tk):
     """TODO: fill out docstring -- basically the gui wrapper
@@ -14,6 +15,8 @@ class Name(tk.Tk):
     """
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+        self.logged_in = 0
+
         self.title("Nearly Analagous Music Engine")
         self.iconbitmap("resources\\ravencon.ico")
         Grid.rowconfigure(self, 0, weight=1)
@@ -28,8 +31,10 @@ class Name(tk.Tk):
         # instantiate frame array
         self.frames = {}
 
-        # instantiate the home frame
-        self.frames[HomePage] = HomePage(container, self)
+        # instantiate the frames
+        self.frames[SearchPageFrame] = SearchPageFrame(container, self)
+        self.frames[CompareSongsFrame] = CompareSongsFrame(container, self)
+
 
 def main():
     """ main entry point

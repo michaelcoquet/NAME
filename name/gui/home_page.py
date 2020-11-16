@@ -1,4 +1,4 @@
-"""The home screen for the app
+"""The home frame for the app can be either member or guest for this frame
 """
 import time
 import tkinter as tk
@@ -8,7 +8,7 @@ from tkinter import Grid
 from tkinter import messagebox
 
 
-class HomePage(tk.Frame):
+class SearchPageFrame(tk.Frame):
     """ Could possibly be a splash screen but for now this is the home page screen
 
     Args:
@@ -22,45 +22,50 @@ class HomePage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.container = container
-        self.id = id # the frameID
-        self.win = None
-        self.home_frame = None
-        self.progress = None
-        self.l_songs_found = None
-        self.signed_in = 0
+    #     self.id = id # the frameID
+    #     self.win = None
+    #     self.home_frame = None
+    #     self.progress = None
+    #     self.l_songs_found = None
+    #     self.signed_in = 0
         self.init_home()
         self.init_upper_grid()
         self.init_lower_grid()
-        self.init_member_menu()
-        self.init_guest_menu()
-        self.init_compare_songs_frame()
-        self.init_member_home_frame()
+        self.init_menu()
+    #     self.init_member_menu()
+    #     self.init_guest_menu()
+    #     self.init_compare_songs_frame()
+    #     self.init_member_home_frame()
 
-    def init_member_menu(self):
-        """ make the menu for when a user links their spotify account
-        """
-        self.member_menu = tk.Menu(self.container)
+    # def init_member_menu(self):
+    #     """ make the menu for when a user links their spotify account
+    #     """
+    #     self.member_menu = tk.Menu(self.container)
 
-        self.my_account_menu = tk.Menu(self.member_menu, tearoff=0)
-        self.my_account_menu.add_command(label="Member Home", command=self.member_home)
-        self.my_account_menu.add_separator()
+    #     self.my_account_menu = tk.Menu(self.member_menu, tearoff=0)
+    #     self.my_account_menu.add_command(label="Member Home", command=self.member_home)
+    #     self.my_account_menu.add_separator()
 
-        # make a submenu for groups
-        self.group_menu = tk.Menu(self.my_account_menu, tearoff=0)
-        self.group_menu.add_command(label="Create Group", command=self.create_group)
-        self.group_menu.add_separator()
-        self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
-        self.my_account_menu.add_command(label="Get Shareable ID")
-        self.my_account_menu.add_separator()
+    #     # make a submenu for groups
+    #     self.group_menu = tk.Menu(self.my_account_menu, tearoff=0)
+    #     self.group_menu.add_command(label="Create Group", command=self.create_group)
+    #     self.group_menu.add_separator()
+    #     self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
+    #     self.my_account_menu.add_command(label="Get Shareable ID")
+    #     self.my_account_menu.add_separator()
 
-        self.my_account_menu.add_command(label="Log Out")
+    #     self.my_account_menu.add_command(label="Log Out")
 
-        #add menu with submenu to the main menu
-        self.member_menu.add_cascade(label="My Account", underline=0, menu=self.my_account_menu)
+    #     #add menu with submenu to the main menu
+    #     self.member_menu.add_cascade(label="My Account", underline=0, menu=self.my_account_menu)
 
-    def init_guest_menu(self):
+    def init_menu(self):
         """ make the default menu for guest users
         """
+        if self.container.logged_in == 0:
+            print("logged in")
+        else:
+            print("not logged in")
         self.guest_menu = tk.Menu(self.container)
         self.guest_menu.add_command(label="Login", command=self.login)
         self.container.config(menu=self.guest_menu)
@@ -155,9 +160,9 @@ class HomePage(tk.Frame):
 
         self.playlist_listbox = tk.Listbox(self.home_frame)
 
-    def init_compare_songs_frame(self):
-        self.get_stats_button = tk.Button(self.lower_grid, command=self.get_stats)
-        self.get_stats_button["text"] = "Get Stats"
+    # def init_compare_songs_frame(self):
+    #     self.get_stats_button = tk.Button(self.lower_grid, command=self.get_stats)
+    #     self.get_stats_button["text"] = "Get Stats"
 
     def open_sim_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
@@ -240,77 +245,78 @@ class HomePage(tk.Frame):
         self.progress.update()
         time.sleep(1)
 
-    def switch_frame(self, frame_id):
-        """ Change the home frame to the given frame
-            TODO: this needs a better way to switch between frames given certain events, as
-                  in a finite state machine, good enough for now though
-        Args:
-            frame_id (integer): give a frame_id which will correspond to a specific frame to be
-                               displayed in place of the home frame
-        """
-        if frame_id == 0:
-            # frame_id[0] = Compare Songs set up the frame for comparing two or more songs
-            self.song_search_entry.delete(0, 20)
-            self.song_search_entry.insert(0, "two or more songs")
-            self.create_similarity_playlist.grid_forget()
-            self.get_stats_button.grid(row=0, column=2)
-            self.compare_songs_button["state"] = tk.DISABLED
-            self.create_playlist_button["state"] = tk.NORMAL
-            self.start_over_button.grid_forget()
-            self.remove_all_button.grid(row=0, column=0)
-            self.song_sim_score_label.grid_forget()
-            self.filters_dropdown.grid(row=2, column=0)
-            self.song_search_entry.grid(row=2, column=1)
-            self.song_search_button.grid(row=2, column=2)
-        elif frame_id == 1:
-            # frame_id[1] = get stats frame for displaying similarity comparison of two or more
-            #               songs
-            self.remove_all_button.grid_forget()
-            self.start_over_button.grid(row=0, column=0)
-            self.get_stats_button.grid_forget()
-            self.filters_dropdown.grid_forget()
-            self.song_search_button.grid_forget()
-            self.song_search_entry.grid_forget()
-            self.song_sim_score_label["text"] = "These songs are X% similar"
-            self.song_sim_score_label.grid(row=2, column=0, columnspan=3)
-        elif frame_id == 2:
-            # frame_id[2] = login, this is for when a guest has successfully linked
-            #               their spotify account
-            self.container.config(menu=self.member_menu)
-        elif frame_id == 3:
-            # frame_id[3] = home page, home page for guest/member to search for similar songs
-            print("TODO")
-        elif frame_id == 4:
-            # frame_id[4] = member home page, home page for member
-            self.create_playlist_button.grid_forget()
-            self.compare_songs_button.grid_forget()
-            self.get_song_info_button.grid_forget()
-            self.filters_dropdown.grid_forget()
-            self.song_search_button.grid_forget()
-            self.song_search_entry.grid_forget()
-            self.song_listbox.grid_forget()
-            self.latest_playlist_button.grid(row=0, column=0)
-            self.all_playlists_button.grid(row=0, column=1)
-            self.listening_info_button.grid(row=0, column=2)
-            self.playlist_listbox.grid(row=1, column=0, sticky="nsew")
-        else:
-            print("error")
+    # def switch_frame(self, frame_id):
+    #     """ Change the home frame to the given frame
+    #         TODO: this needs a better way to switch between frames given certain events, as
+    #               in a finite state machine, good enough for now though
+    #     Args:
+    #         frame_id (integer): give a frame_id which will correspond to a specific frame to be
+    #                            displayed in place of the home frame
+    #     """
+    #     if frame_id == 0:
+    #         # frame_id[0] = Compare Songs set up the frame for comparing two or more songs
+    #         self.song_search_entry.delete(0, 20)
+    #         self.song_search_entry.insert(0, "two or more songs")
+    #         self.create_similarity_playlist.grid_forget()
+    #         self.get_stats_button.grid(row=0, column=2)
+    #         self.compare_songs_button["state"] = tk.DISABLED
+    #         self.create_playlist_button["state"] = tk.NORMAL
+    #         self.start_over_button.grid_forget()
+    #         self.remove_all_button.grid(row=0, column=0)
+    #         self.song_sim_score_label.grid_forget()
+    #         self.filters_dropdown.grid(row=2, column=0)
+    #         self.song_search_entry.grid(row=2, column=1)
+    #         self.song_search_button.grid(row=2, column=2)
+    #     elif frame_id == 1:
+    #         # frame_id[1] = get stats frame for displaying similarity comparison of two or more
+    #         #               songs
+    #         self.remove_all_button.grid_forget()
+    #         self.start_over_button.grid(row=0, column=0)
+    #         self.get_stats_button.grid_forget()
+    #         self.filters_dropdown.grid_forget()
+    #         self.song_search_button.grid_forget()
+    #         self.song_search_entry.grid_forget()
+    #         self.song_sim_score_label["text"] = "These songs are X% similar"
+    #         self.song_sim_score_label.grid(row=2, column=0, columnspan=3)
+    #     elif frame_id == 2:
+    #         # frame_id[2] = login, this is for when a guest has successfully linked
+    #         #               their spotify account
+    #         self.container.config(menu=self.member_menu)
+    #     elif frame_id == 3:
+    #         # frame_id[3] = home page, home page for guest/member to search for similar songs
+    #         print("TODO")
+    #     elif frame_id == 4:
+    #         # frame_id[4] = member home page, home page for member
+    #         self.create_playlist_button.grid_forget()
+    #         self.compare_songs_button.grid_forget()
+    #         self.get_song_info_button.grid_forget()
+    #         self.filters_dropdown.grid_forget()
+    #         self.song_search_button.grid_forget()
+    #         self.song_search_entry.grid_forget()
+    #         self.song_listbox.grid_forget()
+    #         self.latest_playlist_button.grid(row=0, column=0)
+    #         self.all_playlists_button.grid(row=0, column=1)
+    #         self.listening_info_button.grid(row=0, column=2)
+    #         self.playlist_listbox.grid(row=1, column=0, sticky="nsew")
+    #     else:
+    #         print("error")
 
     def compare_songs(self):
         """ button command to go to song comparison frame
         """
-        self.switch_frame(0)
+        print("swith to compare songs frame herenext frame here")
+        # self.switch_frame(0)
 
-    def get_stats(self):
-        """ button command to get the comparison info for the selected songs
-            TODO: link this to the song comparison function for now do nothing
-        """
-        self.switch_frame(1)
+    # def get_stats(self):
+    #     """ button command to get the comparison info for the selected songs
+    #         TODO: link this to the song comparison function for now do nothing
+    #     """
+    #     self.switch_frame(1)
 
     def start_over(self):
         """ button to reset the compare selected songs frame
         """
-        self.switch_frame(0)
+        print("switch back to the search page frame again")
 
     def login(self):
         """ Button command to link to a spotify account and if succesfully linked switch to the
@@ -320,24 +326,23 @@ class HomePage(tk.Frame):
         """
         self.signed_in = 1 # TODO: change this with a real check
         if self.signed_in:
-            print("successfully logged into spotify")
-            self.switch_frame(2)
+            print("successfully logged into spotify, switch to member frame")
         else:
             print("error unsuccessfully linked spotify account")
 
-    def create_group(self):
-        """ Menu option to create a new group
-            TODO: backend connection required here to create a new group, for now just assume
-                  the user sucessfully created a new group and add a new menu option as in the
-                  storyboards
-        """
-        self.group_menu.add_command(label="new group name") # TODO: make a real test and connect
+    # def create_group(self):
+    #     """ Menu option to create a new group
+    #         TODO: backend connection required here to create a new group, for now just assume
+    #               the user sucessfully created a new group and add a new menu option as in the
+    #               storyboards
+    #     """
+    #     self.group_menu.add_command(label="new group name") # TODO: make a real test and connect
 
-    def member_home(self):
-        """ Home page for a member that has a spotify account linked
-            TODO: backend connection required to load members playlists
-        """
-        self.switch_frame(4)
+    # def member_home(self):
+    #     """ Home page for a member that has a spotify account linked
+    #         TODO: backend connection required to load members playlists
+    #     """
+    #     self.switch_frame(4)
 
     @staticmethod #remove later
     def rem_all_alert():
