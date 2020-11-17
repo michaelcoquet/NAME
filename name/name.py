@@ -2,11 +2,9 @@
     Summary: TODO: fill in summary of app
 """
 import tkinter as tk
+import gui
 from tkinter import Grid
-from gui import HomePageFrame
-from gui import CompareSongsFrame
-from gui import SearchProgressFrame
-from gui import SearchResultsFrame
+
 
 class Name(tk.Tk):
     """TODO: fill out docstring -- basically the gui wrapper
@@ -22,8 +20,8 @@ class Name(tk.Tk):
         self.logged_in = 0
 
         self.title("Nearly Analagous Music Engine")
-        self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be accessable
-                                                   # from anywhere
+        self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be
+                                                   # accessable from anywhere
         Grid.rowconfigure(self, 0, weight=1)
         Grid.columnconfigure(self, 0, weight=1)
 
@@ -38,10 +36,13 @@ class Name(tk.Tk):
         self.frames = {}
 
         # instantiate the frames
-        # self.frames[CompareSongsFrame] = CompareSongsFrame(container, self)
-        # self.frames[SearchProgressFrame] = SearchProgressFrame(container, self)
-        # self.frames[SearchResultsFrame] = SearchResultsFrame(container, self)
-        self.frames[HomePageFrame] = HomePageFrame(container, self)
+        # self.frames[gui.CompareSongsFrame] = gui.CompareSongsFrame(container, self)
+        # self.frames[gui.SearchProgressFrame] = gui.SearchProgressFrame(container, self)
+        # self.frames[gui.SearchResultsFrame] = gui.SearchResultsFrame(container, self)
+        # self.frames[gui.SongInfoSearchFrame] = gui.SongInfoSearchFrame(container, self)
+        # self.frames[gui.SongInfoFrame] = gui.SongInfoFrame(container, self)
+        # self.frames[gui.SongStatsFrame] = gui.SongStatsFrame(container, self)
+        self.frames[gui.HomePageFrame] = gui.HomePageFrame(container, self)
 
     def login(self):
         """ Button command to link to a spotify account and if succesfully linked switch to the

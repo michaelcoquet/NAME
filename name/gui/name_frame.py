@@ -1,10 +1,15 @@
+""" TODO: fill in
+"""
 import tkinter as tk
-from tkinter import StringVar
 from tkinter import Grid
 
 
 class NameFrame(tk.Frame):
+    """ TODO: fill in
 
+    Args:
+        tk ([type]): TODO: fill in
+    """
     def __init__(self, parent, container):
         tk.Frame.__init__(self, parent)
         self.parent = parent
@@ -33,7 +38,7 @@ class NameFrame(tk.Frame):
         self.app_title.grid(row=0, column=1)
 
     def init_lower_grid(self):
-        """[summary]
+        """ TODO: fill in
         """
         # self.search_alert_window = SearchProgressFrame(self.container, self)
         self.lower_grid = tk.Frame(self.parent)
@@ -42,7 +47,7 @@ class NameFrame(tk.Frame):
         self.lower_grid.grid(row=2, column=0, sticky="ew")
 
     def init_middle_grid(self):
-        """ create the home page widgets
+        """ TODO: fill in
         """
         self.middle_grid = tk.Frame(self.parent)
         Grid.columnconfigure(self.middle_grid, 0, weight=1)

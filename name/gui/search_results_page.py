@@ -1,7 +1,8 @@
-""" Compare songs frame corresponding to the storyboards page 2
+""" TODO: fill in
 """
 import tkinter as tk
 from .home_page import HomePageFrame
+
 
 class SearchResultsFrame(HomePageFrame):
     """ TODO: fill in

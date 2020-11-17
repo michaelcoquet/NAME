@@ -1,8 +1,10 @@
 """The home frame for the app can be either member or guest for this frame
 """
 import tkinter as tk
-from .name_frame import NameFrame
 from tkinter import StringVar
+
+from .name_frame import NameFrame
+
 
 class HomePageFrame(NameFrame):
     """ Could possibly be a splash screen but for now this is the home page screen
