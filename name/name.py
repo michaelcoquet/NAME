@@ -3,7 +3,7 @@
 """
 import tkinter as tk
 from tkinter import Grid
-from gui import SearchPageFrame
+from gui import HomePageFrame
 from gui import CompareSongsFrame
 
 class Name(tk.Tk):
@@ -13,6 +13,8 @@ class Name(tk.Tk):
     Args:
         tk ([type]): [description]
     """
+    max_songs = 6 # need to set a maximum number of songs that can show up in the search
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.logged_in = 0
@@ -32,7 +34,7 @@ class Name(tk.Tk):
         self.frames = {}
 
         # instantiate the frames
-        self.frames[SearchPageFrame] = SearchPageFrame(container, self)
+        self.frames[HomePageFrame] = HomePageFrame(container, self)
         self.frames[CompareSongsFrame] = CompareSongsFrame(container, self)
 
 

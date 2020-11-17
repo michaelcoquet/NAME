@@ -7,8 +7,10 @@ from tkinter import StringVar
 from tkinter import Grid
 from tkinter import messagebox
 
+from .search_progress_page import SearchProgressFrame
 
-class SearchPageFrame(tk.Frame):
+
+class HomePageFrame(tk.Frame):
     """ Could possibly be a splash screen but for now this is the home page screen
 
     Args:
@@ -115,6 +117,7 @@ class SearchPageFrame(tk.Frame):
     def init_lower_grid(self):
         """[summary]
         """
+        self.search_alert_window = SearchProgressFrame(self.container, self)
         self.lower_grid = tk.Frame(self.home_frame)
         Grid.columnconfigure(self.lower_grid, 1, weight=1)
 
@@ -128,7 +131,8 @@ class SearchPageFrame(tk.Frame):
         self.start_over_button["text"] = "Start Over"
 
         self.create_similarity_playlist = tk.Button(self.lower_grid,
-            text="Find Similar Songs", command=self.open_sim_progress)
+                    command=self.search_alert_window.open_sim_progress)
+        self.create_similarity_playlist["text"] = "Find Similar Songs"
         self.create_similarity_playlist.grid(row=0, column=2)
 
     def init_home(self):
@@ -163,87 +167,6 @@ class SearchPageFrame(tk.Frame):
     # def init_compare_songs_frame(self):
     #     self.get_stats_button = tk.Button(self.lower_grid, command=self.get_stats)
     #     self.get_stats_button["text"] = "Get Stats"
-
-    def open_sim_progress(self):
-        """open a new window that updates the user on the progress of similarity playlist
-           creation
-        """
-        self.grab_set()
-
-        self.win = tk.Toplevel(self)
-        self.win.protocol("WM_DELETE_WINDOW", self.close_window)
-
-        self.win.title("Searching")
-
-        l_1 = tk.Label(self.win, text="Finding Similar Songs!")
-        l_1.pack(side=tk.TOP)
-
-        self.l_songs_found = tk.Label(self.win, text="Songs found...   0/" \
-                                            + str(self.max_songs))
-        self.l_songs_found.pack(side=tk.TOP)
-
-        self.progress = ttk.Progressbar(self.win, orient=tk.HORIZONTAL, length=200,
-            mode="determinate")
-
-        self.progress.pack(pady=10)
-
-        cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_window)
-        cancel_btn.pack(side=tk.BOTTOM)
-
-        self.search_update()
-
-    def search_update(self):
-        """ TODO: link this with the search function in a way that it can be updated likely will
-                  require multithreading to avoid the app hanging during search, possibly fork()
-
-                  for now just do a little simulation, notice the hang with time.sleep
-        """
-        count = 0
-        self.progress.update()
-        self.progress["maximum"] = 100
-        time.sleep(1)
-
-        self.progress['value'] = 20
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 40
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 50
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 60
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 80
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 100
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.max_songs)
-        self.progress.update()
-        time.sleep(1)
 
     # def switch_frame(self, frame_id):
     #     """ Change the home frame to the given frame
@@ -336,7 +259,8 @@ class SearchPageFrame(tk.Frame):
     #               the user sucessfully created a new group and add a new menu option as in the
     #               storyboards
     #     """
-    #     self.group_menu.add_command(label="new group name") # TODO: make a real test and connect
+    #     self.group_menu.add_command(label="new group name") # TODO: make a real test and
+    #     connect
 
     # def member_home(self):
     #     """ Home page for a member that has a spotify account linked
@@ -359,10 +283,3 @@ class SearchPageFrame(tk.Frame):
                   anything
         """
         return 1
-
-    def close_window(self):
-        """override window closing event
-        """
-        self.progress.destroy()
-        self.win.destroy()
-        self.grab_release()
