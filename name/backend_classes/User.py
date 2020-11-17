@@ -22,6 +22,7 @@ class Guest(User):
 
     def __init__(self):
         """playList: a temporary Play list for the guest"""
+        super().__init__(None) 
         self.playlist = None
 
 
@@ -30,8 +31,12 @@ class Guest(User):
 
         #When persistant storage is set up
         #this will export a text file
-        self.playlist = playlist
+        
+        return None
 
+    def set_temp_playlist(playlist):
+        """Sets a temporary playlist for the Guest"""
+        self.playlist = playlist
 
 
 
