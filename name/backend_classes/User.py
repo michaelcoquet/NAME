@@ -1,7 +1,7 @@
 class User:
     """Base class for the Member and Guest classes"""
 
-    def __init__(sel, account):
+    def __init__(self, account):
         """Account: The user's Spotify account"""
         self.account = account
 
@@ -16,6 +16,7 @@ class User:
         True, otherwise returns False
         """
         return self.account is None
+
 
 
 
