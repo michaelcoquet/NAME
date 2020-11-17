@@ -4,44 +4,43 @@ import time
 import tkinter as tk
 from tkinter import ttk
 
+from .name_frame import NameFrame
 
-class SearchProgressFrame(tk.Frame):
+
+class SearchProgressFrame(NameFrame):
     """ TODO: fill in
 
     Args:
         tk ([type]): TODO: fill in
     """
     def __init__(self, parent, container):
-        tk.Frame.__init__(self, parent)
-        self.container = container
+        super().__init__(parent, container)
         self.parent = parent
-        self.max_songs = self.container.container.max_songs
+        self.container = container
+        self.max_songs = self.container.max_songs
+        self.win = None
+        self.l_songs_found = None
+        self.progress = None
+        self.init_progress()
 
-    def open_sim_progress(self):
+    def init_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
            creation
         """
-        self.grab_set()
+        l_1 = tk.Label(self.container, text="Finding Similar Songs!")
+        l_1.grid(row=1, column=0)
 
-        self.win = tk.Toplevel(self)
-        self.win.protocol("WM_DELETE_WINDOW", self.close_window)
-
-        self.win.title("Searching")
-
-        l_1 = tk.Label(self.win, text="Finding Similar Songs!")
-        l_1.pack(side=tk.TOP)
-
-        self.l_songs_found = tk.Label(self.win, text="Songs found...   0/" \
+        self.l_songs_found = tk.Label(self.container, text="Songs found...   0/" \
                                             + str(self.max_songs))
-        self.l_songs_found.pack(side=tk.TOP)
+        self.l_songs_found.grid(row=2, column=0)
 
-        self.progress = ttk.Progressbar(self.win, orient=tk.HORIZONTAL, length=200,
+        self.progress = ttk.Progressbar(self.container, orient=tk.HORIZONTAL, length=200,
             mode="determinate")
 
-        self.progress.pack(pady=10)
+        self.progress.grid(row=3, column=0, pady=10)
 
-        cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_window)
-        cancel_btn.pack(side=tk.BOTTOM)
+        cancel_btn = tk.Button(self.container, text="Cancel")
+        cancel_btn.grid(row=4, column=0)
 
         self.search_update()
 
@@ -97,10 +96,3 @@ class SearchProgressFrame(tk.Frame):
                                         + str(self.max_songs)
         self.progress.update()
         time.sleep(1)
-
-    def close_window(self):
-        """override window closing event
-        """
-        self.progress.destroy()
-        self.win.destroy()
-        self.grab_release()
