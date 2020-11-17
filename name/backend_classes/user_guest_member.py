@@ -104,7 +104,7 @@ class Member(User):
 
     def get_listening_habits(self, habits):
         """Get the desired User's listening habits
-        habits: a list of desired habits to get
+        habits: a list of desired habits to get from API
         """
         # Get the user's listening habits from api
         listening_habits = []
