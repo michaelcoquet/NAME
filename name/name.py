@@ -42,7 +42,9 @@ class Name(tk.Tk):
         # self.frames[gui.SongInfoSearchFrame] = gui.SongInfoSearchFrame(container, self)
         # self.frames[gui.SongInfoFrame] = gui.SongInfoFrame(container, self)
         # self.frames[gui.SongStatsFrame] = gui.SongStatsFrame(container, self)
-        self.frames[gui.HomePageFrame] = gui.HomePageFrame(container, self)
+        # self.frames[gui.MemberHomeFrame] = gui.MemberHomeFrame(container, self)
+        self.frames[gui.PlaylistInfoFrame] = gui.PlaylistInfoFrame(container, self)
+        # self.frames[gui.HomePageFrame] = gui.HomePageFrame(container, self)
 
     def login(self):
         """ Button command to link to a spotify account and if succesfully linked switch to the

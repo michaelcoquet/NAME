@@ -29,6 +29,7 @@ class SearchResultsFrame(HomePageFrame):
         self.similar_songs_button.grid_forget()
         self.save_button = tk.Button(self.lower_grid, text="Save")
         self.save_button.grid(row=0, column=2)
+
     # def init_middle_grid(self):
     #     super().init_middle_grid()
 

@@ -5,3 +5,5 @@ from .search_results_page import SearchResultsFrame
 from .song_info_search_frame import SongInfoSearchFrame
 from .song_info_frame import SongInfoFrame
 from .song_stats_frame import SongStatsFrame
+from .member_home_frame import MemberHomeFrame
+from .playlist_info_frame import PlaylistInfoFrame
