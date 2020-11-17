@@ -1,7 +1,8 @@
 """ TODO: fill in
 """
 import tkinter as tk
-from .home_page import HomePageFrame
+
+from .home_page_frame import HomePageFrame
 
 
 class PlaylistEditFrame(HomePageFrame):
@@ -37,15 +38,3 @@ class PlaylistEditFrame(HomePageFrame):
         self.filters_dropdown.grid_forget()
         self.song_search_entry.grid_forget()
         self.song_search_button.grid_forget()
-
-        # self.playlist_title_entry = tk.Entry(self.upper_grid)
-        # self.playlist_title_entry.insert(0, "Playlist Title")
-        # self.playlist_title_entry.grid(row=2, column=0, columnspan=3)
-
-        # self.playlist_cancel_button = tk.Button(self.upper_grid)
-        # self.playlist_cancel_button["text"] = "Cancel"
-        # self.playlist_cancel_button.grid(row=3, column=0)
-
-        # self.playlist_save_button = tk.Button(self.upper_grid)
-        # self.playlist_save_button["text"] = "Save"
-        # self.playlist_save_button.grid(row=3, column=2)

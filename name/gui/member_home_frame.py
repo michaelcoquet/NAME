@@ -1,7 +1,8 @@
 """ TODO: fill in
 """
 import tkinter as tk
-from .home_page import HomePageFrame
+
+from .home_page_frame import HomePageFrame
 
 
 class MemberHomeFrame(HomePageFrame):

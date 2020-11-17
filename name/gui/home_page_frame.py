@@ -67,25 +67,3 @@ class HomePageFrame(NameFrame):
         self.song_search_button["text"] = "Search"
         self.song_search_button.grid(row=2, column=2)
 
-    # def init_member(self):
-    #     """ make the menu for when a user links their spotify account
-    #     """
-    #     self.member_menu = tk.Menu(self.container)
-
-    #     self.my_account_menu = tk.Menu(self.member_menu, tearoff=0)
-    #     self.my_account_menu.add_command(label="Member Home")
-    #     self.my_account_menu.add_separator()
-
-    #     # make a submenu for groups
-    #     self.group_menu = tk.Menu(self.my_account_menu, tearoff=0)
-    #     self.group_menu.add_command(label="Create Group")
-    #     self.group_menu.add_separator()
-    #     self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
-    #     self.my_account_menu.add_command(label="Get Shareable ID")
-    #     self.my_account_menu.add_separator()
-
-    #     self.my_account_menu.add_command(label="Log Out")
-
-    #     #add menu with submenu to the main menu
-    #     self.member_menu.add_cascade(label="My Account", underline=0, menu=self.my_account_menu)
-

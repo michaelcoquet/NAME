@@ -1,7 +1,8 @@
 """ Compare songs frame corresponding to the storyboards page 2
 """
 import tkinter as tk
-from .home_page import HomePageFrame
+
+from .home_page_frame import HomePageFrame
 
 class CompareSongsFrame(HomePageFrame):
     """ TODO: fill in
@@ -13,12 +14,6 @@ class CompareSongsFrame(HomePageFrame):
         super().__init__(parent, container)
         self.container = container
         self.parent = parent
-
-    # def init_lower_grid(self):
-    #     super().init_lower_grid()
-
-    # def init_middle_grid(self):
-    #     super().init_middle_grid()
 
     def init_upper_grid(self):
         super().init_upper_grid()

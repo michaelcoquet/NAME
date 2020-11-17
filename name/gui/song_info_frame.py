@@ -2,7 +2,8 @@
 """
 import tkinter as tk
 import tkinter.scrolledtext as st
-from .home_page import HomePageFrame
+
+from .home_page_frame import HomePageFrame
 
 
 class SongInfoFrame(HomePageFrame):

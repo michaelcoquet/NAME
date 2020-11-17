@@ -1,7 +1,8 @@
 """ TODO: fill in
 """
 import tkinter as tk
-from .home_page import HomePageFrame
+
+from .home_page_frame import HomePageFrame
 
 
 class SearchResultsFrame(HomePageFrame):
@@ -29,9 +30,3 @@ class SearchResultsFrame(HomePageFrame):
         self.similar_songs_button.grid_forget()
         self.save_button = tk.Button(self.lower_grid, text="Save")
         self.save_button.grid(row=0, column=2)
-
-    # def init_middle_grid(self):
-    #     super().init_middle_grid()
-
-    # def init_upper_grid(self):
-    #     super().init_upper_grid()

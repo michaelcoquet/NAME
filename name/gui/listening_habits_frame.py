@@ -1,6 +1,7 @@
 """ TODO: fill in
 """
 import tkinter as tk
+
 from .song_info_frame import SongInfoFrame
 
 

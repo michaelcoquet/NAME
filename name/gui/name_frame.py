@@ -40,7 +40,6 @@ class NameFrame(tk.Frame):
     def init_lower_grid(self):
         """ TODO: fill in
         """
-        # self.search_alert_window = SearchProgressFrame(self.container, self)
         self.lower_grid = tk.Frame(self.parent)
         Grid.columnconfigure(self.lower_grid, 1, weight=1)
 
