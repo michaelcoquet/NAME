@@ -1,2 +1,5 @@
-.vs/PythonSettings.json
-.vs/slnx.sqlite
+__pycache__/
+.pytest_cache
+.vscode
+*.json
+.vs/
