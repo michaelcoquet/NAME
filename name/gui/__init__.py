@@ -1,6 +1,5 @@
 from .home_page_frame import HomePageFrame
 from .compare_songs_frame import CompareSongsFrame
-from .search_progress_frame import SearchProgressFrame
 from .search_results_frame import SearchResultsFrame
 from .song_info_search_frame import SongInfoSearchFrame
 from .song_info_frame import SongInfoFrame

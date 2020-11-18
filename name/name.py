@@ -14,6 +14,7 @@ class Name(tk.Tk):
         tk ([type]): [description]
     """
     max_songs = 6 # need to set a maximum number of songs that can show up in the search
+    active_frame = 11 # the frame that is currently shown to the user
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -36,40 +37,69 @@ class Name(tk.Tk):
         self.frames = {}
 
         # instantiate the frames
-        # self.frames[gui.CompareSongsFrame] = gui.CompareSongsFrame(container, self)
-        # self.frames[gui.SearchProgressFrame] = gui.SearchProgressFrame(container, self)
-        # self.frames[gui.SearchResultsFrame] = gui.SearchResultsFrame(container, self)
-        # self.frames[gui.SongInfoSearchFrame] = gui.SongInfoSearchFrame(container, self)
-        # self.frames[gui.SongInfoFrame] = gui.SongInfoFrame(container, self)
-        # self.frames[gui.SongStatsFrame] = gui.SongStatsFrame(container, self)
-        # self.frames[gui.MemberHomeFrame] = gui.MemberHomeFrame(container, self)
-        # self.frames[gui.PlaylistInfoFrame] = gui.PlaylistInfoFrame(container, self)
-        # self.frames[gui.PlaylistEditFrame] = gui.PlaylistEditFrame(container, self)
-        # self.frames[gui.AllPlaylistsFrame] = gui.AllPlaylistsFrame(container, self)
-        # self.frames[gui.CreateSimPlaylistFrame] = gui.CreateSimPlaylistFrame(container, self)
-        # self.frames[gui.ListeningHabitsFrame] = gui.ListeningHabitsFrame(container, self)
-        self.frames[gui.HomePageFrame] = gui.HomePageFrame(container, self)
+        self.frames[0] = gui.CompareSongsFrame(self, container)
+        self.frames[1] = gui.SearchResultsFrame(self, container)
+        self.frames[2] = gui.SongInfoSearchFrame(self, container)
+        self.frames[3] = gui.SongInfoFrame(self, container)
+        self.frames[4] = gui.SongStatsFrame(self, container)
+        self.frames[5] = gui.MemberHomeFrame(self, container)
+        self.frames[6] = gui.PlaylistInfoFrame(self, container)
+        self.frames[7] = gui.PlaylistEditFrame(self, container)
+        self.frames[8] = gui.AllPlaylistsFrame(self, container)
+        self.frames[9] = gui.CreateSimPlaylistFrame(self, container)
+        self.frames[10] = gui.ListeningHabitsFrame(self, container)
+        for i in self.frames:
+            self.frames[i].grid_forget()
+        self.frames[11] = gui.HomePageFrame(self, container)
 
-    def login(self):
-        """ Button command to link to a spotify account and if succesfully linked switch to the
-            member frame (frame_id = 2).
-            TODO: this is where the connection to the backend login function should check
-                  if the user successuflly linked their spotify account
+    def switch_frame(self, old_id, new_id):
+        """ TODO: Fill In
+
+        Args:
+            old_id ([type]): TODO: Fill In
+            new_id ([type]): TODO: Fill In
         """
-        self.logged_in = 1 # TODO: change this with a real check
-        if self.logged_in:
-            print("successfully logged into spotify, switch to member frame")
+        self.frames[old_id].grid_forget()
+        self.frames[new_id].grid_remember()
+        self.active_frame = new_id
+
+    def get_frame_id(self, name):
+        """ get the frame id based on the given name see GUI FSM diagram in wiki
+            maybe not the best way to do this but its fine for now
+
+        Args:
+            name (string): the name of desired frame id
+
+        Returns:
+            integer: the corresponding frame_id of given name
+        """
+        if name == "Compare Songs":
+            return 0
+        elif name == "Search Results":
+            return 1
+        elif name == "Song Info Search":
+            return 2
+        elif name == "Song Info":
+            return 3
+        elif name == "Song Stats":
+            return 4
+        elif name == "Member Home":
+            return 5
+        elif name == "Playlist Info":
+            return 6
+        elif name == "Playlist Edit":
+            return 7
+        elif name == "All Playlists":
+            return 8
+        elif name == "Create Sim Playlist":
+            return 9
+        elif name == "Listening Habits":
+            return 10
+        elif name == "Home Page":
+            return 11
         else:
-            print("error unsuccessfully linked spotify account")
-
-    @staticmethod #remove later
-    def filter_function():
-        """ Filters available for the user to search with
-            TODO: link the users choice of filter with the search function for now just return
-                  anything
-        """
-        return 1
-
+            print("ERROR NO SUCH FRAME")
+            exit()
 
 def main():
     """ main entry point

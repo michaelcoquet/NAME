@@ -16,6 +16,14 @@ class MemberHomeFrame(HomePageFrame):
         self.container = container
         self.parent = parent
 
+    def grid_forget(self):
+        super().grid_forget()
+        self.edit_button.grid_forget()
+        self.save_spotify_button.grid_forget()
+        self.latest_playlist_button.grid_forget()
+        self.all_playlists_button.grid_forget()
+        self.listening_habits_button.grid_forget()
+
     def init_lower_grid(self):
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
