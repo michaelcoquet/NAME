@@ -5,6 +5,8 @@ import tkinter as tk
 from tkinter import Grid
 from tkinter import Menu
 from tkinter import ttk
+from tkinter import messagebox
+
 
 class NameFrame(tk.Frame):
     """ TODO: fill in
@@ -57,7 +59,7 @@ class NameFrame(tk.Frame):
         self.group_menu.add_command(label="Create Group", command=self.create_group)
         self.group_menu.add_separator()
         self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
-        self.my_account_menu.add_command(label="Get Shareable ID")
+        self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
 
         self.my_account_menu.add_command(label="Log Out")
@@ -130,6 +132,14 @@ class NameFrame(tk.Frame):
         """
         self.switch_frame("Member Home")
 
+    def get_id_command(self):
+        """ Command for the get shareable ID menu item
+        """
+        # TODO: BACKEND - Return the users spotify ID that they can share with other users to
+        #                 form groups
+        # TODO: GUI     - Display the returned ID in the following messagebox popup
+        messagebox.showinfo("My Shareable ID", "this is the id")
+
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
            creation
@@ -159,7 +169,6 @@ class NameFrame(tk.Frame):
         cancel_btn.pack(side=tk.BOTTOM)
 
         self.progress_update()
-
 
     def progress_update(self):
         """ This is used to update the search progress bar
