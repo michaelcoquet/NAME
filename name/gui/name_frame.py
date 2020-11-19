@@ -116,10 +116,10 @@ class NameFrame(tk.Frame):
     def login(self):
         """ Button command to link to a spotify account and if succesfully linked switch to the
             member frame (frame_id = 2).
-            TODO: this is where the connection to the backend login function should check
-                  if the user successuflly linked their spotify account
         """
-        self.parent.logged_in = 1 # TODO: change this with a real check
+            # TODO: BACKEND - Authenticate and authorize spotify account
+        self.parent.logged_in = 1 # TODO: change this with a real check if the login was succ-
+                                  #       esfull
         if self.parent.logged_in:
             self.init_member_menu()
         else:
@@ -163,11 +163,12 @@ class NameFrame(tk.Frame):
 
     def progress_update(self):
         """ This is used to update the search progress bar
-            TODO: link this with the search function in a way that it can be updated likely will
-                  require multithreading to avoid the app hanging during search, possibly fork()
-
                   for now just do a little simulation, notice the hang with time.sleep
         """
+        # TODO: BACKEND - This will have to be updated by the search function(s) in the backend
+        #                 to update the progress bar, could be indeterminate also, but if not
+        #                 will need some multithreadin to avoid the app hanging during search,
+        #                 possibly fork() would work
         count = 0
         self.progress.update()
         self.progress["maximum"] = 100
@@ -231,4 +232,6 @@ class NameFrame(tk.Frame):
             TODO: link the users choice of filter with the search function for now just return
                   anything
         """
+        # TODO: BACKEND - Set the available filters for searching in the backend with the users
+        #                 selected filters
         return 1

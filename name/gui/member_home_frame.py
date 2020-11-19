@@ -90,16 +90,16 @@ class MemberHomeFrame(HomePageFrame):
     def latest_playlist_command(self):
         """command for the latest playlist button
         """
-        # TODO: add logic to fetch the users latest playlist form persistent storage and load
-        #       into the listbox
+        # TODO: BACKEND - add logic to fetch the users latest playlist form persistent
+        #       storage and load into the listbox
         return 1
 
     def save_to_spotify_command(self):
         """command for the save to spotify button
         """
 
-        # TODO: add logic to save this latest playlist (the one currently being displayed) to
-        #       the users spotify account
+        # TODO: BACKEND add logic to save this latest playlist (the one currently being
+        # displayed) to the users spotify account
         return 1
 
     def all_playlists_command(self):

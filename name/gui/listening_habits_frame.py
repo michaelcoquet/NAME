@@ -35,14 +35,18 @@ class ListeningHabitsFrame(SongInfoFrame):
         self.filters_dropdown.grid_forget()
         self.song_search_button.grid_forget()
 
-        self.latest_playlist_button = tk.Button(self.upper_grid)
-        self.latest_playlist_button["text"] = "Latest Playlist"
+        self.latest_playlist_button = tk.Button(
+            self.upper_grid,
+            text="Latest Playlist")
         self.latest_playlist_button.grid(row=1, column=0)
 
-        self.all_playlists_button = tk.Button(self.upper_grid)
-        self.all_playlists_button["text"] = "All Playlists"
+        self.all_playlists_button = tk.Button(
+            self.upper_grid,
+            text="All Playlists")
         self.all_playlists_button.grid(row=1, column=1)
 
-        self.listening_habits_button = tk.Button(self.upper_grid, state=tk.DISABLED)
-        self.listening_habits_button["text"] = "Your Listening Habits"
+        self.listening_habits_button = tk.Button(
+            self.upper_grid,
+            text="Your Listening Habits",
+            state=tk.DISABLED)
         self.listening_habits_button.grid(row=1, column=2)

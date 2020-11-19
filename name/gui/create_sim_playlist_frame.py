@@ -74,8 +74,8 @@ class CreateSimPlaylistFrame(NameFrame):
         self.switch_frame("All Playlists")
 
     def sim_playlist_command(self):
-        """command for the create similarity playlist button
+        """command for the create similar playlist button
         """
-
-        # TODO: connect to backend to save to users spotify and also to the listbox
-        return 1
+        # TODO: BACKEND - Search for songs that are similar to the songs in this playlist
+        # TODO: GUI     - Update the listbox with a list of the songs in the original playlist
+        self.open_search_progress()

@@ -25,6 +25,9 @@ class SongInfoSearchFrame(HomePageFrame):
 
         self.song_search_button["command"] = self.song_search_command
 
+        self.song_search_entry.delete(0,25)
+        self.song_search_entry.insert(0, "Song title")
+
     def init_middle_grid(self):
         """TODO: fill in
         """
@@ -41,4 +44,12 @@ class SongInfoSearchFrame(HomePageFrame):
     def song_search_command(self):
         """ command for song search button
         """
+        # TODO: BACKEND - Do a search for the info (artist, album, year, etc.) for the song
+        #            given in the text song_search_entry widget
+
+        # hide this button for the next frame since its not used
         self.switch_frame("Song Info")
+        f = self.parent.get_frame_id("Song Info")
+        self.parent.frames[f].ply_from_ply_button.grid_forget()
+
+        # TODO: GUI - Update the song_info_scrolledtext in the song_info_frame

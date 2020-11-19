@@ -34,6 +34,7 @@ class SongInfoFrame(HomePageFrame):
 
         self.song_info_scrolledtext = st.ScrolledText(self.middle_grid)
         self.song_info_scrolledtext.grid(row=0, column=0, sticky="nsew")
+
         self.song_info_scrolledtext.insert(tk.INSERT,
         """\
 Lots of song details
@@ -41,7 +42,7 @@ Lots of song details
     - as
     - ff
     - n
-        """)
+        """) # remove this when we get real results back
 
     def init_lower_grid(self):
         """TODO: fill in
@@ -69,4 +70,6 @@ Lots of song details
     def ply_from_ply_command(self):
         """command for playlist from playlist button
         """
+        # TODO: BACKEND - Do a search for similar songs to the songs in the currently selected
+        #                 playlist
         self.open_search_progress()

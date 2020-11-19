@@ -51,11 +51,11 @@ class AllPlaylistsFrame(MemberHomeFrame):
         """comamnd for the create playlist from this playlist button
         """
 
-        # TODO: connect with backend
+        # TODO: BAKCEND - Find songs that are similar to the songs in the selected playlist
         self.switch_frame("Create Sim Playlist")
 
     def song_sim_command(self):
         """command for the get playlist song similarity button
         """
-        # TODO: connect to backend
+        # TODO: BACKEND - Get the similarity of the songs in the selected playlist
         return 1

@@ -36,12 +36,14 @@ class HomePageFrame(NameFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.remove_all_button = tk.Button(self.lower_grid)
-        self.remove_all_button["text"] = "Remove all"
+        self.remove_all_button = tk.Button(
+            self.lower_grid,
+            text="Remove All")
         self.remove_all_button.grid(row=0, column=0)
 
-        self.similar_songs_button = tk.Button(self.lower_grid)
-        self.similar_songs_button["text"] = "Find Similar Songs"
+        self.similar_songs_button = tk.Button(
+            self.lower_grid,
+            text="Find Similar Songs")
         self.similar_songs_button.grid(row=0, column=2)
 
     def init_middle_grid(self):
@@ -52,9 +54,10 @@ class HomePageFrame(NameFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.create_playlist_button = tk.Button(self.upper_grid)
-        self.create_playlist_button["text"] = "Create Playlist"
-        self.create_playlist_button["state"] = tk.DISABLED
+        self.create_playlist_button = tk.Button(
+            self.upper_grid,
+            text="Create Playlist",
+            state=tk.DISABLED)
         self.create_playlist_button.grid(row=1, column=0)
 
         self.compare_songs_button = tk.Button(
@@ -63,29 +66,39 @@ class HomePageFrame(NameFrame):
             text="Compare Songs")
         self.compare_songs_button.grid(row=1, column=1)
 
-        self.get_song_info_button = tk.Button(self.upper_grid, command=self.song_info_command)
-        self.get_song_info_button["text"] = "Get Song Info"
+        self.get_song_info_button = tk.Button(
+            self.upper_grid,
+            text="Get Song Info",
+            command=self.song_info_command)
         self.get_song_info_button.grid(row=1, column=2)
 
         # TODO: add the proper filters to the dropdown list
         variable = StringVar(self.upper_grid)
         variable.set("Filters") # default value
-        self.filters_dropdown = tk.OptionMenu(self.upper_grid, variable, "one", "two", "three",
-                                                    command=self.filter_function)
+        self.filters_dropdown = tk.OptionMenu(
+            self.upper_grid,
+            variable,
+            "one",
+            "two",
+            "three",
+            command=self.filter_function)
         self.filters_dropdown.grid(row=2, column=0)
 
-        self.song_search_entry = tk.Entry(self.upper_grid)
-        self.song_search_entry.insert(0, "Song title")
+        self.song_search_entry = tk.Entry(
+            self.upper_grid,
+            text="Song Title")
         self.song_search_entry.grid(row=2, column=1)
 
         # TODO: connect with backend song search function
-        self.song_search_button = tk.Button(self.upper_grid, command=self.song_search_command)
-        self.song_search_button["text"] = "Search"
+        self.song_search_button = tk.Button(
+            self.upper_grid,
+            command=self.song_search_command,
+            text="Search")
         self.song_search_button.grid(row=2, column=2)
 
 
     def compare_songs_command(self):
-        """ runs when compare songs btn is pushed
+        """ command when compare songs btn is pushed
         """
         self.switch_frame("Compare Songs")
 

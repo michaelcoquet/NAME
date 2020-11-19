@@ -39,3 +39,7 @@ class CompareSongsFrame(HomePageFrame):
         """ command for song stats btn
         """
         self.switch_frame("Song Stats")
+        # TODO: BACKEND - Return similarities of the two or more selected songs
+
+        # TODO: GUI - Update the srcolledText widget in the song stats frame with the
+        #             returned data
