@@ -73,7 +73,7 @@ class NameFrame(tk.Frame):
                   the user sucessfully created a new group and add a new menu option as in the
                   storyboards
         """
-        self.group_menu.add_command(label="new group name") # TODO: make a real test and connect
+        self.switch_frame("Edit Group")
 
     def init_upper_grid(self):
         """ TODO: fill in

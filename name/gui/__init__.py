@@ -10,3 +10,7 @@ from .playlist_edit_frame import PlaylistEditFrame
 from .all_playlists_frame import AllPlaylistsFrame
 from .create_sim_playlist_frame import CreateSimPlaylistFrame
 from .listening_habits_frame import ListeningHabitsFrame
+from .edit_group_frame import EditGroupFrame
+from .group_stats_frame import GroupStatsFrame
+from .edit_group_playlist_frame import EditGroupPlaylistFrame
+from .group_home_frame import GroupHomeFrame

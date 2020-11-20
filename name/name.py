@@ -48,9 +48,18 @@ class Name(tk.Tk):
         self.frames[8] = gui.AllPlaylistsFrame(self, container)
         self.frames[9] = gui.CreateSimPlaylistFrame(self, container)
         self.frames[10] = gui.ListeningHabitsFrame(self, container)
+        self.frames[11] = gui.HomePageFrame(self, container)
+
+        #instantiate group frames
+        self.frames[12] = gui.EditGroupFrame(self, container)
+        self.frames[13] = gui.GroupStatsFrame(self, container)
+        self.frames[14] = gui.EditGroupPlaylistFrame(self, container)
+        self.frames[15] = gui.GroupHomeFrame(self, container)
+
         for i in self.frames:
             self.frames[i].grid_forget()
-        self.frames[11] = gui.HomePageFrame(self, container)
+
+        self.frames[11].grid_remember()
 
     def switch_frame(self, old_id, new_id):
         """ TODO: Fill In
@@ -97,6 +106,14 @@ class Name(tk.Tk):
             return 10
         elif name == "Home Page":
             return 11
+        elif name == "Edit Group":
+            return 12
+        elif name == "Group Stats":
+            return 13
+        elif name == "Edit Group Playlist":
+            return 14
+        elif name == "Group Home":
+            return 15
         else:
             print("ERROR NO SUCH FRAME")
             exit()
