@@ -52,4 +52,27 @@ class SpotifyAPIManager:
         except:
             # Either the user is a guest, or the api request failed
             return None
-        
+ 
+    def search_songs(self, song_list):
+        """ Searches the spotify api for the given list of songs.
+        song_list: list of songs to search for.
+        returns: a dictionary with the song titles from song list,
+        as well as a list of dictionaries containing info for all
+        the songs that were returned for that song title
+        """
+        search_results = {"query title": [],
+                          "found songs": []}
+        for song in song_list:
+            search_results["query title"].append(song)
+            result = self.spotify.search(q=song, limit=10, type="track")
+            # go through list of found songs and save results
+            # in the dictionary
+            for found_song in result["tracks"]["items"]:
+                # first get a nice list of artist names
+                artists = [artist["name"] for artist in found_song["artists"]]
+                song_info = {"name": found_song["name"],
+                             "id": found_song["id"],
+                             "artists": artists,
+                             "album id": found_song["album"]["id"]}
+                search_results["found songs"].append(song_info)
+        return search_results

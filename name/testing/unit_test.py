@@ -87,7 +87,7 @@ def test_get_user_id_v2():
     """ Test ID: Spotify07. Should return the current member
     ID when logged in to Spotify. 
     """
-    # wait a second before running this test so that the API
+    # wait two seconds before running this test so that the API
     # doesn't reject the connection
     time.sleep(2)
     spotifyAPIManager = SpotifyAPIManager()
@@ -96,7 +96,80 @@ def test_get_user_id_v2():
     result = spotifyAPIManager.get_user_id()
     # the user id for the cmpt370 spotify account
     assert result == "vha6pttyppu7tnrc0l1j4k4de"
-    # in the last test, clear the cache
+
+
+def test_search_songs_v1():
+    """ Test ID: Spotify15. Tests that the method returns
+    a dictonary with an empty list when Spotify found no results.
+    This function contains multiple subtests: 
+    Test when the list of songs has one element, the user type is guest
+    Test when the list has multiple elements, user type is guest
+    Test when the list has one element, user type is member
+    Test when the list has multiple elements, user type is member
+    """
+    # wait two seconds before running this test so that the API
+    # doesn't reject the connection
+    time.sleep(2)
+    spotifyAPIManager = SpotifyAPIManager()
+    # first subtest
+    song_list = ["hfhsjkhfs"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["hfhsjkhfs"]
+    assert result["found songs"] == []
+    # second subtest
+    song_list = ["hfhsjkhfs", "uiosfios", "sywyquq"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["hfhsjkhfs", "uiosfios", "sywyquq"]
+    assert result["found songs"] == []
+    # third subtest
+    account_link = spotifyAPIManager.link_spotify_account()
+    assert account_link == True
+    song_list = ["hfhsjkhfs"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["hfhsjkhfs"]
+    assert result["found songs"] == []
+    # fourth subtest
+    song_list = ["hfhsjkhfs", "uiosfios", "sywyquq"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["hfhsjkhfs", "uiosfios", "sywyquq"]
+    assert result["found songs"] == []
+
+def test_search_songs_v2():
+    """ Test ID: Spotify16. Tests that the method returns
+    a non-empty dictionary when results are expected.
+    This function contains multiple subtests: 
+    Test when the list of songs has one element, the user type is guest
+    Test when the list has multiple elements, user type is guest
+    Test when the list has one element, user type is member
+    Test when the list has multiple elements, user type is member
+    """
+    # wait two seconds before running this test so that the API
+    # doesn't reject the connection
+    time.sleep(2)
+    spotifyAPIManager = SpotifyAPIManager()
+    # first subtest
+    song_list = ["Hello"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["Hello"]
+    assert result["found songs"] != []
+    # second subtest
+    song_list = ["Running", "Technologic", "It's Time"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["Running", "Technologic", "It's Time"]
+    assert result["found songs"] != []
+    # third subtest
+    account_link = spotifyAPIManager.link_spotify_account()
+    assert account_link == True
+    song_list = ["Hello"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["Hello"]
+    assert result["found songs"] != []
+    # fourth subtest
+    song_list = ["Running", "Technologic", "It's Time"]
+    result = spotifyAPIManager.search_songs(song_list)
+    assert result["query title"] == ["Running", "Technologic", "It's Time"]
+    assert result["found songs"] != []
+    # clean cache on last test
     clear_cache()
 
 
