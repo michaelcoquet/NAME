@@ -9,7 +9,8 @@ from tkinter import Grid
 class Name(tk.Tk):
     """TODO: fill out docstring -- basically the gui wrapper
        TODO: set up a finite state machine to flip between frames in a more controlled fashion
-
+       TODO: move all the code in this class to a seperate gui wrapper class just to keep the
+             main entry point of the app clean
     Args:
         tk ([type]): [description]
     """
