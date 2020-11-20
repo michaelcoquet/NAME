@@ -1,4 +1,5 @@
 import os
+import time
 import pytest
 from proof_of_concept import Playlist
 from proof_of_concept import Song
@@ -73,6 +74,32 @@ def test_linkSpotifyAccount():
     assert result == True
 
 
+def test_get_user_id_v1():
+    """ Test ID: Spotify08. Tests that the method returns
+    None when the user is not logged in to Spotify.
+    """
+    spotifyAPIManager = SpotifyAPIManager()
+    result = spotifyAPIManager.get_user_id()
+    assert result == None
+
+
+def test_get_user_id_v2():
+    """ Test ID: Spotify07. Should return the current member
+    ID when logged in to Spotify. 
+    """
+    # wait a second before running this test so that the API
+    # doesn't reject the connection
+    time.sleep(2)
+    spotifyAPIManager = SpotifyAPIManager()
+    account_link = spotifyAPIManager.link_spotify_account()
+    assert account_link == True
+    result = spotifyAPIManager.get_user_id()
+    # the user id for the cmpt370 spotify account
+    assert result == "vha6pttyppu7tnrc0l1j4k4de"
+    # in the last test, clear the cache
+    clear_cache()
+
+
 # Cleanup
 def clear_cache():
     """ delete the cache """
@@ -80,6 +107,3 @@ def clear_cache():
         os.remove(".cache")
     else:
         print("The file does not exist")
-
-
-clear_cache()

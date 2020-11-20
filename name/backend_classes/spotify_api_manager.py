@@ -1,5 +1,6 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyClientCredentials
 
 
 class SpotifyAPIManager:
@@ -13,9 +14,9 @@ class SpotifyAPIManager:
         self.redirect_uri = "http://127.0.0.1:8080/callback/q"
         self.scopes = '''user-read-recently-played user-top-read playlist-modify-public
                         playlist-modify-private playlist-read-private'''
-        self.auth_manager = SpotifyOAuth(client_id=self.client_id,
-                                         client_secret=self.client_secret,
-                                         redirect_uri=self.redirect_uri, scope=self.scopes)
+        # default auth manager for a guest
+        self.auth_manager = SpotifyClientCredentials(client_id=self.client_id,
+                                                     client_secret=self.client_secret)
         # sets the default connection to the API
         self.spotify = spotipy.Spotify(auth_manager=self.auth_manager)
 
@@ -24,6 +25,11 @@ class SpotifyAPIManager:
         Returns: True if successful, False otherwise.
         """
         try:
+            # reset the auth manager for Authorization
+            self.auth_manager = SpotifyOAuth(client_id=self.client_id, 
+                                             client_secret=self.client_secret,
+                                             redirect_uri=self.redirect_uri,
+                                             scope=self.scopes)
             # attempt to get log in credentials from a user
             response = self.auth_manager.get_auth_response(open_browser=True)
             code = self.auth_manager.parse_response_code(response)
@@ -33,4 +39,17 @@ class SpotifyAPIManager:
             return True
         except:
             print("Failed to link account.")
+            # reset the auth manager back to the guest format
+            self.auth_manager = SpotifyClientCredentials(client_id=self.client_id,
+                                                         client_secret=self.client_secret)
             return False
+
+    def get_user_id(self):
+        """ Gets the user_id if the user is logged in to Spotify. """
+        try:
+            user_id = self.spotify.current_user()["id"]
+            return user_id
+        except:
+            # Either the user is a guest, or the api request failed
+            return None
+        
