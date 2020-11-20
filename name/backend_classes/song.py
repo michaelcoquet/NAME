@@ -1,18 +1,36 @@
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+
 class Song:
     """
     A class for Song that stores the collected data
     from Spotify.
     """
-    def __init__(self, song, details):
+    def __init__(self, song):
         """
         song: A song object containing the data of the song from Spotify
-        details: the details of the song collected from Spotify
         """
         self.song_name = song['name']
         self.song_id = song['id']
         self.song_artist = Artist(song['artists'])
         self.album_details = Album(song['album'])
-        self.features = SongDetails(details[0])
+        self.features = SongDetails(self.get_audio_features())
+
+    # Placeholder function until spotify api manager implements it
+    def get_audio_features(self):
+        """
+        A method that to get the audio feature of the song
+        """
+        client_id = "0e48c2ec84d3401e9262a2159a277d82"
+        client_secret = "aa650130a5b544598f4b058bfd264b21"
+
+        auth_manager = SpotifyClientCredentials(client_id=client_id,
+                                                client_secret=client_secret)
+
+        spotify = spotipy.Spotify(auth_manager=auth_manager)
+        features = spotify.audio_features(self.song_id)
+
+        return features[0]
 
     def __eq__(self, other):
         """
