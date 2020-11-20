@@ -22,6 +22,20 @@ class User:
         """
         return self.account is None
 
+    def create_playlist(self, playlist_name):
+        """Create a new playlist with the desired name and add to
+        the User's stored playlists
+        playlist_name: name of the new playlist
+        """
+        # Moved to User as Guest and Member are both allowed to save
+        # a playlist
+
+        # create new playlist object with name
+        # add desired songs
+        # if is_guest(), store_temp_playlist
+        # else add to stored playlists
+        # add to stored_playlists
+        pass
 
 class Guest(User):
     """Class which represents a user with no Spotify account"""
@@ -94,18 +108,7 @@ class Member(User):
 
         return None
 
-    def create_playlist(self, name):
-        """Create a new playlist with the desired name and add to
-        the User's stored playlists
-        """
-        # This should be moved to User class, as Guest can create
-        # playlists as well
-
-        # create new playlist object with name
-        # add desired songs
-        # add to stored_playlists
-        pass
-
+    
     def get_listening_habits(self, habits):
         """Get the desired User's listening habits
         habits: a list of desired habits to get from API
