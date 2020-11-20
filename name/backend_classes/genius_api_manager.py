@@ -26,8 +26,27 @@ class Genius_Api_Manager(object):
         return song_lyrics
     
 
-test = Genius_Api_Manager("country roads", "John Denver")
+test = Genius_Api_Manager("40:1", "Sabaton")
 print(test.search_for_lyrics())
+
+
+# splitting test
+#test_lyrics = test.search_for_lyrics().split('\n\n')
+#print(test_lyrics)
+
+n_chorus = 0
+n_verse = 0
+
+test_lyrics = test.search_for_lyrics().split("\n")
+#print(test_lyrics)
+for word in test_lyrics:
+    if("[Chorus]" in word):
+        n_chorus += 1
+    elif ("[Verse" in word):
+        n_verse += 1
+
+print("Number of chorus = " + str(n_chorus))
+print("Number of verse = " + str(n_verse))
 
 #Old format tests below, ignore for now
 

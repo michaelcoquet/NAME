@@ -24,12 +24,24 @@ class Lyrics(object):
         return len(words)
 
     def get_num_verse(self):
-        return 0
+
+        number_verses = 0
+
+        for word in self.__song_lyrics:
+            if("[Verse" in word):
+                number_verses += 1
+
+        return number_verses
     
     def get_num_chorus(self):
-        # split into paragraphs
-        # check if any repeat
-        return 0
+
+        number_chorus = 0
+
+        for word in self.__song_lyrics:
+            if("[Chorus]" in word):
+                number_chorus += 1
+
+        return number_chorus
 
     def get_variability(self):
         return 0
@@ -37,10 +49,4 @@ class Lyrics(object):
     def __analyze_lyrics(self):
         return 0
 
-    def __split_into_verses(self):
-
-        # split lyrics into separate verses
-        # return as a list, each verse a string
-
-        return []
 
