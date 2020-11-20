@@ -1,3 +1,8 @@
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyClientCredentials
+
+
 class User:
     """Base class for the Member and Guest classes"""
 
@@ -19,14 +24,13 @@ class User:
 
 
 class Guest(User):
-    """Class which is used by a user with no Spotify account"""
+    """Class which represents a user with no Spotify account"""
 
 
     def __init__(self):
         """playList: a temporary Play list for the guest"""
         super().__init__(None) 
         self.playlist = None
-
 
     def save_temp_playlist(playlist):
         """Saves a a guest's playlist as a text file"""
