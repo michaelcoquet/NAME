@@ -24,7 +24,7 @@ class genius_api_manager(object):
         return song_lyrics
     
 
-test = genius_api_manager()
+#test = genius_api_manager()
 #print(test.search_for_lyrics("country roads", "John Denver"))
 #print(test.search_for_lyrics("country roads", "Kanye"))
 #print(test.search_for_lyrics("country roads", None))
