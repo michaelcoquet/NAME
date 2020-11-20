@@ -20,8 +20,15 @@ class Lyrics(object):
         return self.__song_lyrics
 
     def get_num_words(self):
+
+        number_words = 0
+
         words = self.__song_lyrics.split()
-        return len(words)
+        for word in words:
+            if(word[0] is not "["):
+                number_words += 1
+
+        return number_words
 
     def get_num_verse(self):
 

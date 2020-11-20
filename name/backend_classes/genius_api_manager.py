@@ -27,7 +27,7 @@ class Genius_Api_Manager(object):
     
 
 test = Genius_Api_Manager("40:1", "Sabaton")
-print(test.search_for_lyrics())
+#print(test.search_for_lyrics())
 
 
 # splitting test
@@ -37,8 +37,8 @@ print(test.search_for_lyrics())
 n_chorus = 0
 n_verse = 0
 
-test_lyrics = test.search_for_lyrics().split("\n")
-#print(test_lyrics)
+test_lyrics = test.search_for_lyrics().split()
+print(test_lyrics)
 for word in test_lyrics:
     if("[Chorus]" in word):
         n_chorus += 1
