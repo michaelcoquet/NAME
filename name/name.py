@@ -1,8 +1,8 @@
 """CMPT 370 Group 5 Project: NAME
     Summary: TODO: fill in summary of app
 """
-import tkinter as tk
 import gui
+import tkinter as tk
 from tkinter import Grid
 
 
