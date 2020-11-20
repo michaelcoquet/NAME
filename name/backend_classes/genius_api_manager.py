@@ -9,13 +9,13 @@ class genius_api_manager(object):
 
     def search_for_lyrics(self, song_name, song_artist):
         """TODO: this docstring"""
-        song = self.my_genius.search_song(song_name, song_artist)
-        song_json = song.to_json
-        return ""
+        song_lyrics = self.my_genius.search_song(song_name, song_artist).lyrics
+        return song_lyrics
     
 
 test = genius_api_manager()
-test.search_for_lyrics("country roads", "John Denver")
+print(test.search_for_lyrics("country roads", "John Denver"))
+
 
 
 
