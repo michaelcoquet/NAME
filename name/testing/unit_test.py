@@ -3,10 +3,12 @@ import pytest
 from proof_of_concept import Playlist
 from proof_of_concept import Song
 from proof_of_concept import User
+# as we work on our app going forward, import classes from the appropriate folder(s)
+from name.backend_classes import SongSimilarity
 
-# Here are some example unit tests
-def test_setUserType_v1(): 
-    """ 
+# Tests for the User class
+def test_setUserType_v1():
+    """
     Test ID: User01. Normally setUserType would be called from within the Spotify API
     after a User has linked/ unlinked their account. For this unit test, we simply check that
     the User type is modified correctly.
@@ -17,7 +19,7 @@ def test_setUserType_v1():
     assert user.type == "Member"
 
 def test_setUserType_v2():
-    """ 
+    """
     Test ID: User02. Check that the user type is updated correctly from "Member" to "Guest".
     """
     user = User(type="Member")
@@ -25,22 +27,31 @@ def test_setUserType_v2():
 
     assert user.type == "Guest"
 
-def test_isGuest_v1(): 
-    """ 
+def test_isGuest_v1():
+    """
     Test ID: User03. Check that the method returns True when the User type is Guest.
     """
     user = User(type="Guest")
-    
+
     assert user.isGuest() == True
 
 def test_isGuest_v2():
-    """ 
-    Test ID: User04. Check that the method returns False when the User type is not Guest. 
+    """
+    Test ID: User04. Check that the method returns False when the User type is not Guest.
     """
     user = User(type="Member")
 
     assert user.isGuest() == False
 
+# Tests for the SongSimilarity class
+def test_compare_all():
+    """
+    Test ID: SongSim01. Check that the method returns a value between 0 and 1.
+    """
+    songSimilarityCalculator = SongSimilarity(["exampleSong"],["duration_ms"])
+    result = songSimilarityCalculator.compare_all()
+
+    assert (result >= 0 and result <= 1)
 
 # The following list of tests are more complicated: we likely will need to rewrite these later to match up
 # better with the test plan, but for now they illustrate how to test methods that use the Spotify API.
@@ -55,7 +66,7 @@ username = "vha6pttyppu7tnrc0l1j4k4de" # this is a new spotify account created j
 me = User(type="Guest")
 
 def test_linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri):
-    """ 
+    """
     Tests that the linkSpotifyAccount method runs without error
     """
     me.linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
@@ -79,7 +90,7 @@ def test_getSpotifyPlaylists():
 def test_addSong():
     # need a spotify track ID (Moonlight Sonata aka Piano Sonata No. 14, Op. 27 No. 2)
     track = ["7xfSCgVOkQJhVxnqzepATH"]
-    
+
     # Get the users playlists
     playlists = me.getSpotifyPlaylists()
 
@@ -96,8 +107,8 @@ def test_addSong():
                                     offset=0,
                                     fields='items.track.name,total',
                                     additional_types=['track'])
-        
-        
+
+
     assert response['items'][0]['track']['name'] == "Moonlight Sonata (First Movement from Piano Sonata No. 14, Op. 27 No. 2)"
 
 
