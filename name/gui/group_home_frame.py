@@ -115,12 +115,12 @@ class GroupHomeFrame(NameFrame):
     def group_song_stats_command(self):
         """ command for the get group song stats button
         """
-        return 1
+        self.switch_frame("Group Stats")
 
     def new_palylist_command(self):
         """ command for the new playlist button command
         """
-        return 1
+        self.switch_frame("Edit Group Playlist")
 
     def playlist_dropdown_command(self):
         """ command for the playlist dropdown
