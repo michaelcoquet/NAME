@@ -2,10 +2,10 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from name.backend_classes.name_backend_classes_song import Artist
-from name.backend_classes.name_backend_classes_song import Album
-from name.backend_classes.name_backend_classes_song import Song
-from name.backend_classes.name_backend_classes_song import SongDetails
+from name_backend_classes_song import Artist
+from name_backend_classes_song import Album
+from name_backend_classes_song import Song
+from name_backend_classes_song import SongDetails
 
 
 class SpotifyAPIManager:
@@ -114,3 +114,13 @@ class SpotifyAPIManager:
             song_details = SongDetails(song)
             song_details_list.append(song_details)
         return song_details_list
+
+    def get_member_playlists(self):
+        """ Gets a list of all playlists if the user is logged in
+        to their spotify account.
+        returns: a list of spotify playlist objects (json format)
+        """
+        user_id = self.get_user_id()
+        playlists = self.spotify.user_playlists(user_id)
+        return playlists
+
