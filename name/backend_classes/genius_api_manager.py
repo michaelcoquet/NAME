@@ -26,7 +26,11 @@ class Genius_Api_Manager(object):
         return song_lyrics
     
 
-test = Genius_Api_Manager("40:1", "Sabaton")
+
+# Basic tests below, will make official unit tests
+# and remove all this junk later
+
+#test = Genius_Api_Manager("40:1", "Sabaton")
 #print(test.search_for_lyrics())
 
 

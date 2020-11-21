@@ -1,4 +1,6 @@
-import name.backend_classes.genius_api_manager as genius_manager
+import genius_api_manager as genius_manager
+#from genius_api_manager import Genius_Api_Manager as genius_manager
+
 
 
 class Lyrics(object):
@@ -11,7 +13,7 @@ class Lyrics(object):
         song_name: name of the song
         song_artist: artist associated with the song
         """
-
+        
         # Call the genius_api_manager and get lyrics
         lyrics_object = genius_manager.Genius_Api_Manager(song_name, song_artist)
 
@@ -34,9 +36,10 @@ class Lyrics(object):
         """
         number_words = 0
 
-        words = self.__song_lyrics.split()
+        words = self.get_lyrics().split()
         for word in words:
-            if(word[0] is not "["):
+            if("[" not in word):
+                print("Counting word:", word)
                 number_words += 1
 
         return number_words
@@ -46,8 +49,8 @@ class Lyrics(object):
 
         number_verses = 0
 
-        words = self.__song_lyrics.split()
-        for word in self.__song_lyrics:
+        words = self.get_lyrics().split()
+        for word in words:
             if("[Verse" in word):
                 number_verses += 1
 
@@ -58,7 +61,8 @@ class Lyrics(object):
 
         number_chorus = 0
 
-        for word in self.__song_lyrics:
+        words = self.get_lyrics().split()
+        for word in words:
             if("[Chorus]" in word):
                 number_chorus += 1
 
@@ -73,3 +77,13 @@ class Lyrics(object):
         return 0
 
 
+# Basic tests, will be formalized into pytest unit tests later
+
+
+
+test = Lyrics("It's a beautiful day", "Queen")
+print(test.get_lyrics())
+print("\n")
+print("Number of choruses: ", test.get_num_chorus())
+print("Number of verses: ", test.get_num_verse())
+print("Number of words: ", test.get_num_words())
