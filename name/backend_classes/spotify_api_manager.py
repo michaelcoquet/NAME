@@ -73,18 +73,10 @@ class SpotifyAPIManager:
             # go through list of found songs and save results
             # in the dictionary
             for found_song in result["tracks"]["items"]:
-                # first get a list of artist objects
-                artist_ids = [artist["id"] for artist in found_song["artists"]]
-                artists = [self.get_artist(artist_id) for artist_id in artist_ids]
-                # get album object
-                album_id = found_song["album"]["id"]
-                print(found_song["album"]["total_tracks"])
-                album = self.get_album(album_id)
-                # put it all together
                 song_info = {"name": found_song["name"],
                              "id": found_song["id"],
-                             "artists": artists,
-                             "album": album}
+                             "artists": found_song["artists"],
+                             "album": found_song["album"]}
                 # convert to a Song object
                 song = Song(song_info)
                 search_results["found songs"].append(song)
@@ -122,10 +114,3 @@ class SpotifyAPIManager:
             song_details = SongDetails(song)
             song_details_list.append(song_details)
         return song_details_list
-
-test = SpotifyAPIManager()
-songs = test.search_songs(["Warmth"])
-album_id = songs["found songs"][4].album_details.album_id
-artist_id = songs["found songs"][4].song_artist[0].artist_id
-print(album_id)
-print(artist_id)

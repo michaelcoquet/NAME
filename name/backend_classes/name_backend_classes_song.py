@@ -12,8 +12,8 @@ class Song:
         """
         self.song_name = song['name']
         self.song_id = song['id']
-        self.song_artist = song['artists']
-        self.album_details = song['album']
+        self.song_artist = Artist(song['artists'])
+        self.album_details = Album(song['album'])
         self.features = SongDetails(self.get_audio_features())
 
     # Placeholder function until spotify api manager implements it
@@ -60,8 +60,8 @@ class Artist:
         artist: An artist object containing the data of the song's artist
         """
         self.artist = artist
-        self.artist_id = artist["id"]
-        self.name = artist["name"]
+        self.artist_id = [i['id'] for i in artist]
+        self.name = [i['name'] for i in artist]
 
     def __eq__(self, other):
         if self.artist_id == other.artist_id:
