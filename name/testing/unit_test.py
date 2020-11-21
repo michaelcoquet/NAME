@@ -54,8 +54,8 @@ def test_compare_all():
     """ Test ID: SongSim01. Check that the method
     returns a value between 0 and 1.
     """
-    songSimilarityCalculator = SongSimilarity(["exampleSong"], ["duration_ms"])
-    result = songSimilarityCalculator.compare_all()
+    song_similarity_calculator = SongSimilarity(["exampleSong"], ["duration_ms"])
+    result = song_similarity_calculator.compare_all()
 
     assert (result >= 0 and result <= 1)
 
@@ -66,11 +66,11 @@ def test_linkSpotifyAccount():
     True when valid credentials are provided, False if authorization
     is cancelled.
     """
-    spotifyAPIManager = SpotifyAPIManager()
+    spotify_api_manager = SpotifyAPIManager()
     print("Enter these valid credentials into the popup window:")
     print("email: cmpt370.group5@gmail.com")
     print("password: pennywise_1640")
-    result = spotifyAPIManager.link_spotify_account()
+    result = spotify_api_manager.link_spotify_account()
     assert result == True
 
 
@@ -78,8 +78,8 @@ def test_get_user_id_v1():
     """ Test ID: Spotify08. Tests that the method returns
     None when the user is not logged in to Spotify.
     """
-    spotifyAPIManager = SpotifyAPIManager()
-    result = spotifyAPIManager.get_user_id()
+    spotify_api_manager = SpotifyAPIManager()
+    result = spotify_api_manager.get_user_id()
     assert result == None
 
 
@@ -90,10 +90,10 @@ def test_get_user_id_v2():
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
     time.sleep(2)
-    spotifyAPIManager = SpotifyAPIManager()
-    account_link = spotifyAPIManager.link_spotify_account()
+    spotify_api_manager = SpotifyAPIManager()
+    account_link = spotify_api_manager.link_spotify_account()
     assert account_link == True
-    result = spotifyAPIManager.get_user_id()
+    result = spotify_api_manager.get_user_id()
     # the user id for the cmpt370 spotify account
     assert result == "vha6pttyppu7tnrc0l1j4k4de"
 
@@ -110,29 +110,30 @@ def test_search_songs_v1():
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
     time.sleep(2)
-    spotifyAPIManager = SpotifyAPIManager()
+    spotify_api_manager = SpotifyAPIManager()
     # first subtest
     song_list = ["hfhsjkhfs"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["hfhsjkhfs"]
     assert result["found songs"] == []
     # second subtest
     song_list = ["hfhsjkhfs", "uiosfios", "sywyquq"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["hfhsjkhfs", "uiosfios", "sywyquq"]
     assert result["found songs"] == []
     # third subtest
-    account_link = spotifyAPIManager.link_spotify_account()
+    account_link = spotify_api_manager.link_spotify_account()
     assert account_link == True
     song_list = ["hfhsjkhfs"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["hfhsjkhfs"]
     assert result["found songs"] == []
     # fourth subtest
     song_list = ["hfhsjkhfs", "uiosfios", "sywyquq"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["hfhsjkhfs", "uiosfios", "sywyquq"]
     assert result["found songs"] == []
+
 
 def test_search_songs_v2():
     """ Test ID: Spotify16. Tests that the method returns
@@ -146,29 +147,75 @@ def test_search_songs_v2():
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
     time.sleep(2)
-    spotifyAPIManager = SpotifyAPIManager()
+    spotify_api_manager = SpotifyAPIManager()
     # first subtest
     song_list = ["Hello"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["Hello"]
     assert result["found songs"] != []
     # second subtest
     song_list = ["Running", "Technologic", "It's Time"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["Running", "Technologic", "It's Time"]
     assert result["found songs"] != []
     # third subtest
-    account_link = spotifyAPIManager.link_spotify_account()
+    account_link = spotify_api_manager.link_spotify_account()
     assert account_link == True
     song_list = ["Hello"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["Hello"]
     assert result["found songs"] != []
     # fourth subtest
     song_list = ["Running", "Technologic", "It's Time"]
-    result = spotifyAPIManager.search_songs(song_list)
+    result = spotify_api_manager.search_songs(song_list)
     assert result["query title"] == ["Running", "Technologic", "It's Time"]
     assert result["found songs"] != []
+
+
+def test_get_album_v1():
+    """ Test ID: Spotify05. Tests that the method returns 
+    the correct album object when given a valid artist id.
+    Ensure this works both before and after an account has been linked
+    """
+    # wait two seconds before running this test so that the API
+    # doesn't reject the connection
+    time.sleep(2)
+    # First subtest
+    spotify_api_manager = SpotifyAPIManager()
+    # example album id for Bastille's Wild World album
+    album_id = "1qKjUIVG8KmtYceDBWjfqE"
+    album = spotify_api_manager.get_album(album_id)
+    assert album.name == "Wild World (Complete Edition)"
+    assert album.album_id == album_id
+    # Second subtest
+    account_link = spotify_api_manager.link_spotify_account()
+    assert account_link == True
+    album = spotify_api_manager.get_album(album_id)
+    assert album.name == "Wild World (Complete Edition)"
+    assert album.album_id == album_id
+
+
+def test_get_artist_v1():
+    """ Test ID: Spotify03. Tests that the method returns 
+    the correct artist object when given a valid artist id.
+    Ensure this works both when the account is linked or not.
+    """
+    # wait two seconds before running this test so that the API
+    # doesn't reject the connection
+    time.sleep(2)
+    # First subtest
+    spotify_api_manager = SpotifyAPIManager()
+    # Artist id for Bastille
+    artist_id = "7EQ0qTo7fWT7DPxmxtSYEc"
+    artist = spotify_api_manager.get_artist(artist_id)
+    assert artist.name == "Bastille"
+    assert artist.artist_id = artist_id
+    # Second subtest
+    account_link = spotify_api_manager.link_spotify_account()
+    assert account_link == True
+    artist = spotify_api_manager.get_artist(artist_id)
+    assert artist.name == "Bastille"
+    assert artist.artist_id = artist_id
     # clean cache on last test
     clear_cache()
 

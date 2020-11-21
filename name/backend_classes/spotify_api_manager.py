@@ -78,6 +78,7 @@ class SpotifyAPIManager:
                 artists = [self.get_artist(artist_id) for artist_id in artist_ids]
                 # get album object
                 album_id = found_song["album"]["id"]
+                print(found_song["album"]["total_tracks"])
                 album = self.get_album(album_id)
                 # put it all together
                 song_info = {"name": found_song["name"],
@@ -90,7 +91,8 @@ class SpotifyAPIManager:
         return search_results
 
     def get_album(self, album_id):
-        """ Given an album id, return an Album object.
+        """ Given an album id, search for album info 
+        and return an Album object.
         album_id: string value of the album id
         returns: an album object.
         """
@@ -99,7 +101,8 @@ class SpotifyAPIManager:
         return album
 
     def get_artist(self, artist_id):
-        """ Given an artist id, return an Artist object.
+        """ Given an artist id, search for artist info 
+        and return an Artist object.
         artist_id: string value of the artist id
         returns: an artist object.
         """
@@ -120,9 +123,9 @@ class SpotifyAPIManager:
             song_details_list.append(song_details)
         return song_details_list
 
-
 test = SpotifyAPIManager()
-result = test.search_songs(["Papaoutai"])
-song_lst = result["found songs"]
-song_details = test.get_audio_features(song_lst)
-print(song_details)
+songs = test.search_songs(["Warmth"])
+album_id = songs["found songs"][4].album_details.album_id
+artist_id = songs["found songs"][4].song_artist[0].artist_id
+print(album_id)
+print(artist_id)
