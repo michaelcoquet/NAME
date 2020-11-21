@@ -2,10 +2,10 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from name_backend_classes_song import Artist
-from name_backend_classes_song import Album
-from name_backend_classes_song import Song
-from name_backend_classes_song import SongDetails
+from name.backend_classes.name_backend_classes_song import Artist
+from name.backend_classes.name_backend_classes_song import Album
+from name.backend_classes.name_backend_classes_song import Song
+from name.backend_classes.name_backend_classes_song import SongDetails
 
 
 class SpotifyAPIManager:
@@ -99,7 +99,7 @@ class SpotifyAPIManager:
         returns: an artist object.
         """
         artist_data = self.spotify.artist(artist_id)
-        artist = Artist(artist_data)
+        artist = Artist([artist_data])
         return artist
 
     def get_audio_features(self, song_list):

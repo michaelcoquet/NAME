@@ -208,14 +208,14 @@ def test_get_artist_v1():
     # Artist id for Bastille
     artist_id = "7EQ0qTo7fWT7DPxmxtSYEc"
     artist = spotify_api_manager.get_artist(artist_id)
-    assert artist.name == "Bastille"
-    assert artist.artist_id = artist_id
+    assert artist.name[0] == "Bastille"
+    assert artist.artist_id[0] == artist_id
     # Second subtest
     account_link = spotify_api_manager.link_spotify_account()
     assert account_link == True
     artist = spotify_api_manager.get_artist(artist_id)
-    assert artist.name == "Bastille"
-    assert artist.artist_id = artist_id
+    assert artist.name[0] == "Bastille"
+    assert artist.artist_id[0] == artist_id
     # clean cache on last test
     clear_cache()
 
