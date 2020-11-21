@@ -2,6 +2,11 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 
+from name_backend_classes_song import Artist
+from name_backend_classes_song import Album
+from name_backend_classes_song import Song
+from name_backend_classes_song import SongDetails
+
 
 class SpotifyAPIManager:
 
@@ -26,7 +31,7 @@ class SpotifyAPIManager:
         """
         try:
             # reset the auth manager for Authorization
-            self.auth_manager = SpotifyOAuth(client_id=self.client_id, 
+            self.auth_manager = SpotifyOAuth(client_id=self.client_id,
                                              client_secret=self.client_secret,
                                              redirect_uri=self.redirect_uri,
                                              scope=self.scopes)
@@ -52,7 +57,7 @@ class SpotifyAPIManager:
         except:
             # Either the user is a guest, or the api request failed
             return None
- 
+
     def search_songs(self, song_list):
         """ Searches the spotify api for the given list of songs.
         song_list: list of songs to search for.
@@ -68,11 +73,56 @@ class SpotifyAPIManager:
             # go through list of found songs and save results
             # in the dictionary
             for found_song in result["tracks"]["items"]:
-                # first get a nice list of artist names
-                artists = [artist["name"] for artist in found_song["artists"]]
+                # first get a list of artist objects
+                artist_ids = [artist["id"] for artist in found_song["artists"]]
+                artists = [self.get_artist(artist_id) for artist_id in artist_ids]
+                # get album object
+                album_id = found_song["album"]["id"]
+                album = self.get_album(album_id)
+                # put it all together
                 song_info = {"name": found_song["name"],
                              "id": found_song["id"],
                              "artists": artists,
-                             "album id": found_song["album"]["id"]}
-                search_results["found songs"].append(song_info)
+                             "album": album}
+                # convert to a Song object
+                song = Song(song_info)
+                search_results["found songs"].append(song)
         return search_results
+
+    def get_album(self, album_id):
+        """ Given an album id, return an Album object.
+        album_id: string value of the album id
+        returns: an album object.
+        """
+        album_data = self.spotify.album(album_id)
+        album = Album(album_data)
+        return album
+
+    def get_artist(self, artist_id):
+        """ Given an artist id, return an Artist object.
+        artist_id: string value of the artist id
+        returns: an artist object.
+        """
+        artist_data = self.spotify.artist(artist_id)
+        artist = Artist(artist_data)
+        return artist
+
+    def get_audio_features(self, song_list):
+        """ Gets audio features for the given list of song objects.
+        song_list: a list of song objects
+        returns: a list of SongDetails objects.
+        """
+        song_ids = [song.song_id for song in song_list]
+        features = self.spotify.audio_features(tracks=song_ids)
+        song_details_list = []
+        for song in features:
+            song_details = SongDetails(song)
+            song_details_list.append(song_details)
+        return song_details_list
+
+
+test = SpotifyAPIManager()
+result = test.search_songs(["Papaoutai"])
+song_lst = result["found songs"]
+song_details = test.get_audio_features(song_lst)
+print(song_details)
