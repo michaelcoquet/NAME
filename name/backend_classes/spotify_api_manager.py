@@ -1,3 +1,4 @@
+# imports
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -123,4 +124,3 @@ class SpotifyAPIManager:
         user_id = self.get_user_id()
         playlists = self.spotify.user_playlists(user_id)
         return playlists
-

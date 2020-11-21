@@ -1,9 +1,6 @@
 import os
 import time
 import pytest
-from proof_of_concept import Playlist
-from proof_of_concept import Song
-from proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
 from name.backend_classes import SongSimilarity
 from name.backend_classes import SpotifyAPIManager
