@@ -261,10 +261,3 @@ class SongSimilarity:
         return 0
 
 
-
-def main():
-    test = SongSimilarity([8, 9], [9])
-    test.calculate_loudness_similarity()
-
-if __name__ == "__main__":
-    main()
