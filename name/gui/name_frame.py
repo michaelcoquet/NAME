@@ -2,6 +2,7 @@
 """
 import time
 import tkinter as tk
+from tkinter import StringVar
 from tkinter import Grid
 from tkinter import Menu
 from tkinter import ttk
@@ -140,6 +141,48 @@ class NameFrame(tk.Frame):
         # TODO: GUI     - Display the returned ID in the following messagebox popup
         messagebox.showinfo("My Shareable ID", "this is the id")
 
+    def start_single_search(self, title, filters):
+        """ Search the spotify API for the given song
+
+        Args:
+            title (str): the desired song title
+            filters (dict): the selected filters
+        """
+        # TODO: BACKEND - single song search connection return a list of songs
+        api_results = {"example song 1", "example song 2", "example song 3", "example song 4"}
+        self.open_song_search_popup(api_results)
+
+    def search_similar(self, titles, filters):
+        """ Search the spotify API for songs that are similar to the list of titles
+
+        Args:
+            titles  (str[]): list of song titles that the user would like to find similar songs
+                             to
+            filters (str[]): list of all the filters selected by the user
+
+        Returns:
+            song[]: return a list of songs that match (or partial match) the title
+        """
+        return 1
+
+    def open_song_search_popup(self, api_results):
+        """ open a popup for the user to select the song they actually wanted to add to the list
+        """
+        self.grab_set()
+        self.popup = tk.Toplevel(self)
+        self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
+        self.popup.title("Pick a Song")
+
+        # TODO: add the proper filters to the dropdown list
+        variable = StringVar(self.popup)
+        variable.set("Which song were you looking for?") # default value
+        self.filters_dropdown = tk.OptionMenu(
+            self.popup,
+            variable,
+            *api_results,
+            command=self.filter_function)
+        self.filters_dropdown.pack()
+
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
            creation
@@ -148,7 +191,7 @@ class NameFrame(tk.Frame):
         # Toplevel object which will
         # be treated as a new window
         self.win = tk.Toplevel(self)
-        self.win.protocol("WM_DELETE_WINDOW", self.close_window)
+        self.win.protocol("WM_DELETE_WINDOW", self.close_progress_window)
         # sets the title of the
         # Toplevel widget
         self.win.title("Searching")
@@ -165,7 +208,7 @@ class NameFrame(tk.Frame):
 
         self.progress.pack(pady=10)
 
-        cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_window)
+        cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_progress_window)
         cancel_btn.pack(side=tk.BOTTOM)
 
         self.progress_update()
@@ -226,21 +269,31 @@ class NameFrame(tk.Frame):
         time.sleep(1)
 
         self.switch_frame("Search Results")
-        self.close_window()
 
-    def close_window(self):
+        # TODO : GUI - need to update the search results screen with the results
+        # for testing purposes
+        song_list = ["hfhsjkhfs", "uiosfios", "sywyquq", "asdfsd", "ddddd", "ccccc"]
+
+        self.parent.update_search_results(song_list)
+
+        self.close_progress_window()
+
+    def close_progress_window(self):
         """override window closing event
         """
         self.progress.destroy()
         self.win.destroy()
         self.grab_release()
 
-    @staticmethod #remove later
-    def filter_function():
-        """ Filters available for the user to search with
-            TODO: link the users choice of filter with the search function for now just return
-                  anything
+    def close_single_search_window(self):
+        """ closing window event for the single song search box
         """
-        # TODO: BACKEND - Set the available filters for searching in the backend with the users
-        #                 selected filters
-        return 1
+        self.popup.destroy()
+        self.grab_release()
+
+    def filter_function(self, item):
+        """ function to get the users selection of the filter dropdown box
+        """
+        self.parent.frames[11].song_listbox.insert("end", item)
+        self.close_single_search_window()
+

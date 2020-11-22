@@ -34,6 +34,11 @@ class HomePageFrame(NameFrame):
         self.song_search_entry.grid_forget()
         self.song_search_button.grid_forget()
 
+    def grid_remember(self):
+        super().grid_remember()
+        self.song_search_entry.delete(0, "end")
+        self.song_search_entry.insert(0, "Find a Song")
+
     def init_lower_grid(self):
         super().init_lower_grid()
         self.remove_all_button = tk.Button(
@@ -43,7 +48,8 @@ class HomePageFrame(NameFrame):
 
         self.similar_songs_button = tk.Button(
             self.lower_grid,
-            text="Find Similar Songs")
+            text="Find Similar Songs",
+            command=self.similar_songs_command)
         self.similar_songs_button.grid(row=0, column=2)
 
     def init_middle_grid(self):
@@ -51,13 +57,13 @@ class HomePageFrame(NameFrame):
         self.song_listbox = tk.Listbox(self.middle_grid)
         self.song_listbox.grid(row=0, column=0, sticky="nsew")
 
-
     def init_upper_grid(self):
         super().init_upper_grid()
         self.create_playlist_button = tk.Button(
             self.upper_grid,
             text="Create Playlist",
-            state=tk.DISABLED)
+            state=tk.DISABLED,
+            command=self.create_playlist_command)
         self.create_playlist_button.grid(row=1, column=0)
 
         self.compare_songs_button = tk.Button(
@@ -72,17 +78,33 @@ class HomePageFrame(NameFrame):
             command=self.song_info_command)
         self.get_song_info_button.grid(row=1, column=2)
 
-        # TODO: add the proper filters to the dropdown list
-        variable = StringVar(self.upper_grid)
-        variable.set("Filters") # default value
-        self.filters_dropdown = tk.OptionMenu(
-            self.upper_grid,
-            variable,
-            "one",
-            "two",
-            "three",
-            command=self.filter_function)
+        self.filters_dropdown = tk.Menubutton(self.upper_grid, text="Filters",
+                                   indicatoron=True, borderwidth=1, relief="raised")
+        menu = tk.Menu(self.filters_dropdown, tearoff=False)
+        self.filters_dropdown.configure(menu=menu)
         self.filters_dropdown.grid(row=2, column=0)
+
+        self.selected_filters = {}
+        self.choices = (
+                "duration_ms",
+                "key",
+                "tempo",
+                "danceability",
+                "energy",
+                "loudness",
+                "mode",
+                "speechiness",
+                "acousticness",
+                "instrumentalness",
+                "liveness",
+                "valence",
+                "time_signature"
+                )
+        for choice in self.choices:
+            self.selected_filters[choice] = tk.IntVar(value=0)
+            menu.add_checkbutton(label=choice, variable=self.selected_filters[choice],
+                                 onvalue=1, offvalue=0,
+                                 command=self.filter_command)
 
         self.song_search_entry = tk.Entry(
             self.upper_grid,
@@ -96,6 +118,12 @@ class HomePageFrame(NameFrame):
             text="Search")
         self.song_search_button.grid(row=2, column=2)
 
+    def filter_command(self):
+        """ Filters available for the user to search with
+            TODO: link the users choice of filter with the search function for now just return
+                  anything
+        """
+        return 1
 
     def compare_songs_command(self):
         """ command when compare songs btn is pushed
@@ -109,5 +137,16 @@ class HomePageFrame(NameFrame):
 
     def song_search_command(self):
         """command for the song search button
+        """
+        # run the single song search function with will connect with the back end
+        self.start_single_search(self.song_search_entry.get(), self.selected_filters)
+
+    def create_playlist_command(self):
+        """command for the create playlist button, just brings us back to the home page
+        """
+        self.switch_frame("Home Page")
+
+    def similar_songs_command(self):
+        """command for the find similar songs button
         """
         self.open_search_progress()

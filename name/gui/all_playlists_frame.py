@@ -47,6 +47,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
             command=self.song_sim_command)
         self.song_sim_button.grid(row=0, column=2)
 
+        self.latest_playlist_button["command"] = self.latest_playlist_command
+
     def list_from_list_command(self):
         """comamnd for the create playlist from this playlist button
         """
@@ -59,3 +61,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
         """
         # TODO: BACKEND - Get the similarity of the songs in the selected playlist
         return 1
+
+    def latest_playlist_command(self):
+        """command for the latest playlist button
+        """
+        self.switch_frame("Member Home")

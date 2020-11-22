@@ -62,6 +62,17 @@ class Name(tk.Tk):
 
         self.frames[11].grid_remember()
 
+    def update_search_results(self, list):
+        """ used to update the listbox in the search results frame
+
+        Args:
+            list (song[]): list of songs returned from the API in the search function to update
+                           the listbox in the search results frame
+        """
+        # this is just temporary will likely change when we have a proper list of song objects
+        for item in range(len(list)):
+            self.frames[1].song_listbox.insert(item, list[item])
+
     def switch_frame(self, old_id, new_id):
         """ TODO: Fill In
 
