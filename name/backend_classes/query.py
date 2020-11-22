@@ -1,4 +1,4 @@
-from spotify_api_manager import SpotifyAPIManager
+from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 
 
 class Query:

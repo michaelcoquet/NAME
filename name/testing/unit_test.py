@@ -1,6 +1,8 @@
 import os
 import time
 import pytest
+
+from name.testing.proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
 from name.backend_classes import SongSimilarity
 from name.backend_classes import SpotifyAPIManager
