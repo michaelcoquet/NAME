@@ -18,28 +18,21 @@ class Song:
 
     # Placeholder function until spotify api manager implements it
     def get_audio_features(self):
-        """
-        A method that to get the audio feature of the song
-        """
-        client_id = "0e48c2ec84d3401e9262a2159a277d82"
-        client_secret = "aa650130a5b544598f4b058bfd264b21"
-
-        auth_manager = SpotifyClientCredentials(client_id=client_id,
-                                                client_secret=client_secret)
-
-        spotify = spotipy.Spotify(auth_manager=auth_manager)
-        features = spotify.audio_features(self.song_id)
-
+        client_id='805b88ab14814deea1ae9a0f650b12fc'
+        client_secret='c20fae8240cb44e0aa720ed23053f307'
+        auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+        sp = spotipy.Spotify(auth_manager=auth_manager)
+        features = sp.audio_features(self.song_id)
         return features[0]
 
-    def __eq__(self, other):
-        """
-        A utility function that compares whether the two objects are equal
-        """
-        if self.song_id == other.song_id:
-            return True
+    # def __eq__(self, other):
+    #     """
+    #     A utility function that compares whether the two objects are equal
+    #     """
+    #     if self.song_id == other.song_id:
+    #         return True
 
-        return False
+    #     return False
 
     def __str__(self):
         """
@@ -49,6 +42,9 @@ class Song:
                 "Artist: {} \n"
                 "--Details--{}").format(self.song_name, self.song_artist.name,
                                         self.features)
+
+    def __repr__(self):
+        return self.song_name
 
 
 class Artist:
@@ -122,6 +118,7 @@ class SongDetails:
         self.valence = details['valence']
         self.time_signature = details['time_signature']
 
+
     def __str__(self):
         return ("\n-Duration: {} \n"
                 "-Key: {} \n"
@@ -142,3 +139,7 @@ class SongDetails:
                                               self.acousticness, self.instrumentalness,
                                               self.liveness, self.valence,
                                               self.time_signature)
+
+
+# Test for Song Class
+
