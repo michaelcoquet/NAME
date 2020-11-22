@@ -56,7 +56,7 @@ class SongSimilarity:
         
         similarity = scores / weight
 
-        return str(similarity * 100) + " %"
+        return similarity
 
     def calculate_duration_ms_similarity(self):
         """ Calculates the similarity score for the duration_ms
@@ -78,7 +78,51 @@ class SongSimilarity:
 
     def calculate_key_similarity(self):
         """ Calculates the similarity score for the key feature. """
-        return 0
+        song_keys = []
+        for song in self.songs:
+            song_keys.append(song.feature.key)
+
+        def get_circle_of_fifths_clockwise(original_key, goal_key):
+            circle_of_fifths_mapping = {0 : 7,
+                                        7 : 2,
+                                        2 : 9,
+                                        9 : 4,
+                                        4 : 11,
+                                        11 : 6,
+                                        6 : 1,
+                                        1 : 8,
+                                        8 : 3,
+                                        3 : 10,
+                                        10 : 5,
+                                        5 : 0}
+            
+            if original_key == goal_key:
+                return 0
+
+            return 1 + get_circle_of_fifths_clockwise(
+                    circle_of_fifths_mapping[original_key], goal_key)
+
+        def get_circle_of_fifths_counterclockwise(original_key, goal_key):
+            circle_of_fifths_mapping = {0 : 5,
+                                        5 : 10,
+                                        10 : 3,
+                                        3 : 8,
+                                        8 : 1,
+                                        1 : 6,
+                                        6 : 11,
+                                        11 : 4,
+                                        4 : 9,
+                                        9 : 2,
+                                        2 : 7,
+                                        7 : 0}
+
+            if original_key == goal_key:
+                return 0
+
+            return 1 + get_circle_of_fifths_counterclockwise(
+                    circle_of_fifths_mapping[original_key], goal_key)
+
+        
 
     def calculate_tempo_similarity(self):
         """ Calculates the similarity score for the tempo feature. """ 
@@ -172,7 +216,7 @@ class SongSimilarity:
 
     def calculate_speechiness_similarity(self):
         """ Calculates the similarity score for the speechiness feature. """
-        speechiness_scaling_factor = 6 
+        speechiness_scaling_factor = 6
         speechiness_scores = []
         for song in self.songs:
             speechiness_scores.append(song.features.speechiness)
