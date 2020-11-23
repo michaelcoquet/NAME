@@ -73,8 +73,7 @@ class SongSimilarity:
              
             return 1-np.max(normalized_values)-np.min(normalized_values)
 
-        else:
-            return 1-np.std(normalized_values)
+        return 1-np.std(normalized_values)
 
     def calculate_key_similarity(self):
         """ Calculates the similarity score for the key feature. """
@@ -83,6 +82,9 @@ class SongSimilarity:
             song_keys.append(song.feature.key)
 
         def get_circle_of_fifths_clockwise(original_key, goal_key):
+            """ A way to calculate how similar two keys are by going
+            around the circle of fifths clockwise.
+            """
             circle_of_fifths_mapping = {0 : 7,
                                         7 : 2,
                                         2 : 9,
@@ -103,6 +105,9 @@ class SongSimilarity:
                     circle_of_fifths_mapping[original_key], goal_key)
 
         def get_circle_of_fifths_counterclockwise(original_key, goal_key):
+            """ A way to calculate how similar two keys are by going
+            around the circle of fifths counterclockwise.
+            """
             circle_of_fifths_mapping = {0 : 5,
                                         5 : 10,
                                         10 : 3,
@@ -122,7 +127,21 @@ class SongSimilarity:
             return 1 + get_circle_of_fifths_counterclockwise(
                     circle_of_fifths_mapping[original_key], goal_key)
 
-        
+
+        keys_distance = []
+        for i in range(len(song_keys)):
+            for j in range(i + 1, len(song_keys)):
+                keys_distance.append(min(get_circle_of_fifths_clockwise(
+                    song_keys[i], song_keys[j]), get_circle_of_fifths_counterclockwise(
+                        song_keys[i], song_keys[j])))
+
+        normalized_values = ((keys_distance - np.min(keys_distance))
+                                    /np.ptp(keys_distance))
+
+        if len(normalized_values) <= 2:
+            return 1-np.max(normalized_values)-np.min(normalized_values)
+
+        return 1-np.std(normalized_values)
 
     def calculate_tempo_similarity(self):
         """ Calculates the similarity score for the tempo feature. """ 
@@ -137,8 +156,7 @@ class SongSimilarity:
              
             return 1-np.max(normalized_values)-np.min(normalized_values)
 
-        else:
-            return 1-np.std(normalized_values)
+        return 1-np.std(normalized_values)
         
     def calculate_danceability_similarity(self):
         """ Calculates the similarity score for the danceability feature. """ 
@@ -158,8 +176,7 @@ class SongSimilarity:
 
             return danceability_similarity
 
-        else:
-            return 1-np.std(danceability_scores)
+        return 1-np.std(danceability_scores)
 
     def calculate_energy_similarity(self):
         """ Calculates the similarity score for the energy feature. """
@@ -179,8 +196,7 @@ class SongSimilarity:
 
             return energy_similarity
 
-        else:
-            return 1-np.std(energy_scores)
+        return 1-np.std(energy_scores)
 
     def calculate_loudness_similarity(self):
         """ Calculates the similarity score for the loudness feature. """
@@ -203,8 +219,7 @@ class SongSimilarity:
 
             return loudness_similarity
 
-        else:
-            return 1-np.std(normalized_scores)
+        return 1-np.std(normalized_scores)
 
     def calculate_mode_similarity(self):
         """ Calculates the similarity score for the mode feature. """ 
@@ -223,7 +238,7 @@ class SongSimilarity:
 
         if len(speechiness_scores) <= 2:
         
-            if ((max(speechiness_scores)-min(speechiness_scores)) * 
+            if ((max(speechiness_scores)-min(speechiness_scores)) *
                                     speechiness_scaling_factor) > 1:
                 return 0
             
@@ -232,8 +247,7 @@ class SongSimilarity:
 
             return speechiness_similarity
         
-        else:
-            return 1-np.std(speechiness_scores)
+        return 1-np.std(speechiness_scores)
 
     def calculate_acousticness_similarity(self):
         """ Calculates the similarity score for the acoustincness feature. """
@@ -242,14 +256,18 @@ class SongSimilarity:
         for song in self.songs:
             acousticness_scores.append(song.features.acousticness)
 
-        if ((max(acousticness_scores)-min(acousticness_scores)) * 
-                                acousticness_scaling_factor) > 1:
-            return 0
+        if len(acousticness_scores) <= 2:
 
-        acousticness_similarity = (1-(max(acousticness_scores)-min(acousticness_scores) * 
-                                    acousticness_scaling_factor))
+            if ((max(acousticness_scores)-min(acousticness_scores)) * 
+                                    acousticness_scaling_factor) > 1:
+                return 0
 
-        return acousticness_similarity
+            acousticness_similarity = (1-(max(acousticness_scores)-min(acousticness_scores) * 
+                                        acousticness_scaling_factor))
+
+            return acousticness_similarity
+        
+        return 1-np.std(acousticness_scores)
 
     def calculate_instrumentalness_similarity(self):
         """ Calculates the similarity score for the instrumentalness feature. """
@@ -269,8 +287,7 @@ class SongSimilarity:
 
             return instrumentalness_similarity
         
-        else:
-            return 1-np.std(instrumentalness_scores)
+        return 1-np.std(instrumentalness_scores)
 
     def calculate_liveness_similarity(self):
         """ Calculates the similarity score for the liveness feature. """
@@ -278,15 +295,19 @@ class SongSimilarity:
         liveness_scores = []
         for song in self.songs:
             liveness_scores.append(song.features.liveness)
-
-        if ((max(liveness_scores)-min(liveness_scores)) * 
-                            liveness_scaling_factor) > 1:
-            return 0
-
-        liveness_similarity = (1-(max(liveness_scores)-min(liveness_scores) 
-                                                * liveness_scaling_factor))
         
-        return liveness_similarity
+        if len(liveness_scores) <= 2:
+
+            if ((max(liveness_scores)-min(liveness_scores)) * 
+                                liveness_scaling_factor) > 1:
+                return 0
+
+            liveness_similarity = (1-(max(liveness_scores)-min(liveness_scores) 
+                                                    * liveness_scaling_factor))
+            
+            return liveness_similarity
+
+        return 1-np.std(liveness_scores)
 
     def calculate_valence_similarity(self):
         """ Calculates the similarity score for the valence feature. """
@@ -295,13 +316,36 @@ class SongSimilarity:
         for song in self.songs:
             valence_scores.append(song.features.valence)
 
-        valence_similarity = (1-(max(valence_scores)-min(valence_scores) 
-                                            * valence_scaling_factor))
-                                    
-        return valence_similarity
+        if len(valence_scores) <= 2:
+
+            valence_similarity = (1-(max(valence_scores)-min(valence_scores) 
+                                                * valence_scaling_factor))
+                                        
+            return valence_similarity
+        
+        return 1-np.std(valence_scores)
 
     def calculate_time_signature_similarity(self):
         """ Calculates the similarity score for the time_signature feature. """ 
-        return 0
+        time_signatures = []
+        for song in self.songs:
+            time_signatures.append(song.features.time_signature)
 
+        time_signature_relations = []
+        for i in range(len(time_signatures)):
+            for j in range(i, len(time_signatures)):
+                relation = 0
+                if time_signatures[i] == time_signatures[j]:
+                    relation = 1
+                elif time_signatures[i] % 2 == time_signatures[j] % 2:
+                    relation = 0.5
+                elif (max(time_signatures[i], time_signatures[j]) %
+                                        min(time_signatures[i], time_signatures[j])) == 0:
+                    relation = 0.25
+                time_signature_relations.append(relation)
+
+        if len(time_signature_relations) <= 2:
+            return 1-max(time_signature_relations)-min(time_signature_relations)
+
+        return 1-np.std(time_signature_relations)
 
