@@ -1,4 +1,7 @@
 import numpy as np
+# from name.backend_classes.song import Song
+# from name.backend_classes.song import SongDetails
+
 
 class SongSimilarity:
 
@@ -134,6 +137,10 @@ class SongSimilarity:
                 keys_distance.append(min(get_circle_of_fifths_clockwise(
                     song_keys[i], song_keys[j]), get_circle_of_fifths_counterclockwise(
                         song_keys[i], song_keys[j])))
+
+
+        if np.ptp(keys_distance) == 0:
+            return 0
 
         normalized_values = ((keys_distance - np.min(keys_distance))
                                     /np.ptp(keys_distance))
