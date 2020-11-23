@@ -6,6 +6,7 @@ from name.testing.proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
 from name.backend_classes import SongSimilarity
 from name.backend_classes import SpotifyAPIManager
+from name.backend_classes import Query
 
 
 # Tests for the User class
@@ -48,15 +49,14 @@ def test_isGuest_v2():
     assert user.isGuest() == False
 
 
-# Tests for the SongSimilarity class
-def test_compare_all():
-    """ Test ID: SongSim01. Check that the method
-    returns a value between 0 and 1.
-    """
-    song_similarity_calculator = SongSimilarity(["exampleSong"], ["duration_ms"])
-    result = song_similarity_calculator.compare_all()
+# # Tests for the SongSimilarity class
+# def test_compare_all():
+#     """ Test ID: SongSim01. Check that the method
+#     returns a value between 0 and 1.
+#     """
+#     # rewrite this test
 
-    assert (result >= 0 and result <= 1)
+#     assert (result >= 0 and result <= 1)
 
 
 # Tests for the SpotifyAPIManager class
@@ -84,7 +84,7 @@ def test_get_user_id_v1():
 
 def test_get_user_id_v2():
     """ Test ID: Spotify07. Should return the current member
-    ID when logged in to Spotify. 
+    ID when logged in to Spotify.
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -207,15 +207,95 @@ def test_get_artist_v1():
     # Artist id for Bastille
     artist_id = "7EQ0qTo7fWT7DPxmxtSYEc"
     artist = spotify_api_manager.get_artist(artist_id)
-    assert artist.name[0] == "Bastille"
-    assert artist.artist_id[0] == artist_id
+    assert artist.name == "Bastille"
+    assert artist.artist_id == artist_id
     # Second subtest
     account_link = spotify_api_manager.link_spotify_account()
     assert account_link == True
     artist = spotify_api_manager.get_artist(artist_id)
-    assert artist.name[0] == "Bastille"
-    assert artist.artist_id[0] == artist_id
-    # clean cache on last test
+    assert artist.name == "Bastille"
+    assert artist.artist_id == artist_id
+
+
+# Tests for the Query class
+def test_update_filter_list():
+    """ Test ID: Query03 - Query07.
+    Tests that filters can be added and removed from the filters list correctly.
+    """
+    filters = []
+    query = Query(filters)
+    assert query.filter_list == filters
+    filters.append("tempo")
+    query.update_filter_list(filters)
+    assert query.filter_list == filters
+    filters = ["key", "time_ms", "valence"]
+    query.update_filter_list(filters)
+    assert query.filter_list == filters
+    filters.remove("key")
+    query.update_filter_list(filters)
+    assert query.filter_list == filters
+
+
+def test_search_single_song_v1():
+    """ Test ID: Query08. Tests that the query returns song results
+    when a valid song is entered.
+    """
+    query = Query(["tempo", "key"])
+    song = "Hello"
+    assert query.search_single_song(song) != []
+
+
+def test_search_single_song_v2():
+    """ Test ID: Query09. Tests that the query returns an empty
+    list when Spotify can't find the given song.
+    """
+    query = Query(["tempo", "key"])
+    song = "hfjdkshfjsue"
+    assert query.search_single_song(song) == []
+
+
+def test_get_song_info():
+    """ Test ID: Query 10. Tests that the query returns song
+    info for the filter list when given a valid song object.
+    """
+    # First subtest: only one filter
+    query = Query(["tempo"])
+    song = "Hello"
+    song = query.search_single_song(song)[0]
+    song_info = query.get_song_info(song)
+    assert list(song_info.keys()) == ["tempo"]
+    assert song_info["tempo"] != None
+    # Second subtest: multiple filters
+    query.update_filter_list(["tempo", "key", "danceability"])
+    song_info = query.get_song_info(song)
+    assert list(song_info.keys()) == ["tempo", "key", "danceability"]
+    assert song_info["tempo"] != None
+    assert song_info["key"] != None
+    assert song_info["danceability"] != None
+
+
+def test_get_similarity_score():
+    """ Test ID: Query 11. Tests that the method returns
+    a valid similarity score list with
+    values between 0 and 1.
+    """
+    # First subtest: only two songs, and only one filter
+    filters = ["tempo"]
+    query = Query(filters)
+    seed_song = "Hello"
+    songs = query.search_single_song(seed_song)
+    score = query.get_similarity_score(songs[0:2])
+    assert (score >= 0 and score <= 1)
+    # Second subtest: 10 songs, one filter
+    score = query.get_similarity_score(songs)
+    assert (score >= 0 and score <= 1)
+    # Third subtestL only two songs, multiple filters
+    filters = ["tempo", "key", "danceability"]
+    query.update_filter_list(filters)
+    score = query.get_similarity_score(songs[0:2])
+    print(score)
+    assert (score >= 0 and score <= 1)
+    # clear cache on last test
     clear_cache()
 
 
