@@ -1,7 +1,7 @@
 """CMPT 370 Group 5 Project: NAME
     Summary: TODO: fill in summary of app
 """
-import gui
+import name.gui as gui
 import tkinter as tk
 from tkinter import Grid
 
@@ -22,7 +22,7 @@ class Name(tk.Tk):
         self.logged_in = 0
 
         self.title("Nearly Analagous Music Engine")
-        self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be
+        # self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be
                                                    # accessable from anywhere
         Grid.rowconfigure(self, 0, weight=1)
         Grid.columnconfigure(self, 0, weight=1)

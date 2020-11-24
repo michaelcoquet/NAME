@@ -53,3 +53,4 @@ class SongInfoSearchFrame(HomePageFrame):
         self.parent.frames[f].ply_from_ply_button.grid_forget()
 
         # TODO: GUI - Update the song_info_scrolledtext in the song_info_frame
+

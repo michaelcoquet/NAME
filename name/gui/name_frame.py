@@ -8,6 +8,7 @@ from tkinter import Menu
 from tkinter import ttk
 from tkinter import messagebox
 
+from name.backend_classes import Query
 
 class NameFrame(tk.Frame):
     """ TODO: fill in
@@ -28,6 +29,13 @@ class NameFrame(tk.Frame):
         self.win = None
         self.progress = None
         self.l_songs_found = None
+
+        l = []
+        self.query_object = Query(l)
+
+        self.api_search_results = []
+
+        self.final_song_selection = []
 
     def grid_forget(self):
         self.upper_grid.grid_forget()
@@ -149,8 +157,8 @@ class NameFrame(tk.Frame):
             filters (dict): the selected filters
         """
         # TODO: BACKEND - single song search connection return a list of songs
-        api_results = {"example song 1", "example song 2", "example song 3", "example song 4"}
-        self.open_song_search_popup(api_results)
+        self.api_search_results = self.query_object.search_single_song(title)
+        self.open_song_search_popup(self.api_search_results)
 
     def search_similar(self, titles, filters):
         """ Search the spotify API for songs that are similar to the list of titles
@@ -173,15 +181,18 @@ class NameFrame(tk.Frame):
         self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
         self.popup.title("Pick a Song")
 
-        # TODO: add the proper filters to the dropdown list
         variable = StringVar(self.popup)
         variable.set("Which song were you looking for?") # default value
-        self.filters_dropdown = tk.OptionMenu(
+
+        names = [song_result for song_result in api_results]
+
+        self.song_select_dropdown = tk.OptionMenu(
             self.popup,
             variable,
-            *api_results,
-            command=self.filter_function)
-        self.filters_dropdown.pack()
+            *names,
+            command=self.song_select_dropdown_function)
+        self.song_select_dropdown.pack()
+
 
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
@@ -291,9 +302,9 @@ class NameFrame(tk.Frame):
         self.popup.destroy()
         self.grab_release()
 
-    def filter_function(self, item):
-        """ function to get the users selection of the filter dropdown box
+    def song_select_dropdown_function(self, item):
+        """ function to get the users selection of the song select dropdown box
         """
+        # for i in self.api_search_results:
         self.parent.frames[11].song_listbox.insert("end", item)
         self.close_single_search_window()
-

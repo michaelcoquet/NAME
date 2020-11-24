@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import StringVar
 
+
 from .name_frame import NameFrame
 
 
@@ -123,7 +124,7 @@ class HomePageFrame(NameFrame):
             TODO: link the users choice of filter with the search function for now just return
                   anything
         """
-        return 1
+        self.query_object.update_filter_list(self.selected_filters)
 
     def compare_songs_command(self):
         """ command when compare songs btn is pushed
