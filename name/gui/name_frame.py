@@ -9,6 +9,8 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from name.backend_classes import Query
+from name.backend_classes import SpotifyAPIManager
+
 
 class NameFrame(tk.Frame):
     """ TODO: fill in
@@ -36,6 +38,9 @@ class NameFrame(tk.Frame):
         self.api_search_results = []
 
         self.final_song_selection = []
+
+        #instantiate the spotify api manager
+        self.spotify_manager = SpotifyAPIManager()
 
     def grid_forget(self):
         self.upper_grid.grid_forget()
@@ -71,7 +76,7 @@ class NameFrame(tk.Frame):
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
 
-        self.my_account_menu.add_command(label="Log Out")
+        self.my_account_menu.add_command(label="Log Out", command=self.log_out)
 
         self.member_menu.add_cascade(label="My Account", underline=0, menu=self.my_account_menu)
         self.parent.config(menu=self.member_menu)
@@ -128,13 +133,17 @@ class NameFrame(tk.Frame):
         """ Button command to link to a spotify account and if succesfully linked switch to the
             member frame (frame_id = 2).
         """
-            # TODO: BACKEND - Authenticate and authorize spotify account
-        self.parent.logged_in = 1 # TODO: change this with a real check if the login was succ-
-                                  #       esfull
-        if self.parent.logged_in:
+        if self.spotify_manager.link_spotify_account() == True:
             self.init_member_menu()
         else:
             print("error unsuccessfully linked spotify account")
+
+    def log_out(self):
+        """ Command for the logout button, should be able to just reinstantiate Spotify API
+            Manager
+        """
+        self.spotify_manager = SpotifyAPIManager()
+        self.init_guest_menu()
 
     def member_home_command(self):
         """ command for the member home member menu item
@@ -306,5 +315,5 @@ class NameFrame(tk.Frame):
         """ function to get the users selection of the song select dropdown box
         """
         # for i in self.api_search_results:
-        self.parent.frames[11].song_listbox.insert("end", item)
+        self.parent.frames[11].song_treeview.insert("end", item)
         self.close_single_search_window()

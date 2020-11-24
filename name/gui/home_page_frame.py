@@ -1,6 +1,7 @@
 """The home frame for the app can be either member or guest for this frame
 """
 import tkinter as tk
+from tkinter import ttk
 from tkinter import StringVar
 
 
@@ -27,7 +28,7 @@ class HomePageFrame(NameFrame):
         super().grid_forget()
         self.remove_all_button.grid_forget()
         self.similar_songs_button.grid_forget()
-        self.song_listbox.grid_forget()
+        self.song_treeview.grid_forget()
         self.create_playlist_button.grid_forget()
         self.compare_songs_button.grid_forget()
         self.get_song_info_button.grid_forget()
@@ -55,8 +56,20 @@ class HomePageFrame(NameFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_listbox = tk.Listbox(self.middle_grid)
-        self.song_listbox.grid(row=0, column=0, sticky="nsew")
+        self.song_treeview = ttk.Treeview(self.middle_grid)
+        self.song_treeview["columns"] = ("Title", "Album", "Artist(s)")
+
+        # set up widths of columns
+        self.song_treeview.column("#0", width=1, minwidth=1, stretch=tk.NO)
+        self.song_treeview.column("Title", width=300, minwidth=300, stretch=tk.NO)
+        self.song_treeview.column("Album", width=150, minwidth=150, stretch=tk.NO)
+        self.song_treeview.column("Artist(s)", width=150, minwidth=150, stretch=tk.NO)
+
+        #set up headings for the columns
+        self.song_treeview.heading("Title", text="Title", anchor="w")
+        self.song_treeview.heading("Album", text="Album", anchor="w")
+        self.song_treeview.heading("Artist(s)", text="Artist(s)", anchor="w")
+        self.song_treeview.grid(row=0, column=0, sticky="nsew")
 
     def init_upper_grid(self):
         super().init_upper_grid()

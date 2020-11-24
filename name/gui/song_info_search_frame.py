@@ -32,7 +32,7 @@ class SongInfoSearchFrame(HomePageFrame):
         """TODO: fill in
         """
         super().init_middle_grid()
-        self.song_listbox.grid_forget()
+        self.song_treeview.grid_forget()
 
     def init_lower_grid(self):
         """TODO: fill in
