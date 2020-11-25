@@ -190,18 +190,27 @@ class NameFrame(tk.Frame):
         self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
         self.popup.title("Pick a Song")
 
-        variable = StringVar(self.popup)
-        variable.set("Which song were you looking for?") # default value
+        self.song_selection = StringVar(self.popup)
+        self.song_selection_default = "Which song were you looking for?"
+        self.song_selection.set(self.song_selection_default) # default value
 
-        names = [song_result for song_result in api_results]
+        songs = [song_result for song_result in api_results]
+        formated_songs = []
+        artists_string_list = []
+
+        for song in songs:
+            artists = [arts for arts in song.song_artist]
+            for artist in artists:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+            formated_songs.append(song.song_name + "  -  " + artists_string)
 
         self.song_select_dropdown = tk.OptionMenu(
             self.popup,
-            variable,
-            *names,
-            command=self.song_select_dropdown_function)
+            self.song_selection,
+            *formated_songs,
+            command=self.song_select_dropdown_command)
         self.song_select_dropdown.pack()
-
 
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
@@ -311,9 +320,7 @@ class NameFrame(tk.Frame):
         self.popup.destroy()
         self.grab_release()
 
-    def song_select_dropdown_function(self, item):
+    def song_select_dropdown_command(self, item):
         """ function to get the users selection of the song select dropdown box
         """
-        # for i in self.api_search_results:
-        self.parent.frames[11].song_treeview.insert("end", item)
         self.close_single_search_window()

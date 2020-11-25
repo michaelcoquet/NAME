@@ -24,9 +24,12 @@ class HomePageFrame(NameFrame):
         self.container = container
         self.frame_id = self.parent.get_frame_id("Home Page")
 
+        self.songs_in_list = []
+
     def grid_forget(self):
         super().grid_forget()
         self.remove_all_button.grid_forget()
+        self.remove_button.grid_forget()
         self.similar_songs_button.grid_forget()
         self.song_treeview.grid_forget()
         self.create_playlist_button.grid_forget()
@@ -43,10 +46,19 @@ class HomePageFrame(NameFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
+        placeholder_frame = tk.Frame(self.lower_grid)
+        placeholder_frame.grid(row=0, column=0)
         self.remove_all_button = tk.Button(
-            self.lower_grid,
-            text="Remove All")
+            placeholder_frame,
+            text="Remove All",
+            command=self.remove_all_command)
         self.remove_all_button.grid(row=0, column=0)
+
+        self.remove_button = tk.Button(
+            placeholder_frame,
+            text="Remove",
+            command=self.remove_command)
+        self.remove_button.grid(row=0, column=1)
 
         self.similar_songs_button = tk.Button(
             self.lower_grid,
@@ -57,18 +69,18 @@ class HomePageFrame(NameFrame):
     def init_middle_grid(self):
         super().init_middle_grid()
         self.song_treeview = ttk.Treeview(self.middle_grid)
-        self.song_treeview["columns"] = ("Title", "Album", "Artist(s)")
+        self.song_treeview["columns"] = ("Title", "Album", "Artist")
 
         # set up widths of columns
-        self.song_treeview.column("#0", width=1, minwidth=1, stretch=tk.NO)
-        self.song_treeview.column("Title", width=300, minwidth=300, stretch=tk.NO)
-        self.song_treeview.column("Album", width=150, minwidth=150, stretch=tk.NO)
-        self.song_treeview.column("Artist(s)", width=150, minwidth=150, stretch=tk.NO)
+        self.song_treeview.column("#0", width=1, minwidth=1, stretch="no")
+        self.song_treeview.column("Title", width=300, minwidth=300, stretch="yes")
+        self.song_treeview.column("Album", width=150, minwidth=150, stretch="yes")
+        self.song_treeview.column("Artist", width=150, minwidth=150, stretch="yes")
 
         #set up headings for the columns
         self.song_treeview.heading("Title", text="Title", anchor="w")
         self.song_treeview.heading("Album", text="Album", anchor="w")
-        self.song_treeview.heading("Artist(s)", text="Artist(s)", anchor="w")
+        self.song_treeview.heading("Artist", text="Artist(s)", anchor="w")
         self.song_treeview.grid(row=0, column=0, sticky="nsew")
 
     def init_upper_grid(self):
@@ -164,3 +176,49 @@ class HomePageFrame(NameFrame):
         """command for the find similar songs button
         """
         self.open_search_progress()
+
+    def song_select_dropdown_command(self, item):
+        """ overrides parent song select command for button
+        """
+        # make sure the user has actually made a selection
+        if self.song_selection.get() != self.song_selection_default:
+            # get the item that is currently selected in the OptionMenu dropdown
+            item = self.song_selection.get()
+        artists_string_list = []
+
+        # search the original list of song objects returned from the API for the item
+        for song in self.api_search_results:
+            # build string for comparison to find object probably a better way to do this
+            for artist in song.song_artist:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+            # print(artists_string.__str__())
+            comp_str = song.song_name + "  -  " + artists_string
+            # print(item + " == " + comp_str + " is: " + str(item == comp_str))
+            if item == comp_str:
+                # this is the correct item add it to the treeview
+                self.song_treeview.insert("", "end", values=(song.song_name,
+                                          song.album_details.name, artists_string))
+                # add this song to the list of songs
+                self.songs_in_list = song
+                break
+        super().song_select_dropdown_command(item)
+
+    def remove_command(self):
+        """ command for the remove song button, can potentially have multiple songs selected
+        """
+        selected_items = self.song_treeview.selection()
+        for item in selected_items:
+            self.song_treeview.delete(item)
+
+            # TODO: GUI -- must now search through list of songs in the working list for the selected items
+            # and remove them from the list
+
+    def remove_all_command(self):
+        """comamnd for the rmeove all button
+        """
+        for item in self.song_treeview.get_children():
+            self.song_treeview.delete(item)
+
+        # TODO: GUI -- must now search through list of songs in the working list for the selected items
+        # and remove them from the list

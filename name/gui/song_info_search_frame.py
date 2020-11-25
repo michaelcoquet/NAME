@@ -48,9 +48,15 @@ class SongInfoSearchFrame(HomePageFrame):
         #            given in the text song_search_entry widget
 
         # hide this button for the next frame since its not used
+        self.start_single_search(self.song_search_entry.get(), self.selected_filters)
         self.switch_frame("Song Info")
         f = self.parent.get_frame_id("Song Info")
         self.parent.frames[f].ply_from_ply_button.grid_forget()
 
         # TODO: GUI - Update the song_info_scrolledtext in the song_info_frame
 
+    def song_select_dropdown_function(self, item):
+        """ override inherited function
+        """
+        # for i in self.api_search_results:
+        print("HELLO")
