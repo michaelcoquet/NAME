@@ -25,6 +25,7 @@ class ListeningHabitsFrame(SongInfoFrame):
     def init_lower_grid(self):
         super().init_lower_grid()
         self.start_over_button.grid_forget()
+        self.ply_from_ply_button.grid_forget()
 
     def init_upper_grid(self):
         super().init_upper_grid()
@@ -37,12 +38,14 @@ class ListeningHabitsFrame(SongInfoFrame):
 
         self.latest_playlist_button = tk.Button(
             self.upper_grid,
-            text="Latest Playlist")
+            text="Latest Playlist",
+            command=self.latest_playlist_command)
         self.latest_playlist_button.grid(row=1, column=0)
 
         self.all_playlists_button = tk.Button(
             self.upper_grid,
-            text="All Playlists")
+            text="All Playlists",
+            command=self.all_playlists_command)
         self.all_playlists_button.grid(row=1, column=1)
 
         self.listening_habits_button = tk.Button(
@@ -50,3 +53,13 @@ class ListeningHabitsFrame(SongInfoFrame):
             text="Your Listening Habits",
             state=tk.DISABLED)
         self.listening_habits_button.grid(row=1, column=2)
+
+    def all_playlists_command(self):
+        """command for the all playlists button
+        """
+        self.switch_frame("All Playlists")
+
+    def latest_playlist_command(self):
+        """command for the latest playlist button
+        """
+        self.switch_frame("Member Home")

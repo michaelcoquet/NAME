@@ -1,15 +1,16 @@
 """CMPT 370 Group 5 Project: NAME
     Summary: TODO: fill in summary of app
 """
+import name.gui as gui
 import tkinter as tk
-import gui
 from tkinter import Grid
 
 
 class Name(tk.Tk):
     """TODO: fill out docstring -- basically the gui wrapper
        TODO: set up a finite state machine to flip between frames in a more controlled fashion
-
+       TODO: move all the code in this class to a seperate gui wrapper class just to keep the
+             main entry point of the app clean
     Args:
         tk ([type]): [description]
     """
@@ -21,7 +22,7 @@ class Name(tk.Tk):
         self.logged_in = 0
 
         self.title("Nearly Analagous Music Engine")
-        self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be
+        # self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be
                                                    # accessable from anywhere
         Grid.rowconfigure(self, 0, weight=1)
         Grid.columnconfigure(self, 0, weight=1)
@@ -60,6 +61,17 @@ class Name(tk.Tk):
             self.frames[i].grid_forget()
 
         self.frames[11].grid_remember()
+
+    def update_search_results(self, list):
+        """ used to update the listbox in the search results frame
+
+        Args:
+            list (song[]): list of songs returned from the API in the search function to update
+                           the listbox in the search results frame
+        """
+        # this is just temporary will likely change when we have a proper list of song objects
+        for item in range(len(list)):
+            self.frames[1].song_listbox.insert(item, list[item])
 
     def switch_frame(self, old_id, new_id):
         """ TODO: Fill In
