@@ -3,17 +3,12 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 
-<<<<<<< HEAD
-from song import Song
-from song import SongDetails
-from playlist import Playlist
-=======
 from name.backend_classes.song import Artist
 from name.backend_classes.song import Album
 from name.backend_classes.song import Song
 from name.backend_classes.song import SongDetails
 from name.backend_classes.playlist import Playlist
->>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
+
 
 
 class SpotifyAPIManager:
@@ -109,7 +104,6 @@ class SpotifyAPIManager:
         returns: an artist object.
         """
         artist_data = self.spotify.artist(artist_id)
-<<<<<<< HEAD
         artist = Artist([artist_data])
         return artist
 
@@ -118,26 +112,9 @@ class SpotifyAPIManager:
         song_list: a list of song objects
         returns: a list of SongDetails objects.
         """
-        # song_ids = [song.song_id for song in song_list]
-        # features = self.spotify.audio_features(tracks=song_ids)
-        # song_details_list = []
-
-        # for song in features:
-            # song_details = S.SongDetails(song)
-            # song_details_list.append(song_details)
-        # return song_details_list
-
-=======
-        artist = Artist(artist_data)
-        return artist
-
-    def get_audio_features(self, song_id):
-        """ Gets audio features for the given song id
-        song_id: a song id (string)
-        returns: a SongDetails object
-        """
->>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
+        # Get the track's audio features
         features = self.spotify.audio_features(tracks=[song_id])[0]
+        # Convert into SongDetails object
         song_details = SongDetails(features)
         return song_details
 
@@ -149,7 +126,6 @@ class SpotifyAPIManager:
         user_id = self.get_user_id()
         playlists_data = self.spotify.user_playlists(user_id)
         playlist_list = []
-<<<<<<< HEAD
         for playlist_data in playlists_data["items"]:
             songs = self.spotify.playlist_items(playlist_data["id"])["items"]
             songs_list = []
@@ -162,14 +138,3 @@ class SpotifyAPIManager:
             playlist_list.append(playlist)
         return playlist_list
 
-=======
-        for playlist_data in playlists_data:
-            songs = playlist_data["tracks"]
-            songs_list = []
-            for song in songs:
-                song_details = self.get_audio_features([song["id"]])[0]
-                songs_list.append(Song(song, song_details))
-            playlist = Playlist(playlist_data, songs_list)
-            playlist_list.append(playlist)
-        return playlist_list
->>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
