@@ -136,6 +136,7 @@ def test_genius_api_manager():
     genius = Genius_Api_Manager("1812 overture", "Tchaikovsky")
     test_lyrics = genius.search_for_lyrics()
     assert test_lyrics == "No lyrics for this song were found"
+
 #### Tests for Lyrics class
 def test_lyrics():
     # Test to see if the lyrics class is successfully working
@@ -155,6 +156,20 @@ def test_lyrics():
     # Test to see if correct number of words is returned
     lyrics_class = Lyrics("It's a beautiful day", "Queen")
     assert lyrics_class.get_num_words() == 66
+
+    # Test to see correct number of chorus is returned
+    lyrics_class = Lyrics("Country Roads", "John Denver")
+    assert lyrics_class.get_num_chorus() == 3
+
+    # Test to see correct number of chorus is returned when 0
+    lyrics_class = Lyrics("It's a beautiful day", "Queen")
+    assert lyrics_class.get_num_chorus() == 0
+
+    # Test to see correct number of verses is returned
+    assert lyrics_class.get_num_verse() == 2
+
+    # Test to see if variability is correct
+    assert lyrics_class.get_variability() == 0
 
 def clear_cache():
     # delete the caches (probably not the proper or ideal way to do this but good enough for testing)
