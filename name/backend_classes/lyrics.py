@@ -28,6 +28,9 @@ class Lyrics(object):
     def get_lyrics(self):
         """Get song lyrics and return as a string"""
 
+        if(self.__song_lyrics is None):
+            return "Lyrics Not Found"
+
         return self.__song_lyrics
 
     def get_num_words(self):
@@ -38,7 +41,7 @@ class Lyrics(object):
 
         words = self.get_lyrics().split()
         for word in words:
-            if("[" not in word):
+            if("[" not in word and "]" not in word):
                 print("Counting word:", word)
                 number_words += 1
 
