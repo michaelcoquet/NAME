@@ -5,7 +5,7 @@ import pytest
 # from proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
 # from name.backend_classes import SongSimilarity
-import name.backend_classes.spotify_api_manager import SpotifyAPIManager
+from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 from name.backend_classes.song import Artist
 from name.backend_classes.song import Album
 from name.backend_classes.song import Song
