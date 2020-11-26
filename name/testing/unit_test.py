@@ -34,12 +34,19 @@ def test_setUserType_v2():
 
     assert user.type == "Guest"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
 def test_isGuest_v1():
     """
     Test ID: User03. Check that the method returns True when the User type is Guest.
     """
     user = User(type="Guest")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
     assert user.isGuest() == True
 
 
@@ -90,6 +97,7 @@ def test_get_user_id_v2():
     """ Test ID: Spotify07. Should return the current member
     ID when logged in to Spotify. 
     """
+<<<<<<< HEAD
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
     time.sleep(2)
@@ -109,6 +117,9 @@ def test_search_songs_v1():
     Test when the list has multiple elements, user type is guest
     Test when the list has one element, user type is member
     Test when the list has multiple elements, user type is member
+=======
+    Test ID: SongSim01. Check that the method returns a value between 0 and 1.
+>>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -198,10 +209,16 @@ def test_get_album_v1():
     assert album.album_id == album_id
 
 
+<<<<<<< HEAD
 def test_get_artist_v1():
     """ Test ID: Spotify03. Tests that the method returns 
     the correct artist object when given a valid artist id.
     Ensure this works both when the account is linked or not.
+=======
+def test_linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri):
+    """
+    Tests that the linkSpotifyAccount method runs without error
+>>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -313,6 +330,7 @@ def test_playlist_v1():
             "album": {"album_type": "a","id": "",
             "name": "","total_tracks": 19}}
 
+<<<<<<< HEAD
     # an object to pass in
     audio_features = {"danceability": 0.494,"energy": 0.672,
                       "key": 3, "loudness": -4.877,
@@ -321,16 +339,37 @@ def test_playlist_v1():
                       "liveness": 0.105, "valence": 0.557,
                       "tempo": 156.208, "duration_ms": 277027,
                       "time_signature": 4}
+=======
+# test adding a song to a spotify playlist
+def test_addSong():
+    # need a spotify track ID (Moonlight Sonata aka Piano Sonata No. 14, Op. 27 No. 2)
+    track = ["7xfSCgVOkQJhVxnqzepATH"]
+
+    # Get the users playlists
+    playlists = me.getSpotifyPlaylists()
+>>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
 
     # Convert the objects above into a Song object
     playlist_tracks = [Song(song, audio_features)]
     playlist_obj = Playlist(a_playlist, playlist_tracks)
 
+<<<<<<< HEAD
     assert playlist_obj.playlist_name == a_playlist["name"]
     assert playlist_obj.playlist_owner == a_playlist["owner"]["id"]
     assert playlist_obj.playlist_id == a_playlist["id"]
     assert playlist_obj.songs == playlist_tracks
     assert playlist_obj.size == len(playlist_tracks)
+=======
+    # now we must return the tracks from the playlist and make sure the
+    # first track is our new track
+    response = me.getSpotifyHook().playlist_items(pl_ID,
+                                    offset=0,
+                                    fields='items.track.name,total',
+                                    additional_types=['track'])
+
+
+    assert response['items'][0]['track']['name'] == "Moonlight Sonata (First Movement from Piano Sonata No. 14, Op. 27 No. 2)"
+>>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
 
     # Test for updating the playlist name
     new_name = "My playlist 2"
