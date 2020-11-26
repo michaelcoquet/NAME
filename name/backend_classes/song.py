@@ -120,8 +120,4 @@ class SongDetails:
                                               self.mode, self.speechiness,
                                               self.acousticness, self.instrumentalness,
                                               self.liveness, self.valence,
-<<<<<<< HEAD
                                               self.time_signature)
-=======
-                                              self.time_signature)
->>>>>>> 016aa8e4f5c8444186cff68ec1141cd186576179
