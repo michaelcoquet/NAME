@@ -28,6 +28,8 @@ class SongSimilarity:
                                  "liveness": self.calculate_liveness_similarity,
                                  "valence": self.calculate_valence_similarity,
                                  "time_signature": self.calculate_time_signature_similarity}
+        # each weight is based on features that we thought were most recognizable
+        # these weights are subject to change as we develop the algorithm
         self.weights =          {"duration_ms": 0.02,
                                  "key": 0.02,
                                  "tempo": 0.02,
@@ -67,30 +69,37 @@ class SongSimilarity:
         """
         duration_values = []
         for song in self.songs:
-            duration_values.append(song.features.duration)
+            duration_values.append(song.audio_features.duration)
 
+        # if all the values are the same, the range is 0
+        # so we return 1
         if np.ptp(duration_values) == 0:
             return 1
 
+        # normalize the values between 0 and 1
         normalized_values = ((duration_values - np.min(duration_values))
                                     /np.ptp(duration_values))
 
+        # if it is two items, we return 1 - the difference 
         if len(normalized_values) <= 2:
              
             return 1-np.max(normalized_values)-np.min(normalized_values)
 
+        # otherwise the 1 - the standard deviation
         return 1-np.std(normalized_values)
 
     def calculate_key_similarity(self):
         """ Calculates the similarity score for the key feature. """
         song_keys = []
         for song in self.songs:
-            song_keys.append(song.feature.key)
+            song_keys.append(song.audio_features.key)
 
         def get_circle_of_fifths_clockwise(original_key, goal_key):
             """ A way to calculate how similar two keys are by going
             around the circle of fifths clockwise.
             """
+            # we recursively go through the circle of fifths
+            # each number is a key 0 = C, 1 = C#, and so on
             circle_of_fifths_mapping = {0 : 7,
                                         7 : 2,
                                         2 : 9,
@@ -107,6 +116,7 @@ class SongSimilarity:
             if original_key == goal_key:
                 return 0
 
+            # each step away from the original key we add one
             return 1 + get_circle_of_fifths_clockwise(
                     circle_of_fifths_mapping[original_key], goal_key)
 
@@ -114,6 +124,8 @@ class SongSimilarity:
             """ A way to calculate how similar two keys are by going
             around the circle of fifths counterclockwise.
             """
+            # same thing as the previous function just
+            # counterclockwise
             circle_of_fifths_mapping = {0 : 5,
                                         5 : 10,
                                         10 : 3,
@@ -135,6 +147,7 @@ class SongSimilarity:
 
 
         keys_distance = []
+        # now we check each key in the list of keys against each other
         for i in range(len(song_keys)):
             for j in range(i + 1, len(song_keys)):
                 keys_distance.append(min(get_circle_of_fifths_clockwise(
@@ -145,6 +158,8 @@ class SongSimilarity:
         if np.ptp(keys_distance) == 0:
             return 1
 
+        # normalize the values, and return the difference or 
+        # the standard deviation
         normalized_values = ((keys_distance - np.min(keys_distance))
                                     /np.ptp(keys_distance))
 
@@ -157,7 +172,7 @@ class SongSimilarity:
         """ Calculates the similarity score for the tempo feature. """ 
         tempo_values = []
         for song in self.songs:
-            tempo_values.append(song.features.tempo)
+            tempo_values.append(song.audio_features.tempo)
 
         if np.ptp(tempo_values) == 0:
             return 1
@@ -174,10 +189,13 @@ class SongSimilarity:
         
     def calculate_danceability_similarity(self):
         """ Calculates the similarity score for the danceability feature. """ 
+        # each scaling factor is based on the distribution of scores across
+        # all songs in spotify. The tighter the distribution, the higher the
+        # scaling factor
         danceability_scaling_factor = 3
         danceability_scores = []
         for song in self.songs:
-            danceability_scores.append(song.features.danceability)
+            danceability_scores.append(song.audio_features.danceability)
 
         if len(danceability_scores) <= 2:
 
@@ -197,7 +215,7 @@ class SongSimilarity:
         energy_scaling_factor = 2 
         energy_scores = []
         for song in self.songs:
-            energy_scores.append(song.features.energy)
+            energy_scores.append(song.audio_features.energy)
 
         if len(energy_scores) <= 2:
 
@@ -217,7 +235,7 @@ class SongSimilarity:
         loudness_scaling_factor = 4 
         loudness_scores = []
         for song in self.songs:
-            loudness_scores.append(song.features.loudness)
+            loudness_scores.append(song.audio_features.loudness)
 
         normalized_scores = ((loudness_scores - np.min(loudness_scores))
                                         /np.ptp(loudness_scores))
@@ -239,7 +257,7 @@ class SongSimilarity:
         """ Calculates the similarity score for the mode feature. """ 
         mode_scores = []
         for song in self.songs:
-            mode_scores.append(song.features.mode)
+            mode_scores.append(song.audio_features.mode)
 
         return abs(sum(mode_scores)/len(mode_scores)-0.5) / 0.5
 
@@ -248,7 +266,7 @@ class SongSimilarity:
         speechiness_scaling_factor = 6
         speechiness_scores = []
         for song in self.songs:
-            speechiness_scores.append(song.features.speechiness)
+            speechiness_scores.append(song.audio_features.speechiness)
 
         if len(speechiness_scores) <= 2:
         
@@ -268,7 +286,7 @@ class SongSimilarity:
         acousticness_scaling_factor = 5
         acousticness_scores = []
         for song in self.songs:
-            acousticness_scores.append(song.features.acousticness)
+            acousticness_scores.append(song.audio_features.acousticness)
 
         if len(acousticness_scores) <= 2:
 
@@ -288,7 +306,7 @@ class SongSimilarity:
         instrumentalness_scaling_factor = 6
         instrumentalness_scores = []
         for song in self.songs:
-            instrumentalness_scores.append(song.features.instrumentalness)
+            instrumentalness_scores.append(song.audio_features.instrumentalness)
 
         if len(instrumentalness_scores) <= 2:
 
@@ -308,7 +326,7 @@ class SongSimilarity:
         liveness_scaling_factor = 4 
         liveness_scores = []
         for song in self.songs:
-            liveness_scores.append(song.features.liveness)
+            liveness_scores.append(song.audio_features.liveness)
         
         if len(liveness_scores) <= 2:
 
@@ -328,7 +346,7 @@ class SongSimilarity:
         valence_scaling_factor = 1
         valence_scores = []
         for song in self.songs:
-            valence_scores.append(song.features.valence)
+            valence_scores.append(song.audio_features.valence)
 
         if len(valence_scores) <= 2:
 
@@ -343,7 +361,7 @@ class SongSimilarity:
         """ Calculates the similarity score for the time_signature feature. """ 
         time_signatures = []
         for song in self.songs:
-            time_signatures.append(song.features.time_signature)
+            time_signatures.append(song.audio_features.time_signature)
 
         time_signature_relations = []
         for i in range(len(time_signatures)):
