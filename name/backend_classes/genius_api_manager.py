@@ -23,6 +23,8 @@ class Genius_Api_Manager(object):
         """
         try:
             song_lyrics = self.my_genius.search_song(self.song_name, self.song_artist).lyrics
+            if(song_lyrics == "Instrumental"):
+                return "No lyrics for this song were found"
         except:
             return "No lyrics for this song were found"
         return song_lyrics

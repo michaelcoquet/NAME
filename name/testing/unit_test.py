@@ -152,6 +152,10 @@ def test_lyrics():
     test_lyrics = lyrics_class.get_lyrics()
     assert test_lyrics is None
 
+    # Test to see if correct number of words is returned
+    lyrics_class = Lyrics("It's a beautiful day", "Queen")
+    assert lyrics_class.get_num_words() == 66
+
 def clear_cache():
     # delete the caches (probably not the proper or ideal way to do this but good enough for testing)
     if os.path.exists(".cache"):
