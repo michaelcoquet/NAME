@@ -1,5 +1,6 @@
-import genius_api_manager as genius_manager
+#import genius_api_manager as genius_manager
 #from genius_api_manager import Genius_Api_Manager as genius_manager
+from . import Genius_Api_Manager as genius_manager
 
 
 
@@ -75,7 +76,10 @@ class Lyrics(object):
         return 0
 
     def __analyze_lyrics(self):
-        """Analyze the song using ancient esoteric methods"""
+        """Analyze the song, I did all the analyzing in the
+        respective get functions instead of here by accident,
+        will refactor later
+        """
         return 0
 
 

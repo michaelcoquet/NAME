@@ -4,9 +4,9 @@ from proof_of_concept import Playlist
 from proof_of_concept import Song
 from proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
-from name.backend_classes import SongSimilarity
-from name.backend_classes import genius_api_manager
-from name.backend_classes import lyrics
+#from name.backend_classes import SongSimilarity
+from name.backend_classes import Genius_Api_Manager
+#from name.backend_classes import lyrics
 
 # Tests for the User class
 def test_setUserType_v1():
@@ -46,14 +46,14 @@ def test_isGuest_v2():
     assert user.isGuest() == False
 
 # Tests for the SongSimilarity class
-def test_compare_all():
-    """
-    Test ID: SongSim01. Check that the method returns a value between 0 and 1.
-    """
-    songSimilarityCalculator = SongSimilarity(["exampleSong"],["duration_ms"])
-    result = songSimilarityCalculator.compare_all()
+#def test_compare_all():
+#    """
+#    Test ID: SongSim01. Check that the method returns a value between 0 and 1.
+#    """
+#    songSimilarityCalculator = SongSimilarity(["exampleSong"],["duration_ms"])
+#    result = songSimilarityCalculator.compare_all()#
 
-    assert (result >= 0 and result <= 1)
+    #assert (result >= 0 and result <= 1)
 
 # The following list of tests are more complicated: we likely will need to rewrite these later to match up
 # better with the test plan, but for now they illustrate how to test methods that use the Spotify API.
@@ -119,8 +119,11 @@ def test_addSong():
     clear_cache()
 
 #### Tests for genius_api_manager
-
-
+def test_genius_api_manager():
+    genius = Genius_Api_Manager("40:1", "Sabaton")
+    test = genius.search_for_lyrics()
+    print(test)
+    assert test is not None
 #### Tests for Lyrics class
 
 def clear_cache():

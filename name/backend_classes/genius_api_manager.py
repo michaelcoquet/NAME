@@ -11,7 +11,7 @@ class Genius_Api_Manager(object):
         self.song_artist = song_artist
         self.my_genius = lyricsgenius.Genius("F91niKdwkbdKfbtYZzg1IYm4xoze0Y2Pwu1P0q2WgU68ZydN"
                                               + "M0FdrpXQqXxD_-Td")
-        # Disables progress messeges in console
+        # Disables progress messages in console
         self.my_genius.verbose = False
 
     def search_for_lyrics(self):
