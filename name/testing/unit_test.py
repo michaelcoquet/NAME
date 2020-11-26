@@ -9,127 +9,125 @@ from name.backend_classes import Genius_Api_Manager
 from name.backend_classes import Lyrics
 
 # Tests for the User class
-def test_setUserType_v1():
-    """
-    Test ID: User01. Normally setUserType would be called from within the Spotify API
-    after a User has linked/ unlinked their account. For this unit test, we simply check that
-    the User type is modified correctly.
-    """
-    user = User(type="Guest")
-    user.setUserType(type="Member")
-
-    assert user.type == "Member"
-
-def test_setUserType_v2():
-    """
-    Test ID: User02. Check that the user type is updated correctly from "Member" to "Guest".
-    """
-    user = User(type="Member")
-    user.setUserType(type="Guest")
-
-    assert user.type == "Guest"
-
-def test_isGuest_v1():
-    """
-    Test ID: User03. Check that the method returns True when the User type is Guest.
-    """
-    user = User(type="Guest")
-
-    assert user.isGuest() == True
-
-def test_isGuest_v2():
-    """
-    Test ID: User04. Check that the method returns False when the User type is not Guest.
-    """
-    user = User(type="Member")
-
-    assert user.isGuest() == False
-
-# Tests for the SongSimilarity class
-#def test_compare_all():
+#def test_setUserType_v1():
 #    """
-#    Test ID: SongSim01. Check that the method returns a value between 0 and 1.
+#    Test ID: User01. Normally setUserType would be called from within the Spotify API
+#    after a User has linked/ unlinked their account. For this unit test, we simply check that
+#    the User type is modified correctly.
 #    """
-#    songSimilarityCalculator = SongSimilarity(["exampleSong"],["duration_ms"])
-#    result = songSimilarityCalculator.compare_all()#
+#    user = User(type="Guest")
+#    user.setUserType(type="Member")
 
-    #assert (result >= 0 and result <= 1)
+#    assert user.type == "Member"
 
-# The following list of tests are more complicated: we likely will need to rewrite these later to match up
-# better with the test plan, but for now they illustrate how to test methods that use the Spotify API.
+#def test_setUserType_v2():
+#    """
+#    Test ID: User02. Check that the user type is updated correctly from "Member" to "Guest".
+#    """
+#    user = User(type="Member")
+#    user.setUserType(type="Guest")
 
+#    assert user.type == "Guest"
 
-# hardcoding for testing purposes
-client_id = "0f34fcaccbd64596a108401d6b020f1e" # this is the spotifyAPI developer clientID for developers only
-client_secret = "b2d9c4f194224634bde7b616eb45c04a"
-redirect_uri = "https://example.com/callback"
-username = "vha6pttyppu7tnrc0l1j4k4de" # this is a new spotify account created just for testing
+#def test_isGuest_v1():
+#    """
+#    Test ID: User03. Check that the method returns True when the User type is Guest.
+#    """
+#    user = User(type="Guest")
 
-me = User(type="Guest")
+#    assert user.isGuest() == True
 
-def test_linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri):
-    """
-    Tests that the linkSpotifyAccount method runs without error
-    """
-    me.linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
+#def test_isGuest_v2():
+#    """
+#    Test ID: User04. Check that the method returns False when the User type is not Guest.
+#    """
+#    user = User(type="Member")
 
-    assert me.isGuest() == False
+#    assert user.isGuest() == False
 
-def test_getSpotifyPlaylists():
-    """
-    If the above test passes, we do not need to link to Spotify again. Here we test if we can access
-    playlists from the linked account.
-    """
-    # print out each of the users saved playlists
-    playlists = me.getSpotifyPlaylists()
+## Tests for the SongSimilarity class
+##def test_compare_all():
+##    """
+##    Test ID: SongSim01. Check that the method returns a value between 0 and 1.
+##    """
+##    songSimilarityCalculator = SongSimilarity(["exampleSong"],["duration_ms"])
+##    result = songSimilarityCalculator.compare_all()#
 
-    # check if the api returned the testing playlist
-    assert playlists['items'][0]['name'] == "testing0"
-    assert playlists['items'][1]['name'] == "testing1"
-    assert playlists['items'][2]['name'] == "testing2"
+#    #assert (result >= 0 and result <= 1)
 
-# test adding a song to a spotify playlist
-def test_addSong():
-    # need a spotify track ID (Moonlight Sonata aka Piano Sonata No. 14, Op. 27 No. 2)
-    track = ["7xfSCgVOkQJhVxnqzepATH"]
-
-    # Get the users playlists
-    playlists = me.getSpotifyPlaylists()
-
-    # choose the first playlist to add a track to (aka testing0)
-    # assert that testing0 is indeed the first palylist
-    assert playlists['items'][0]['name'] == "testing0"
-    pl_ID = playlists['items'][0]['id']
-    pl = Playlist(pl_ID)
-    pl.addSong(me, pl_ID, track)
-
-    # now we must return the tracks from the playlist and make sure the
-    # first track is our new track
-    response = me.getSpotifyHook().playlist_items(pl_ID,
-                                    offset=0,
-                                    fields='items.track.name,total',
-                                    additional_types=['track'])
+## The following list of tests are more complicated: we likely will need to rewrite these later to match up
+## better with the test plan, but for now they illustrate how to test methods that use the Spotify API.
 
 
-    assert response['items'][0]['track']['name'] == "Moonlight Sonata (First Movement from Piano Sonata No. 14, Op. 27 No. 2)"
+## hardcoding for testing purposes
+#client_id = "0f34fcaccbd64596a108401d6b020f1e" # this is the spotifyAPI developer clientID for developers only
+#client_secret = "b2d9c4f194224634bde7b616eb45c04a"
+#redirect_uri = "https://example.com/callback"
+#username = "vha6pttyppu7tnrc0l1j4k4de" # this is a new spotify account created just for testing
+
+#me = User(type="Guest")
+
+#def test_linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri):
+#    """
+#    Tests that the linkSpotifyAccount method runs without error
+#    """
+#    me.linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
+
+#    assert me.isGuest() == False
+
+#def test_getSpotifyPlaylists():
+#    """
+#    If the above test passes, we do not need to link to Spotify again. Here we test if we can access
+#    playlists from the linked account.
+#    """
+#    # print out each of the users saved playlists
+#    playlists = me.getSpotifyPlaylists()
+
+#    # check if the api returned the testing playlist
+#    assert playlists['items'][0]['name'] == "testing0"
+#    assert playlists['items'][1]['name'] == "testing1"
+#    assert playlists['items'][2]['name'] == "testing2"
+
+## test adding a song to a spotify playlist
+#def test_addSong():
+#    # need a spotify track ID (Moonlight Sonata aka Piano Sonata No. 14, Op. 27 No. 2)
+#    track = ["7xfSCgVOkQJhVxnqzepATH"]
+
+#    # Get the users playlists
+#    playlists = me.getSpotifyPlaylists()
+
+#    # choose the first playlist to add a track to (aka testing0)
+#    # assert that testing0 is indeed the first palylist
+#    assert playlists['items'][0]['name'] == "testing0"
+#    pl_ID = playlists['items'][0]['id']
+#    pl = Playlist(pl_ID)
+#    pl.addSong(me, pl_ID, track)
+
+#    # now we must return the tracks from the playlist and make sure the
+#    # first track is our new track
+#    response = me.getSpotifyHook().playlist_items(pl_ID,
+#                                    offset=0,
+#                                    fields='items.track.name,total',
+#                                    additional_types=['track'])
 
 
-    # finally clear the cache so it doesnt cause problems
-    # if the tests are ran again
-    clear_cache()
+#    assert response['items'][0]['track']['name'] == "Moonlight Sonata (First Movement from Piano Sonata No. 14, Op. 27 No. 2)"
+
+
+#    # finally clear the cache so it doesnt cause problems
+#    # if the tests are ran again
+#    clear_cache()
 
 #### Tests for genius_api_manager
 def test_genius_api_manager():
     genius = Genius_Api_Manager("40:1", "Sabaton")
     test = genius.search_for_lyrics()
-    print(test)
     assert test is not None
 
     #Empty song name and artist test
-    #genius = Genius_Api_Manager("", "")
-    #test = genius.search_for_lyrics()
-    #print(test)
-    #assert test is None
+    genius = Genius_Api_Manager("", "")
+    test = genius.search_for_lyrics()
+    assert test == "No lyrics for this song were found"
 #### Tests for Lyrics class
 
 def clear_cache():

@@ -29,9 +29,6 @@ class Lyrics(object):
     def get_lyrics(self):
         """Get song lyrics and return as a string"""
 
-        if(self.__song_lyrics is None):
-            return "Lyrics Not Found"
-
         return self.__song_lyrics
 
     def get_num_words(self):

@@ -16,15 +16,14 @@ class Genius_Api_Manager(object):
 
     def search_for_lyrics(self):
         """Searches the Genius API and returns the song's lyrics
-        returns None if no song or lyrics found.
+        returns a message if no song or lyrics found.
         song_name: the name of the desired song
         song_artist: the desired song's artist
         """
         try:
             song_lyrics = self.my_genius.search_song(self.song_name, self.song_artist).lyrics
         except:
-            #return None if no song or lyrics found
-            return None
+            return "No lyrics for this song were found"
         return song_lyrics
     
 
