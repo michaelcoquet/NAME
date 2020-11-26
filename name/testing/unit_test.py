@@ -124,15 +124,15 @@ def test_genius_api_manager():
     test_lyrics = genius.search_for_lyrics()
     test_lyrics = test_lyrics.split()
     # Check to see if a fairly unique word known to be in the song
-    # Exists in the returned string
+    # exists in the returned string
     assert "mortars" in test_lyrics
 
-    #Empty song name and artist test
+    # Empty song name and artist test
     genius = Genius_Api_Manager("", "")
     test_lyrics = genius.search_for_lyrics()
     assert test_lyrics == "No lyrics for this song were found"
 
-    #Instrumental song test
+    # Instrumental song test
     genius = Genius_Api_Manager("1812 overture", "Tchaikovsky")
     test_lyrics = genius.search_for_lyrics()
     assert test_lyrics == "No lyrics for this song were found"
@@ -145,10 +145,13 @@ def test_lyrics():
     test_lyrics = lyrics_class.get_lyrics()
     test_lyrics = test_lyrics.split()
     # Check to see if a fairly unique word known to be in the song
-    # Exists in the returned string
+    # exists in the returned string
     assert "Shenandoah" in test_lyrics
 
-    #Empty song name and artist test
+    # Test to see correct number of chorus is returned
+    assert lyrics_class.get_num_chorus() == 3
+
+    # Empty song name and artist test
     lyrics_class = Lyrics("", "")
     test_lyrics = lyrics_class.get_lyrics()
     assert test_lyrics is None
@@ -157,12 +160,7 @@ def test_lyrics():
     lyrics_class = Lyrics("It's a beautiful day", "Queen")
     assert lyrics_class.get_num_words() == 66
 
-    # Test to see correct number of chorus is returned
-    lyrics_class = Lyrics("Country Roads", "John Denver")
-    assert lyrics_class.get_num_chorus() == 3
-
     # Test to see correct number of chorus is returned when 0
-    lyrics_class = Lyrics("It's a beautiful day", "Queen")
     assert lyrics_class.get_num_chorus() == 0
 
     # Test to see correct number of verses is returned
