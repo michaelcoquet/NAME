@@ -121,14 +121,36 @@ from name.backend_classes import Lyrics
 #### Tests for genius_api_manager
 def test_genius_api_manager():
     genius = Genius_Api_Manager("40:1", "Sabaton")
-    test = genius.search_for_lyrics()
-    assert test is not None
+    test_lyrics = genius.search_for_lyrics()
+    test_lyrics = test_lyrics.split()
+    # Check to see if a fairly unique word known to be in the song
+    # Exists in the returned string
+    assert "mortars" in test_lyrics
 
     #Empty song name and artist test
     genius = Genius_Api_Manager("", "")
-    test = genius.search_for_lyrics()
-    assert test == "No lyrics for this song were found"
+    test_lyrics = genius.search_for_lyrics()
+    assert test_lyrics == "No lyrics for this song were found"
+
+    #Instrumental song test
+    genius = Genius_Api_Manager("1812 overture", "Tchaikovsky")
+    test_lyrics = genius.search_for_lyrics()
+    assert test_lyrics == "No lyrics for this song were found"
 #### Tests for Lyrics class
+def test_lyrics():
+    # Test to see if the lyrics class is successfully working
+    # with the genius api class to get the lyrics
+    lyrics_class = Lyrics("Country Roads", "John Denver")
+    test_lyrics = lyrics_class.get_lyrics()
+    test_lyrics = test_lyrics.split()
+    # Check to see if a fairly unique word known to be in the song
+    # Exists in the returned string
+    assert "Shenandoah" in test_lyrics
+
+    #Empty song name and artist test
+    lyrics_class = Lyrics("", "")
+    test_lyrics = lyrics_class.get_lyrics()
+    assert test_lyrics is None
 
 def clear_cache():
     # delete the caches (probably not the proper or ideal way to do this but good enough for testing)

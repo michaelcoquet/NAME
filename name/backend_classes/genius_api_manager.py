@@ -7,6 +7,7 @@ class Genius_Api_Manager(object):
         """Initialization function to authenticate the program's
         connection to the genius API
         """
+        
         self.song_name = song_name
         self.song_artist = song_artist
         self.my_genius = lyricsgenius.Genius("F91niKdwkbdKfbtYZzg1IYm4xoze0Y2Pwu1P0q2WgU68ZydN"

@@ -14,7 +14,7 @@ class Lyrics(object):
         song_name: name of the song
         song_artist: artist associated with the song
         """
-        
+
         # Call the genius_api_manager and get lyrics
         lyrics_object = Genius_Api_Manager(song_name, song_artist)
 
@@ -28,6 +28,11 @@ class Lyrics(object):
 
     def get_lyrics(self):
         """Get song lyrics and return as a string"""
+
+        #If Song is instrumental it has no lyrics but the API
+        #Still returns a string so it must be changed
+        if(self.__song_lyrics == "Instrumental" or self.__song_lyrics == "No lyrics for this song were found"):
+            self.__song_lyrics = None
 
         return self.__song_lyrics
 
