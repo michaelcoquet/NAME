@@ -42,7 +42,6 @@ class Lyrics(object):
         words = self.get_lyrics().split()
         for word in words:
             if("[" not in word and "]" not in word):
-                print("Counting word:", word)
                 number_words += 1
 
         return number_words
