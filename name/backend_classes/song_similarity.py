@@ -69,6 +69,9 @@ class SongSimilarity:
         for song in self.songs:
             duration_values.append(song.features.duration)
 
+        if np.ptp(duration_values) == 0:
+            return 1
+
         normalized_values = ((duration_values - np.min(duration_values))
                                     /np.ptp(duration_values))
 
@@ -140,7 +143,7 @@ class SongSimilarity:
 
 
         if np.ptp(keys_distance) == 0:
-            return 0
+            return 1
 
         normalized_values = ((keys_distance - np.min(keys_distance))
                                     /np.ptp(keys_distance))
@@ -156,8 +159,12 @@ class SongSimilarity:
         for song in self.songs:
             tempo_values.append(song.features.tempo)
 
+        if np.ptp(tempo_values) == 0:
+            return 1
+
         normalized_values = ((tempo_values - np.min(tempo_values))
                                     /np.ptp(tempo_values))
+
 
         if len(normalized_values) <= 2:
              
