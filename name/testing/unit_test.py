@@ -6,7 +6,7 @@ from proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
 #from name.backend_classes import SongSimilarity
 from name.backend_classes import Genius_Api_Manager
-#from name.backend_classes import lyrics
+from name.backend_classes import Lyrics
 
 # Tests for the User class
 def test_setUserType_v1():
@@ -124,6 +124,12 @@ def test_genius_api_manager():
     test = genius.search_for_lyrics()
     print(test)
     assert test is not None
+
+    #Empty song name and artist test
+    #genius = Genius_Api_Manager("", "")
+    #test = genius.search_for_lyrics()
+    #print(test)
+    #assert test is None
 #### Tests for Lyrics class
 
 def clear_cache():

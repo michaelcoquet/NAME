@@ -1,6 +1,6 @@
 #import genius_api_manager as genius_manager
 #from genius_api_manager import Genius_Api_Manager as genius_manager
-from . import Genius_Api_Manager as genius_manager
+from . import Genius_Api_Manager
 
 
 
@@ -16,7 +16,7 @@ class Lyrics(object):
         """
         
         # Call the genius_api_manager and get lyrics
-        lyrics_object = genius_manager.Genius_Api_Manager(song_name, song_artist)
+        lyrics_object = Genius_Api_Manager(song_name, song_artist)
 
         self.__song_lyrics = lyrics_object.search_for_lyrics()
         self.__song_name = song_name
@@ -87,9 +87,9 @@ class Lyrics(object):
 
 
 
-test = Lyrics("It's a beautiful day", "Queen")
-print(test.get_lyrics())
-print("\n")
-print("Number of choruses: ", test.get_num_chorus())
-print("Number of verses: ", test.get_num_verse())
-print("Number of words: ", test.get_num_words())
+#test = Lyrics("It's a beautiful day", "Queen")
+#print(test.get_lyrics())
+#print("\n")
+#print("Number of choruses: ", test.get_num_chorus())
+#print("Number of verses: ", test.get_num_verse())
+#print("Number of words: ", test.get_num_words())
