@@ -10,7 +10,6 @@ from name.backend_classes.song import SongDetails
 from name.backend_classes.playlist import Playlist
 
 
-
 class SpotifyAPIManager:
 
     def __init__(self):
@@ -104,17 +103,15 @@ class SpotifyAPIManager:
         returns: an artist object.
         """
         artist_data = self.spotify.artist(artist_id)
-        artist = Artist([artist_data])
+        artist = Artist(artist_data)
         return artist
 
     def get_audio_features(self, song_id):
-        """ Gets audio features for the given list of song objects.
-        song_list: a list of song objects
-        returns: a list of SongDetails objects.
+        """ Gets audio features for the given song id
+        song_id: a song id (string)
+        returns: a SongDetails object
         """
-        # Get the track's audio features
         features = self.spotify.audio_features(tracks=[song_id])[0]
-        # Convert into SongDetails object
         song_details = SongDetails(features)
         return song_details
 
@@ -137,4 +134,3 @@ class SpotifyAPIManager:
             playlist = Playlist(playlist_data, songs_list)
             playlist_list.append(playlist)
         return playlist_list
-
