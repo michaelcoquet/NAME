@@ -130,7 +130,7 @@ class SpotifyAPIManager:
             songs_list = []
             # Get the tracks of the playlist
             for song in songs:
-                song_details = self.get_audio_features([song["track"]["id"]])
+                song_details = self.get_audio_features(song["track"]["id"])
                 songs_list.append(Song(song["track"], song_details))
             # Convert into Playlist Object
             playlist = Playlist(playlist_data, songs_list)
