@@ -5,3 +5,5 @@ from .song import Album
 from .song import Song
 from .song import SongDetails
 from .query import Query
+from .genius_api_manager import Genius_Api_Manager
+from .lyrics import Lyrics

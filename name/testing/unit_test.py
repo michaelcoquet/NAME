@@ -2,7 +2,7 @@ import os
 import time
 import pytest
 
-# from proof_of_concept import User
+from proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
 # from name.backend_classes import SongSimilarity
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
@@ -11,6 +11,8 @@ from name.backend_classes.song import Album
 from name.backend_classes.song import Song
 from name.backend_classes.song import SongDetails
 from name.backend_classes.playlist import Playlist
+from name.backend_classes import Genius_Api_Manager
+from name.backend_classes import Lyrics
 
 # Tests for the User class
 def test_setUserType_v1():
@@ -359,6 +361,67 @@ def test_playlist_v1():
     assert song_feat[0] == audio_features
 
 
+def test_genius_api_manager():
+    """
+    Test ID: Genius01-03. Tests that the Genius API returns the correct
+    lyrics for the requested song. Tests that no lyrics are returned if
+    a song is an instrumental.
+    """
+    genius = Genius_Api_Manager("40:1", "Sabaton")
+    test_lyrics = genius.search_for_lyrics()
+    test_lyrics = test_lyrics.split()
+    # Check to see if a fairly unique word known to be in the song
+    # exists in the returned string
+    assert "mortars" in test_lyrics
+
+    # Empty song name and artist test
+    genius = Genius_Api_Manager("", "")
+    test_lyrics = genius.search_for_lyrics()
+    assert test_lyrics == "No lyrics for this song were found"
+
+    # Instrumental song test
+    genius = Genius_Api_Manager("1812 overture", "Tchaikovsky")
+    test_lyrics = genius.search_for_lyrics()
+    assert test_lyrics == "No lyrics for this song were found"
+
+
+def test_lyrics():
+    """
+    Test ID: Lyrics01-08. Tests that the lyrics objects correctly
+    interfaces with the Genius API Manager class and gets the 
+    correct lyrics. Tests the getter functions to make sure they
+    return the correct info.
+    """
+
+    # Test to see if the lyrics class is successfully working
+    # with the genius api class to get the lyrics
+    lyrics_class = Lyrics("Country Roads", "John Denver")
+    test_lyrics = lyrics_class.get_lyrics()
+    test_lyrics = test_lyrics.split()
+    # Check to see if a fairly unique word known to be in the song
+    # exists in the returned string
+    assert "Shenandoah" in test_lyrics
+
+    # Test to see correct number of chorus is returned
+    assert lyrics_class.get_num_chorus() == 3
+
+    # Empty song name and artist test
+    lyrics_class = Lyrics("", "")
+    test_lyrics = lyrics_class.get_lyrics()
+    assert test_lyrics is None
+
+    # Test to see if correct number of words is returned
+    lyrics_class = Lyrics("It's a beautiful day", "Queen")
+    assert lyrics_class.get_num_words() == 66
+
+    # Test to see correct number of chorus is returned when 0
+    assert lyrics_class.get_num_chorus() == 0
+
+    # Test to see correct number of verses is returned
+    assert lyrics_class.get_num_verse() == 2
+
+    # Test to see if variability is correct
+    assert lyrics_class.get_variability() == 0
 # Cleanup
 def clear_cache():
     """ delete the cache """
