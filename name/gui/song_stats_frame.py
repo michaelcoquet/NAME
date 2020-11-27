@@ -42,5 +42,6 @@ class SongStatsFrame(SongInfoFrame):
     def start_over_command(self):
         self.switch_frame("Compare Songs")
 
-    def display_data(self, sim_score, songs):
-        self.sim_score_label["text"] = "These songs are " + str(sim_score) + "% similar"
+    def display_data(self, tuple):
+        print(tuple[0])
+        self.sim_score_label["text"] = "These songs are " + str(tuple[0]) + "% similar"
