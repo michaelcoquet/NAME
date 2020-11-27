@@ -46,4 +46,4 @@ class CompareSongsFrame(HomePageFrame):
         # Update the srcolledText widget in the song stats frame with the
         # returned data
         d = [int(sim_score), self.parent.song_object_list]
-        self.parent.frames[self.parent.get_frame_id("Song Stats")].display_data(d)
+        self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)

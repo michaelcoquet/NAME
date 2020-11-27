@@ -5,6 +5,7 @@ from tkinter import ttk
 
 from .member_home_frame import MemberHomeFrame
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
+from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
 class AllPlaylistsFrame(MemberHomeFrame):
     """ TODO: fill in
@@ -16,6 +17,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
         super().__init__(parent, container)
         self.container = container
         self.parent = parent
+
+        self.playlists = []
 
     def grid_forget(self):
         super().grid_forget()
@@ -77,18 +80,37 @@ class AllPlaylistsFrame(MemberHomeFrame):
         # TODO: BAKCEND - Find songs that are similar to the songs in the selected playlist
         self.switch_frame("Create Sim Playlist")
 
-    def display_data(self, playlists):
+    def display_data(self, api_results):
         """ take the playlist data (list of playlist objects) in and display it in the treeview
         """
-        for playlist in playlists:
+        for playlist in api_results:
             self.playlist_treeview.insert("", "end", values=(playlist.playlist_name,
                             playlist.size, playlist.playlist_owner))
+            self.playlists.append(playlist)
 
     def song_sim_command(self):
         """command for the get playlist song similarity button
         """
         # TODO: BACKEND - Get the similarity of the songs in the selected playlist
-        return 1
+
+        # get the current working list of songs to be searched and pass it to the backend
+        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        search_object = CheckingSongSimilarity(self.formatted_filters)
+
+        selected_items = self.playlist_treeview.selection()
+
+        if len(selected_items) == 1:
+            selected_name = self.playlist_treeview.item(selected_items[0])["values"][0]
+            for item in  self.playlists:
+                if item.playlist_name == selected_name:
+                    result = search_object.get_songs_similarity_score(item.songs)
+                    self.switch_frame("Song Stats")
+                    d = [int(result), item.songs]
+                    self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)
+                    # result = search_object.random_search(item.songs)
+                    # # switch to search results frame, and give it the results to be displayed
+                    # self.switch_frame("Search Results")
+                    # self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
 
     def latest_playlist_command(self):
         """command for the latest playlist button
