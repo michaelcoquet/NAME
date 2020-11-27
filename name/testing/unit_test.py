@@ -260,20 +260,6 @@ def test_search_single_song_v2():
     song = "hfjdkshfjsue"
     assert query.search_single_song(song) == []
 
-    # Create the Song object
-    song_obj = Song(song, audio_features)
-    # Test for Song class attributes, if it is returning the correct data
-    assert song_obj.song_id == song["id"]
-    assert song_obj.song_name == song["name"]
-    # Subtest for the Artist class
-    assert song_obj.song_artist[0].name == song["artists"][0]["name"]
-    assert song_obj.song_artist[0].artist_id == song["artists"][0]["id"]
-    # Subtest for the Album class
-    assert song_obj.album_details.name == song["album"]["name"]
-    assert song_obj.album_details.album_id == song["album"]["id"]
-    assert song_obj.album_details.type == song["album"]["album_type"]
-    assert song_obj.album_details.size == song["album"]["total_tracks"]
-
 
 def test_get_song_info():
     """ Test ID: Query 10. Tests that the query returns song
@@ -316,6 +302,81 @@ def test_get_similarity_score():
     score = query.get_similarity_score(songs[0:2])
     print(score)
     assert (score >= 0 and score <= 1)
+
+
+def test_song_details_v1():
+    """ Test ID: SongDetails01 - SongDetails013
+    Check if the class is returning the correct values for each
+    of the audio features.
+    """
+    # Data to be passed in
+    audio_features = {"danceability": 0.527,"energy": 0.834,
+                      "key": 1, "loudness": -5.531,
+                      "mode": 1,"speechiness": 0.0447,
+                      "acousticness": 0.00107,"instrumentalness": 0.000102,
+                      "liveness": 0.0993, "valence": 0.422,
+                      "tempo": 110.065, "duration_ms": 198333,
+                      "time_signature": 4}
+
+    # Pass in a audio features object
+    song_details = SongDetails(audio_features)
+    # Test for every audio features of the song
+    assert song_details.danceability == audio_features["danceability"]
+    assert song_details.energy == audio_features["energy"]
+    assert song_details.key == audio_features["key"]
+    assert song_details.mode == audio_features["mode"]
+    assert song_details.loudness == audio_features["loudness"]
+    assert song_details.speechiness == audio_features["speechiness"]
+    assert song_details.acousticness == audio_features["acousticness"]
+    assert song_details.instrumentalness == audio_features["instrumentalness"]
+    assert song_details.liveness == audio_features["liveness"]
+    assert song_details.valence == audio_features["valence"]
+    assert song_details.tempo == audio_features["tempo"]
+    assert song_details.duration == audio_features["duration_ms"]
+    assert song_details.time_signature == audio_features["time_signature"]
+
+
+def test_song_v1():
+    """ Test IDs: Song01, Album01-02, Artist01-02. Should return the correct 
+    values for each of the attribute from the given data
+    """
+    # Data of the song
+    song = {"name": 'Perfect',
+            "id": "4j3X4KX8rURekAVIFUhI23",
+            "artists": [
+                        {"name": "Simple Plan",
+                         "id": "2p4FqHnazRucYQHyDCdBrJ"
+                         }   
+                      ],
+            "album": {
+                    "album_type": "album",
+                    "id": "3W6TEVlmaP22E4KvWY9HrS",
+                    "name": "No Pads, No Helmets...Just Balls (15th Anniversary Tour Edition)",
+                    "total_tracks": 19
+                        }
+            }
+    # Audio features of the song
+    audio_features = {"danceability": 0.494,"energy": 0.672,
+                      "key": 3, "loudness": -4.877,
+                      "mode": 1,"speechiness": 0.0405,
+                      "acousticness": 0.0273,"instrumentalness": 0.0,
+                      "liveness": 0.105, "valence": 0.557,
+                      "tempo": 156.208, "duration_ms": 277027,
+                      "time_signature": 4}
+
+    # Create the Song object
+    song_obj = Song(song, audio_features)
+    # Test for Song class attributes, if it is returning the correct data
+    assert song_obj.song_id == song["id"]
+    assert song_obj.song_name == song["name"]
+    # Subtest for the Artist class
+    assert song_obj.song_artist[0].name == song["artists"][0]["name"]
+    assert song_obj.song_artist[0].artist_id == song["artists"][0]["id"]
+    # Subtest for the Album class
+    assert song_obj.album_details.name == song["album"]["name"]
+    assert song_obj.album_details.album_id == song["album"]["id"]
+    assert song_obj.album_details.type == song["album"]["album_type"]
+    assert song_obj.album_details.size == song["album"]["total_tracks"]
 
 
 def test_playlist_v1():
