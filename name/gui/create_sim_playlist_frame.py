@@ -32,16 +32,33 @@ class CreateSimPlaylistFrame(NameFrame):
         self.new_list_entry.insert(0, "New Playlist Name")
         self.new_list_entry.grid(row=1, column=0)
 
-        # TODO: add the proper filters to the dropdown list
-        variable = StringVar(self.upper_grid)
-        variable.set("Filters") # default value
-        self.filters_dropdown = tk.OptionMenu(
-            self.upper_grid,
-            variable,
-            "one",
-            "two",
-            "three",)
-        self.filters_dropdown.grid(row=2, column=0, sticky="w")
+        self.filters_dropdown = tk.Menubutton(self.upper_grid, text="Filters",
+                                   indicatoron=True, borderwidth=1, relief="raised")
+        menu = tk.Menu(self.filters_dropdown, tearoff=False)
+        self.filters_dropdown.configure(menu=menu)
+        self.filters_dropdown.grid(row=2, column=0)
+
+        self.selected_filters = {}
+        self.choices = (
+                "duration_ms",
+                "key",
+                "tempo",
+                "danceability",
+                "energy",
+                "loudness",
+                "mode",
+                "speechiness",
+                "acousticness",
+                "instrumentalness",
+                "liveness",
+                "valence",
+                "time_signature"
+                )
+        for choice in self.choices:
+            self.selected_filters[choice] = tk.IntVar(value=0)
+            menu.add_checkbutton(label=choice, variable=self.selected_filters[choice],
+                                 onvalue=1, offvalue=0,
+                                 command=self.filter_command)
 
         self.listbox_label = tk.Label(
             self.upper_grid,
@@ -79,3 +96,8 @@ class CreateSimPlaylistFrame(NameFrame):
         # TODO: BACKEND - Search for songs that are similar to the songs in this playlist
         # TODO: GUI     - Update the listbox with a list of the songs in the original playlist
         self.open_search_progress()
+
+    def filter_command(self):
+        """ filter dropdown event command
+        """
+        return 0

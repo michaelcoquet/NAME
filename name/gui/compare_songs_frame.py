@@ -24,9 +24,6 @@ class CompareSongsFrame(HomePageFrame):
         self.compare_songs_button["state"] = tk.DISABLED
         self.create_playlist_button["state"] = tk.NORMAL
 
-        self.song_search_entry.delete(0,25)
-        self.song_search_entry.insert(0, "Two or more songs")
-
     def init_lower_grid(self):
         super().init_lower_grid()
         self.similar_songs_button.grid_forget()

@@ -2,10 +2,14 @@
 """
 import time
 import tkinter as tk
+from tkinter import StringVar
 from tkinter import Grid
 from tkinter import Menu
 from tkinter import ttk
 from tkinter import messagebox
+
+from name.backend_classes import Query
+from name.backend_classes import SpotifyAPIManager
 
 
 class NameFrame(tk.Frame):
@@ -27,6 +31,16 @@ class NameFrame(tk.Frame):
         self.win = None
         self.progress = None
         self.l_songs_found = None
+
+        l = []
+        self.query_object = Query(l)
+
+        self.api_search_results = []
+
+        self.final_song_selection = []
+
+        #instantiate the spotify api manager
+        self.spotify_manager = SpotifyAPIManager()
 
     def grid_forget(self):
         self.upper_grid.grid_forget()
@@ -62,7 +76,7 @@ class NameFrame(tk.Frame):
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
 
-        self.my_account_menu.add_command(label="Log Out")
+        self.my_account_menu.add_command(label="Log Out", command=self.log_out)
 
         self.member_menu.add_cascade(label="My Account", underline=0, menu=self.my_account_menu)
         self.parent.config(menu=self.member_menu)
@@ -119,13 +133,17 @@ class NameFrame(tk.Frame):
         """ Button command to link to a spotify account and if succesfully linked switch to the
             member frame (frame_id = 2).
         """
-            # TODO: BACKEND - Authenticate and authorize spotify account
-        self.parent.logged_in = 1 # TODO: change this with a real check if the login was succ-
-                                  #       esfull
-        if self.parent.logged_in:
+        if self.spotify_manager.link_spotify_account() == True:
             self.init_member_menu()
         else:
             print("error unsuccessfully linked spotify account")
+
+    def log_out(self):
+        """ Command for the logout button, should be able to just reinstantiate Spotify API
+            Manager
+        """
+        self.spotify_manager = SpotifyAPIManager()
+        self.init_guest_menu()
 
     def member_home_command(self):
         """ command for the member home member menu item
@@ -140,6 +158,60 @@ class NameFrame(tk.Frame):
         # TODO: GUI     - Display the returned ID in the following messagebox popup
         messagebox.showinfo("My Shareable ID", "this is the id")
 
+    def start_single_search(self, title, filters):
+        """ Search the spotify API for the given song
+
+        Args:
+            title (str): the desired song title
+            filters (dict): the selected filters
+        """
+        # TODO: BACKEND - single song search connection return a list of songs
+        self.api_search_results = self.query_object.search_single_song(title)
+        self.open_song_search_popup(self.api_search_results)
+
+    def search_similar(self, titles, filters):
+        """ Search the spotify API for songs that are similar to the list of titles
+
+        Args:
+            titles  (str[]): list of song titles that the user would like to find similar songs
+                             to
+            filters (str[]): list of all the filters selected by the user
+
+        Returns:
+            song[]: return a list of songs that match (or partial match) the title
+        """
+        return 1
+
+    def open_song_search_popup(self, api_results):
+        """ open a popup for the user to select the song they actually wanted to add to the list
+        """
+        self.grab_set()
+        self.popup = tk.Toplevel(self)
+        self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
+        self.popup.title("Pick a Song")
+
+        self.song_selection = StringVar(self.popup)
+        self.song_selection_default = "Which song were you looking for?"
+        self.song_selection.set(self.song_selection_default) # default value
+
+        songs = [song_result for song_result in api_results]
+        formated_songs = []
+        artists_string_list = []
+
+        for song in songs:
+            artists = [arts for arts in song.song_artist]
+            for artist in artists:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+            formated_songs.append(song.song_name + "  -  " + artists_string)
+
+        self.song_select_dropdown = tk.OptionMenu(
+            self.popup,
+            self.song_selection,
+            *formated_songs,
+            command=self.song_select_dropdown_command)
+        self.song_select_dropdown.pack()
+
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
            creation
@@ -148,7 +220,7 @@ class NameFrame(tk.Frame):
         # Toplevel object which will
         # be treated as a new window
         self.win = tk.Toplevel(self)
-        self.win.protocol("WM_DELETE_WINDOW", self.close_window)
+        self.win.protocol("WM_DELETE_WINDOW", self.close_progress_window)
         # sets the title of the
         # Toplevel widget
         self.win.title("Searching")
@@ -165,7 +237,7 @@ class NameFrame(tk.Frame):
 
         self.progress.pack(pady=10)
 
-        cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_window)
+        cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_progress_window)
         cancel_btn.pack(side=tk.BOTTOM)
 
         self.progress_update()
@@ -226,21 +298,29 @@ class NameFrame(tk.Frame):
         time.sleep(1)
 
         self.switch_frame("Search Results")
-        self.close_window()
 
-    def close_window(self):
+        # TODO : GUI - need to update the search results screen with the results
+        # for testing purposes
+        song_list = ["hfhsjkhfs", "uiosfios", "sywyquq", "asdfsd", "ddddd", "ccccc"]
+
+        self.parent.update_search_results(song_list)
+
+        self.close_progress_window()
+
+    def close_progress_window(self):
         """override window closing event
         """
         self.progress.destroy()
         self.win.destroy()
         self.grab_release()
 
-    @staticmethod #remove later
-    def filter_function():
-        """ Filters available for the user to search with
-            TODO: link the users choice of filter with the search function for now just return
-                  anything
+    def close_single_search_window(self):
+        """ closing window event for the single song search box
         """
-        # TODO: BACKEND - Set the available filters for searching in the backend with the users
-        #                 selected filters
-        return 1
+        self.popup.destroy()
+        self.grab_release()
+
+    def song_select_dropdown_command(self, item):
+        """ function to get the users selection of the song select dropdown box
+        """
+        self.close_single_search_window()

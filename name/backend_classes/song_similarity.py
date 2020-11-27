@@ -1,4 +1,7 @@
 import numpy as np
+# from name.backend_classes.song import Song
+# from name.backend_classes.song import SongDetails
+
 
 class SongSimilarity:
 
@@ -25,6 +28,8 @@ class SongSimilarity:
                                  "liveness": self.calculate_liveness_similarity,
                                  "valence": self.calculate_valence_similarity,
                                  "time_signature": self.calculate_time_signature_similarity}
+        # each weight is based on features that we thought were most recognizable
+        # these weights are subject to change as we develop the algorithm
         self.weights =          {"duration_ms": 0.02,
                                  "key": 0.02,
                                  "tempo": 0.02,
@@ -66,13 +71,21 @@ class SongSimilarity:
         for song in self.songs:
             duration_values.append(song.audio_features.duration)
 
+        # if all the values are the same, the range is 0
+        # so we return 1
+        if np.ptp(duration_values) == 0:
+            return 1
+
+        # normalize the values between 0 and 1
         normalized_values = ((duration_values - np.min(duration_values))
                                     /np.ptp(duration_values))
 
+        # if it is two items, we return 1 - the difference 
         if len(normalized_values) <= 2:
              
             return 1-np.max(normalized_values)-np.min(normalized_values)
 
+        # otherwise the 1 - the standard deviation
         return 1-np.std(normalized_values)
 
     def calculate_key_similarity(self):
@@ -85,6 +98,8 @@ class SongSimilarity:
             """ A way to calculate how similar two keys are by going
             around the circle of fifths clockwise.
             """
+            # we recursively go through the circle of fifths
+            # each number is a key 0 = C, 1 = C#, and so on
             circle_of_fifths_mapping = {0 : 7,
                                         7 : 2,
                                         2 : 9,
@@ -101,6 +116,7 @@ class SongSimilarity:
             if original_key == goal_key:
                 return 0
 
+            # each step away from the original key we add one
             return 1 + get_circle_of_fifths_clockwise(
                     circle_of_fifths_mapping[original_key], goal_key)
 
@@ -108,6 +124,8 @@ class SongSimilarity:
             """ A way to calculate how similar two keys are by going
             around the circle of fifths counterclockwise.
             """
+            # same thing as the previous function just
+            # counterclockwise
             circle_of_fifths_mapping = {0 : 5,
                                         5 : 10,
                                         10 : 3,
@@ -129,14 +147,19 @@ class SongSimilarity:
 
 
         keys_distance = []
+        # now we check each key in the list of keys against each other
         for i in range(len(song_keys)):
             for j in range(i + 1, len(song_keys)):
                 keys_distance.append(min(get_circle_of_fifths_clockwise(
                     song_keys[i], song_keys[j]), get_circle_of_fifths_counterclockwise(
                         song_keys[i], song_keys[j])))
-        if np.ptp(keys_distance) == 0:
-            return 0
 
+
+        if np.ptp(keys_distance) == 0:
+            return 1
+
+        # normalize the values, and return the difference or 
+        # the standard deviation
         normalized_values = ((keys_distance - np.min(keys_distance))
                                     /np.ptp(keys_distance))
 
@@ -151,8 +174,12 @@ class SongSimilarity:
         for song in self.songs:
             tempo_values.append(song.audio_features.tempo)
 
+        if np.ptp(tempo_values) == 0:
+            return 1
+
         normalized_values = ((tempo_values - np.min(tempo_values))
                                     /np.ptp(tempo_values))
+
 
         if len(normalized_values) <= 2:
              
@@ -162,6 +189,9 @@ class SongSimilarity:
         
     def calculate_danceability_similarity(self):
         """ Calculates the similarity score for the danceability feature. """ 
+        # each scaling factor is based on the distribution of scores across
+        # all songs in spotify. The tighter the distribution, the higher the
+        # scaling factor
         danceability_scaling_factor = 3
         danceability_scores = []
         for song in self.songs:

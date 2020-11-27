@@ -123,12 +123,14 @@ class SpotifyAPIManager:
         user_id = self.get_user_id()
         playlists_data = self.spotify.user_playlists(user_id)
         playlist_list = []
-        for playlist_data in playlists_data:
-            songs = playlist_data["tracks"]
+        for playlist_data in playlists_data["items"]:
+            songs = self.spotify.playlist_items(playlist_data["id"])["items"]
             songs_list = []
+            # Get the tracks of the playlist
             for song in songs:
-                song_details = self.get_audio_features([song["id"]])[0]
-                songs_list.append(Song(song, song_details))
+                song_details = self.get_audio_features([song["track"]["id"]])
+                songs_list.append(Song(song["track"], song_details))
+            # Convert into Playlist Object
             playlist = Playlist(playlist_data, songs_list)
             playlist_list.append(playlist)
         return playlist_list

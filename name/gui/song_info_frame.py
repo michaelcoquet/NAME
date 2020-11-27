@@ -30,7 +30,7 @@ class SongInfoFrame(HomePageFrame):
         self.filters_dropdown.grid_forget()
         self.song_search_entry.grid_forget()
         self.song_search_button.grid_forget()
-        self.song_listbox.grid_forget()
+        self.song_treeview.grid_forget()
 
         self.song_info_scrolledtext = st.ScrolledText(self.middle_grid)
         self.song_info_scrolledtext.grid(row=0, column=0, sticky="nsew")

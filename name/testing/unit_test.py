@@ -7,7 +7,13 @@ from name.testing.proof_of_concept import User
 from name.backend_classes import SongSimilarity
 from name.backend_classes import SpotifyAPIManager
 from name.backend_classes import Query
-
+from name.backend_classes.song import Artist
+from name.backend_classes.song import Album
+from name.backend_classes.song import Song
+from name.backend_classes.song import SongDetails
+from name.backend_classes.playlist import Playlist
+from name.backend_classes import Genius_Api_Manager
+from name.backend_classes import Lyrics
 
 # Tests for the User class
 def test_setUserType_v1():
@@ -254,6 +260,20 @@ def test_search_single_song_v2():
     song = "hfjdkshfjsue"
     assert query.search_single_song(song) == []
 
+    # Create the Song object
+    song_obj = Song(song, audio_features)
+    # Test for Song class attributes, if it is returning the correct data
+    assert song_obj.song_id == song["id"]
+    assert song_obj.song_name == song["name"]
+    # Subtest for the Artist class
+    assert song_obj.song_artist[0].name == song["artists"][0]["name"]
+    assert song_obj.song_artist[0].artist_id == song["artists"][0]["id"]
+    # Subtest for the Album class
+    assert song_obj.album_details.name == song["album"]["name"]
+    assert song_obj.album_details.album_id == song["album"]["id"]
+    assert song_obj.album_details.type == song["album"]["album_type"]
+    assert song_obj.album_details.size == song["album"]["total_tracks"]
+
 
 def test_get_song_info():
     """ Test ID: Query 10. Tests that the query returns song
@@ -296,6 +316,133 @@ def test_get_similarity_score():
     score = query.get_similarity_score(songs[0:2])
     print(score)
     assert (score >= 0 and score <= 1)
+
+
+def test_playlist_v1():
+    """
+    Test ID: Playlist01-012. Test for the Playlist class, Test each method
+    if it is returning the correct values after the object is instantiated
+    """
+    a_playlist = {"name": "My playlist",
+                  "owner": {"display_name": "test1", 
+                            "id": 'qwertyu'},
+                  "id": "asdfghjqwer",
+                  "tracks": {"total": 1}
+                 }
+
+    # an object to pass in
+    song = {"name": 'Perfect',"id": "a1",
+            "artists": [{"name": "","id": ""} ],
+            "album": {"album_type": "a","id": "",
+            "name": "","total_tracks": 19}}
+
+    # an object to pass in
+    audio_features = {"danceability": 0.494,"energy": 0.672,
+                      "key": 3, "loudness": -4.877,
+                      "mode": 1,"speechiness": 0.0405,
+                      "acousticness": 0.0273,"instrumentalness": 0.0,
+                      "liveness": 0.105, "valence": 0.557,
+                      "tempo": 156.208, "duration_ms": 277027,
+                      "time_signature": 4}
+
+    # Convert the objects above into a Song object
+    playlist_tracks = [Song(song, audio_features)]
+    playlist_obj = Playlist(a_playlist, playlist_tracks)
+
+    assert playlist_obj.playlist_name == a_playlist["name"]
+    assert playlist_obj.playlist_owner == a_playlist["owner"]["id"]
+    assert playlist_obj.playlist_id == a_playlist["id"]
+    assert playlist_obj.songs == playlist_tracks
+    assert playlist_obj.size == len(playlist_tracks)
+
+    # Test for updating the playlist name
+    new_name = "My playlist 2"
+    playlist_obj.update_playlist_name(new_name)
+    assert playlist_obj.playlist_name == new_name
+
+    # # Test for adding songs to the playlist
+    song2 = {"name": 'Perfect',"id": "a2",
+            "artists": [{"name": "","id": ""}],
+            "album": {"album_type": "a","id": "",
+            "name": "","total_tracks": 19}}
+
+    song2_obj = Song(song2, audio_features)
+    playlist_obj.add_song(song2_obj)
+    assert playlist_obj.songs.__contains__(song2_obj)
+    # Test for the updated size of the playlist
+    new_size = 2
+    assert playlist_obj.size == new_size
+
+    # Test for removing a song from the playlist
+    playlist_obj.remove_song(song2["id"])
+    assert not playlist_obj.songs.__contains__(song2["id"])
+
+    # Test for getting the list of the audio features of each song
+    song_feat = playlist_obj.get_song_features()
+    assert song_feat[0] == audio_features
+
+
+def test_genius_api_manager():
+    """
+    Test ID: Genius01-03. Tests that the Genius API returns the correct
+    lyrics for the requested song. Tests that no lyrics are returned if
+    a song is an instrumental.
+    """
+    genius = Genius_Api_Manager("40:1", "Sabaton")
+    test_lyrics = genius.search_for_lyrics()
+    test_lyrics = test_lyrics.split()
+    # Check to see if a fairly unique word known to be in the song
+    # exists in the returned string
+    assert "mortars" in test_lyrics
+
+    # Empty song name and artist test
+    genius = Genius_Api_Manager("", "")
+    test_lyrics = genius.search_for_lyrics()
+    assert test_lyrics == "No lyrics for this song were found"
+
+    # Instrumental song test
+    genius = Genius_Api_Manager("1812 overture", "Tchaikovsky")
+    test_lyrics = genius.search_for_lyrics()
+    assert test_lyrics == "No lyrics for this song were found"
+
+
+def test_lyrics():
+    """
+    Test ID: Lyrics01-08. Tests that the lyrics objects correctly
+    interfaces with the Genius API Manager class and gets the 
+    correct lyrics. Tests the getter functions to make sure they
+    return the correct info.
+    """
+
+    # Test to see if the lyrics class is successfully working
+    # with the genius api class to get the lyrics
+    lyrics_class = Lyrics("Country Roads", "John Denver")
+    test_lyrics = lyrics_class.get_lyrics()
+    test_lyrics = test_lyrics.split()
+    # Check to see if a fairly unique word known to be in the song
+    # exists in the returned string
+    assert "Shenandoah" in test_lyrics
+
+    # Test to see correct number of chorus is returned
+    assert lyrics_class.get_num_chorus() == 3
+
+    # Empty song name and artist test
+    lyrics_class = Lyrics("", "")
+    test_lyrics = lyrics_class.get_lyrics()
+    assert test_lyrics is None
+
+    # Test to see if correct number of words is returned
+    lyrics_class = Lyrics("It's a beautiful day", "Queen")
+    assert lyrics_class.get_num_words() == 66
+
+    # Test to see correct number of chorus is returned when 0
+    assert lyrics_class.get_num_chorus() == 0
+
+    # Test to see correct number of verses is returned
+    assert lyrics_class.get_num_verse() == 2
+
+    # Test to see if variability is correct
+    assert lyrics_class.get_variability() == 0
     # clear cache on last test
     clear_cache()
 
