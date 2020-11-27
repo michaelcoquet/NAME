@@ -40,9 +40,6 @@ class NameFrame(tk.Frame):
 
         self.final_song_selection = []
 
-        #instantiate the spotify api manager
-        self.spotify_manager = SpotifyAPIManager()
-
     def grid_forget(self):
         self.upper_grid.grid_forget()
         self.middle_grid.grid_forget()
@@ -134,7 +131,8 @@ class NameFrame(tk.Frame):
         """ Button command to link to a spotify account and if succesfully linked switch to the
             member frame (frame_id = 2).
         """
-        if self.spotify_manager.link_spotify_account() == True:
+        self.parent.spotify_manager = SpotifyAPIManager()
+        if self.parent.spotify_manager.link_spotify_account() == True:
             self.parent.logged_in = 1
             self.init_member_menu()
         else:
@@ -146,7 +144,6 @@ class NameFrame(tk.Frame):
         """
         # delete the cache file
         os.remove(".cache")
-        self.spotify_manager = SpotifyAPIManager()
         self.parent.logged_in = 0
         self.init_guest_menu()
 
@@ -161,7 +158,7 @@ class NameFrame(tk.Frame):
         # Return the users spotify ID that they can share with other users to
         # form groups
         if self.parent.logged_in:
-            message = self.spotify_manager.get_user_id()
+            message = self.parent.spotify_manager.get_user_id()
             ShareableIdDialog(self.container, title="NAME", text=message)
 
         # TODO: GUI     - Display the returned ID in the following messagebox popup

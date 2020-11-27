@@ -34,7 +34,7 @@ class SongStatsFrame(SongInfoFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_lyrics_scrolltext.grid_forget()
+        self.song_lyrics_scrolledtext.grid_forget()
 
         # load song data here
         # TODO: make it look better in a table or something, fine for the demo

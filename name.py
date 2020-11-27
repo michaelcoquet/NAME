@@ -1,9 +1,12 @@
 """CMPT 370 Group 5 Project: NAME
     Summary: TODO: fill in summary of app
 """
+import os
 import name.gui as gui
 import tkinter as tk
 from tkinter import Grid
+
+from name.backend_classes import SpotifyAPIManager
 
 
 class Name(tk.Tk):
@@ -34,8 +37,10 @@ class Name(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         container.grid(padx="10", pady="10")
 
-
+        # working list of songs (displayed in the song_treeview widgets)
         self.song_object_list = []
+        #instantiate the spotify api manager
+        self.spotify_manager = SpotifyAPIManager()
 
         # instantiate frame array
         self.frames = {}
@@ -138,6 +143,7 @@ def main():
     """
     app = Name()
     app.mainloop()
+    os.remove(".cache")
 
 if __name__ == "__main__":
     main()

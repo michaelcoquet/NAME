@@ -1,9 +1,10 @@
 """ TODO: fill in
 """
 import tkinter as tk
+from tkinter import ttk
 
 from .member_home_frame import MemberHomeFrame
-
+from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 
 class AllPlaylistsFrame(MemberHomeFrame):
     """ TODO: fill in
@@ -30,9 +31,25 @@ class AllPlaylistsFrame(MemberHomeFrame):
         super().init_middle_grid()
         self.get_song_info_button.grid_forget()
 
+        # we dont have a song_treeview here so we need to make a playlist treeview
+        self.song_treeview.grid_forget()
+        self.playlist_treeview = ttk.Treeview(self.middle_grid)
+        self.playlist_treeview["columns"] = ("Name", "Size", "Owner")
+
+        self.playlist_treeview.column("#0", width=1, minwidth=1, stretch="no")
+        self.playlist_treeview.column("Name", width=150, minwidth=150, stretch="yes")
+        self.playlist_treeview.column("Size", width=90, minwidth=90, stretch="yes")
+        self.playlist_treeview.column("Owner", width=80, minwidth=80, stretch="yes")
+
+        self.playlist_treeview.heading("Name", text="Name", anchor="w")
+        self.playlist_treeview.heading("Size", text="Size", anchor="w")
+        self.playlist_treeview.heading("Owner", text="Owner", anchor="w")
+        self.playlist_treeview.grid(row=0, column=0, sticky="nsew")
+
         # get a list of the current users spotify playlists if theyre logged in
         if self.parent.logged_in:
-            print(self.spotify_manager.get_member_playlists())
+            plist = self.parent.spotify_manager.get_member_playlists()
+            self.display_data(plist)
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -59,6 +76,13 @@ class AllPlaylistsFrame(MemberHomeFrame):
 
         # TODO: BAKCEND - Find songs that are similar to the songs in the selected playlist
         self.switch_frame("Create Sim Playlist")
+
+    def display_data(self, playlists):
+        """ take the playlist data (list of playlist objects) in and display it in the treeview
+        """
+        for playlist in playlists:
+            self.playlist_treeview.insert("", "end", values=(playlist.playlist_name,
+                            playlist.size, playlist.playlist_owner))
 
     def song_sim_command(self):
         """command for the get playlist song similarity button
