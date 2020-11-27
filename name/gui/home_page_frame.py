@@ -146,6 +146,13 @@ class HomePageFrame(NameFrame):
             text="Search")
         self.song_search_button.grid(row=2, column=2)
 
+        # bind the focus events to the given functions to allow automatically selectall text on
+        # click
+        self.song_search_entry.bind("<FocusIn>", self.song_search_entry_callback)
+
+    def song_search_entry_callback(self, event):
+        self.song_search_entry.delete(0, tk.END)
+
     def display_data(self, song_list):
         """display the given song list in the latest playlist treeview
 
