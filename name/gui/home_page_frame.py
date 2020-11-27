@@ -150,8 +150,14 @@ class HomePageFrame(NameFrame):
         # click
         self.song_search_entry.bind("<FocusIn>", self.song_search_entry_callback)
 
+        # also bind the return key to the song_search_command
+        self.parent.bind("<Return>", self.song_search_command_bind)
+
     def song_search_entry_callback(self, event):
         self.song_search_entry.delete(0, tk.END)
+
+    def song_search_command_bind(self, event):
+        self.song_search_command()
 
     def display_data(self, song_list):
         """display the given song list in the latest playlist treeview
