@@ -13,7 +13,7 @@ class User:
         self.scopes = "playlist-read-private playlist-modify-private playlist-modify-public"
         self.auth_manager = SpotifyOAuth(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri, scope=self.scopes)
 
-        try:      
+        try:
             response = self.auth_manager.get_auth_response(open_browser=True)
             code = self.auth_manager.parse_response_code(response)
             self.token_info = self.auth_manager.get_access_token(code, as_dict=False)
@@ -22,14 +22,14 @@ class User:
             # update User type
             self.setUserType("Member")
         except:
-            print("Error: invalid username")        
+            print("Error: invalid username")
 
     # Shows a user's playlists (code from the spotipy docs)
     def getSpotifyPlaylists(self):
         return self.spotify.user_playlists(self.username, limit=50)
 
     def setUserType(self,type):
-        """ 
+        """
         Sets the type attribute to either Member or Guest.
         type: string, either "Member" or "Guest"
         returns: nothing
