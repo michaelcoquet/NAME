@@ -172,6 +172,7 @@ class NameFrame(tk.Frame):
             filters (dict): the selected filters
         """
         # TODO: BACKEND - single song search connection return a list of songs
+        # TODO: do this in another thread
         self.api_search_results = self.query_object.search_single_song(title)
         self.open_song_search_popup(self.api_search_results)
 

@@ -26,9 +26,9 @@ class CheckingSongSimilarity:
             random_offset = random.randint(0, 2000)
             # in some cases the random offset may be too large,
             # and in that case default to 0
-            try: 
+            try:
                 found_songs = new_query.search_single_song(random_string, offset=random_offset)
-            except: 
+            except:
                 found_songs = new_query.search_single_song(random_string)
             # Look at all the found songs and see if any are similar enough
             # to be included
@@ -46,7 +46,6 @@ class CheckingSongSimilarity:
                         break
                     else:
                         songs.remove(song)
-        print(similar_songs)    
         return similar_songs
 
     def get_songs_similarity_score(self, songs):

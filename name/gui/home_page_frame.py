@@ -183,7 +183,6 @@ class HomePageFrame(NameFrame):
         """
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         self.query_object.update_filter_list(self.formatted_filters)
-        print(self.formatted_filters)
 
     def compare_songs_command(self):
         """ command when compare songs btn is pushed
@@ -213,9 +212,11 @@ class HomePageFrame(NameFrame):
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         search_object = CheckingSongSimilarity(self.formatted_filters)
 
-        similar_songs = search_object.random_search(self.parent.song_object_list)
+        result = search_object.random_search(self.parent.song_object_list)
 
-        print(len(similar_songs))
+        # switch to search results frame, and give it the results to be displayed
+        self.switch_frame("Search Results")
+        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
 
     def convert_filters_list(self, tk_filters):
         """ convert the original dict of filters into something the backend can use
