@@ -25,6 +25,10 @@ class MemberHomeFrame(HomePageFrame):
         self.listening_habits_button.grid_forget()
         self.get_song_info_button.grid_forget()
 
+    def grid_remember(self):
+        super().grid_remember()
+        self.display_data(self.parent.song_object_list)
+
     def init_lower_grid(self):
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
@@ -87,6 +91,24 @@ class MemberHomeFrame(HomePageFrame):
             text="Your Listening Habits",
             command=self.listening_habits_command)
         self.listening_habits_button.grid(row=1, column=2)
+
+    def display_data(self, song_list):
+        """display the given song list in the latest playlist treeview
+
+        Args:
+            song_list (list): list of songs that will appear in the treeview
+        """
+        artists_string_list = []
+        for song in song_list:
+            for artist in song.song_artist:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+
+            artists_string_list.clear()
+
+            self.song_treeview.insert("", "end", values=(song.song_name,
+                                        song.album_details.name, artists_string))
+
 
     def latest_playlist_command(self):
         """command for the latest playlist button

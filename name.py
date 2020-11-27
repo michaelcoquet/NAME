@@ -34,6 +34,9 @@ class Name(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         container.grid(padx="10", pady="10")
 
+
+        self.song_object_list = []
+
         # instantiate frame array
         self.frames = {}
 
