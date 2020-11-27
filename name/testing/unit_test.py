@@ -77,6 +77,15 @@ def test_get_user_id_v1():
     """ Test ID: Spotify08. Tests that the method returns
     None when the user is not logged in to Spotify.
     """
+    spotify_api_manager = SpotifyAPIManager()
+    result = spotify_api_manager.get_user_id()
+    assert result == None
+
+
+def test_get_user_id_v2():
+    """ Test ID: Spotify07. Should return the current member
+    ID when logged in to Spotify.
+    """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
     time.sleep(2)
@@ -162,9 +171,10 @@ def test_search_songs_v2():
     assert result["found songs"] != []
 
 
-def test_linkSpotifyAccount(username=username, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri):
-    """
-    Tests that the linkSpotifyAccount method runs without error
+def test_get_album_v1():
+    """ Test ID: Spotify05. Tests that the method returns 
+    the correct album object when given a valid artist id.
+    Ensure this works both before and after an account has been linked
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -182,6 +192,7 @@ def test_linkSpotifyAccount(username=username, client_id=client_id, client_secre
     album = spotify_api_manager.get_album(album_id)
     assert album.name == "Wild World (Complete Edition)"
     assert album.album_id == album_id
+
 
 
 def test_get_artist_v1():
@@ -226,24 +237,42 @@ def test_update_filter_list():
     assert query.filter_list == filters
 
 
-# test adding a song to a spotify playlist
-def test_addSong():
-    # need a spotify track ID (Moonlight Sonata aka Piano Sonata No. 14, Op. 27 No. 2)
-    track = ["7xfSCgVOkQJhVxnqzepATH"]
-
-    # Get the users playlists
-    playlists = me.getSpotifyPlaylists()
-
-
-    # now we must return the tracks from the playlist and make sure the
-    # first track is our new track
-    response = me.getSpotifyHook().playlist_items(pl_ID,
-                                    offset=0,
-                                    fields='items.track.name,total',
-                                    additional_types=['track'])
+def test_search_single_song_v1():
+    """ Test ID: Query08. Tests that the query returns song results
+    when a valid song is entered.
+    """
+    query = Query(["tempo", "key"])
+    song = "Hello"
+    assert query.search_single_song(song) != []
 
 
-    assert response['items'][0]['track']['name'] == "Moonlight Sonata (First Movement from Piano Sonata No. 14, Op. 27 No. 2)"
+def test_search_single_song_v2():
+    """ Test ID: Query09. Tests that the query returns an empty
+    list when Spotify can't find the given song.
+    """
+    query = Query(["tempo", "key"])
+    song = "hfjdkshfjsue"
+    assert query.search_single_song(song) == []
+
+
+def test_get_song_info():
+    """ Test ID: Query 10. Tests that the query returns song
+    info for the filter list when given a valid song object.
+    """
+    # First subtest: only one filter
+    query = Query(["tempo"])
+    song = "Hello"
+    song = query.search_single_song(song)[0]
+    song_info = query.get_song_info(song)
+    assert list(song_info.keys()) == ["tempo"]
+    assert song_info["tempo"] != None
+    # Second subtest: multiple filters
+    query.update_filter_list(["tempo", "key", "danceability"])
+    song_info = query.get_song_info(song)
+    assert list(song_info.keys()) == ["tempo", "key", "danceability"]
+    assert song_info["tempo"] != None
+    assert song_info["key"] != None
+    assert song_info["danceability"] != None
 
 
 def test_get_similarity_score():
