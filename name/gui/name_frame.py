@@ -154,8 +154,6 @@ class NameFrame(tk.Frame):
         """ command for the member home member menu item
         """
         self.switch_frame("Member Home")
-        # update frame with most recent search data
-        self.parent.frames[self.parent.get_frame_id("Member Home")].frame_switch()
 
     def get_id_command(self):
         """ Command for the get shareable ID menu item

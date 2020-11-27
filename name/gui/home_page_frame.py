@@ -44,6 +44,7 @@ class HomePageFrame(NameFrame):
         super().grid_remember()
         self.song_search_entry.delete(0, "end")
         self.song_search_entry.insert(0, "Find a Song")
+        self.display_data(self.parent.song_object_list)
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -144,6 +145,23 @@ class HomePageFrame(NameFrame):
             command=self.song_search_command,
             text="Search")
         self.song_search_button.grid(row=2, column=2)
+
+    def display_data(self, song_list):
+        """display the given song list in the latest playlist treeview
+
+        Args:
+            song_list (list): list of songs that will appear in the treeview
+        """
+        artists_string_list = []
+        for song in song_list:
+            for artist in song.song_artist:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+
+            artists_string_list.clear()
+
+            self.song_treeview.insert("", "end", values=(song.song_name,
+                                        song.album_details.name, artists_string))
 
     def filter_command(self):
         """ Filters available for the user to search with
