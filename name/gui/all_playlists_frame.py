@@ -6,6 +6,8 @@ from tkinter import ttk
 from .member_home_frame import MemberHomeFrame
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
+from name.backend_classes.playlist import Playlist
+
 
 class AllPlaylistsFrame(MemberHomeFrame):
     """ TODO: fill in
@@ -84,9 +86,10 @@ class AllPlaylistsFrame(MemberHomeFrame):
         """ take the playlist data (list of playlist objects) in and display it in the treeview
         """
         for playlist in api_results:
-            self.playlist_treeview.insert("", "end", values=(playlist.playlist_name,
-                            playlist.size, playlist.playlist_owner))
-            self.playlists.append(playlist)
+            if isinstance(playlist, Playlist):
+                self.playlist_treeview.insert("", "end", values=(playlist.playlist_name,
+                                playlist.size, playlist.playlist_owner))
+                self.playlists.append(playlist)
 
     def song_sim_command(self):
         """command for the get playlist song similarity button
