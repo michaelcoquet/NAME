@@ -16,12 +16,15 @@ class Query:
         """
         self.filter_list = filter_list
 
-    def search_single_song(self, song):
+    def search_single_song(self, song, offset=0):
         """ Searches for a single song.
+        song: name or formatted query to search for.
+        offset: offest of the song results to return. Default is
+        0, which returns the first page of results.
         returns: a list of song objects(from the Song class) 
         """
         spotify_api_manager = SpotifyAPIManager()
-        search_result = spotify_api_manager.search_songs([song])
+        search_result = spotify_api_manager.search_songs(song_list=[song], offset=offset)
         return search_result["found songs"]
 
     def get_song_info(self, song):
