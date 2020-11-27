@@ -143,7 +143,8 @@ def main():
     """
     app = Name()
     app.mainloop()
-    os.remove(".cache")
+    if os.path.exists(".cache"):
+        os.remove(".cache")
 
 if __name__ == "__main__":
     main()
