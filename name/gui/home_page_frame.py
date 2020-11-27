@@ -183,7 +183,6 @@ class HomePageFrame(NameFrame):
         """
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         self.query_object.update_filter_list(self.formatted_filters)
-        print(self.formatted_filters)
 
     def compare_songs_command(self):
         """ command when compare songs btn is pushed

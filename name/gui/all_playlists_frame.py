@@ -63,13 +63,13 @@ class AllPlaylistsFrame(MemberHomeFrame):
 
         self.list_from_list_button = tk.Button(
             self.lower_grid,
-            text="Create new playlist\n from this playlist",
+            text="Find Similar Songs\nto This Playlist",
             command=self.list_from_list_command)
         self.list_from_list_button.grid(row=0, column=0)
 
         self.song_sim_button = tk.Button(
             self.lower_grid,
-            text="get playlist\n song similarity",
+            text="Playlist Similarity\n Analysis",
             command=self.song_sim_command)
         self.song_sim_button.grid(row=0, column=2)
 
