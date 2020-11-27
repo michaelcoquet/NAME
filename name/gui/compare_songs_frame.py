@@ -39,11 +39,12 @@ class CompareSongsFrame(HomePageFrame):
         self.switch_frame("Song Stats")
 
         # Return similarities of the two or more selected songs
-        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        self.formatted_filters = self.convert_filters_list(self.parent.song_object_list)
         sim_scores_obj = CheckingSongSimilarity(self.formatted_filters)
-        sim_score = sim_scores_obj.get_songs_similarity_score(self.song_object_list)
+        sim_score = sim_scores_obj.get_songs_similarity_score(self.parent.song_object_list)
 
         # Update the srcolledText widget in the song stats frame with the
         # returned data
-        d = [int(sim_score), self.song_object_list]
+        d = [int(sim_score), self.parent.song_object_list]
+        print(int(sim_score))
         self.parent.frames[self.parent.get_frame_id("Song Stats")].display_data(d)

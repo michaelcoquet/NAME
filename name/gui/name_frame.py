@@ -190,8 +190,6 @@ class NameFrame(tk.Frame):
             song[]: return a list of songs that match (or partial match) the title
         """
 
-        print(filters)
-        print
 
         return 1
 
