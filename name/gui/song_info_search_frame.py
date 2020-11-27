@@ -39,6 +39,7 @@ class SongInfoSearchFrame(HomePageFrame):
         """
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
+        self.remove_button.grid_forget()
         self.similar_songs_button.grid_forget()
 
     def song_search_command(self):
@@ -49,14 +50,22 @@ class SongInfoSearchFrame(HomePageFrame):
 
         # hide this button for the next frame since its not used
         self.start_single_search(self.song_search_entry.get(), self.selected_filters)
-        self.switch_frame("Song Info")
-        f = self.parent.get_frame_id("Song Info")
-        self.parent.frames[f].ply_from_ply_button.grid_forget()
 
         # TODO: GUI - Update the song_info_scrolledtext in the song_info_frame
 
-    def song_select_dropdown_function(self, item):
+    def song_select_dropdown_command(self, item):
         """ override inherited function
         """
-        # for i in self.api_search_results:
-        print("HELLO")
+        super().song_select_dropdown_command(item)
+
+        self.switch_frame("Song Info")
+        f = self.parent.get_frame_id("Song Info")
+
+        # need to hide a button since this screen can be accessed from 2 different paths
+        self.parent.frames[f].ply_from_ply_button.grid_forget()
+
+        # pass the data to the scrolledText widget on the next screen
+        self.parent.frames[f].display_details(self.song_object_list[0])
+
+        # clear the list object after
+        self.song_object_list.clear()

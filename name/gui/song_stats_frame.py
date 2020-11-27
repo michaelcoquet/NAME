@@ -35,7 +35,12 @@ class SongStatsFrame(SongInfoFrame):
     def init_lower_grid(self):
         super().init_lower_grid()
         self.ply_from_ply_button.grid_forget()
+
         self.start_over_button["command"] = self.start_over_command
+        self.start_over_button.grid(row=0, column=0)
 
     def start_over_command(self):
         self.switch_frame("Compare Songs")
+
+    def display_data(self, sim_score, songs):
+        self.sim_score_label["text"] = "These songs are " + str(sim_score) + "% similar"
