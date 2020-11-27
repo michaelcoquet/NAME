@@ -212,11 +212,14 @@ class HomePageFrame(NameFrame):
     def song_select_dropdown_command(self, item):
         """ overrides parent song select dropdown command
         """
+        print("START")
         # make sure the user has actually made a selection
         if self.song_selection.get() != self.song_selection_default:
             # get the item that is currently selected in the OptionMenu dropdown
             item = self.song_selection.get()
         artists_string_list = []
+
+
 
         # search the original list of song objects returned from the API for the item
         for song in self.api_search_results:
@@ -224,6 +227,8 @@ class HomePageFrame(NameFrame):
             for artist in song.song_artist:
                 artists_string_list.append(artist.name)
             artists_string = ", ".join(artists_string_list)
+
+            artists_string_list.clear()
 
             comp_str = song.song_name + "  -  " + artists_string
 
