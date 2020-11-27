@@ -28,6 +28,7 @@ class MemberHomeFrame(HomePageFrame):
     def init_lower_grid(self):
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
+        self.remove_button.grid_forget()
         self.similar_songs_button.grid_forget()
 
         self.edit_button = tk.Button(

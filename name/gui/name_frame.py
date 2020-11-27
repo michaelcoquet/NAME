@@ -1,12 +1,13 @@
 """ TODO: fill in
 """
+import os
 import time
 import tkinter as tk
+from tkinter import simpledialog
 from tkinter import StringVar
 from tkinter import Grid
 from tkinter import Menu
 from tkinter import ttk
-from tkinter import messagebox
 
 from name.backend_classes import Query
 from name.backend_classes import SpotifyAPIManager
@@ -134,6 +135,7 @@ class NameFrame(tk.Frame):
             member frame (frame_id = 2).
         """
         if self.spotify_manager.link_spotify_account() == True:
+            self.parent.logged_in = 1
             self.init_member_menu()
         else:
             print("error unsuccessfully linked spotify account")
@@ -142,7 +144,10 @@ class NameFrame(tk.Frame):
         """ Command for the logout button, should be able to just reinstantiate Spotify API
             Manager
         """
+        # delete the cache file
+        os.remove(".cache")
         self.spotify_manager = SpotifyAPIManager()
+        self.parent.logged_in = 0
         self.init_guest_menu()
 
     def member_home_command(self):
@@ -153,10 +158,14 @@ class NameFrame(tk.Frame):
     def get_id_command(self):
         """ Command for the get shareable ID menu item
         """
-        # TODO: BACKEND - Return the users spotify ID that they can share with other users to
-        #                 form groups
+        # Return the users spotify ID that they can share with other users to
+        # form groups
+        if self.parent.logged_in:
+            message = self.spotify_manager.get_user_id()
+            ShareableIdDialog(self.container, title="NAME", text=message)
+
         # TODO: GUI     - Display the returned ID in the following messagebox popup
-        messagebox.showinfo("My Shareable ID", "this is the id")
+
 
     def start_single_search(self, title, filters):
         """ Search the spotify API for the given song
@@ -180,6 +189,10 @@ class NameFrame(tk.Frame):
         Returns:
             song[]: return a list of songs that match (or partial match) the title
         """
+
+        print(filters)
+        print
+
         return 1
 
     def open_song_search_popup(self, api_results):
@@ -204,6 +217,7 @@ class NameFrame(tk.Frame):
                 artists_string_list.append(artist.name)
             artists_string = ", ".join(artists_string_list)
             formated_songs.append(song.song_name + "  -  " + artists_string)
+            artists_string_list.clear()
 
         self.song_select_dropdown = tk.OptionMenu(
             self.popup,
@@ -301,7 +315,14 @@ class NameFrame(tk.Frame):
 
         # TODO : GUI - need to update the search results screen with the results
         # for testing purposes
-        song_list = ["hfhsjkhfs", "uiosfios", "sywyquq", "asdfsd", "ddddd", "ccccc"]
+        song_list = [
+                        ["TODO: title1", "TODO: album1", "TODO: artist1"],
+                        ["TODO: title2", "TODO: album2", "TODO: artist2"],
+                        ["TODO: title3", "TODO: album3", "TODO: artist3"],
+                        ["TODO: title4", "TODO: album4", "TODO: artist4"],
+                        ["TODO: title5", "TODO: album5", "TODO: artist5"],
+                        ["TODO: title6", "TODO: album6", "TODO: artist6"],
+                    ]
 
         self.parent.update_search_results(song_list)
 
@@ -320,7 +341,34 @@ class NameFrame(tk.Frame):
         self.popup.destroy()
         self.grab_release()
 
-    def song_select_dropdown_command(self, item):
-        """ function to get the users selection of the song select dropdown box
-        """
-        self.close_single_search_window()
+
+class ShareableIdDialog(simpledialog.Dialog):
+
+    def __init__(self, parent, title=None, text=None):
+        self.data = text
+        simpledialog.Dialog.__init__(self, parent, title=title)
+
+    def body(self, parent):
+        self.lbl = tk.Label(self, text="Your Spotify ID (share with your friends): ")
+        self.lbl.pack(side=tk.TOP)
+
+        self.text = tk.Text(self, width=25, height=2)
+        self.text.pack(fill="both", expand=False)
+
+        self.text.insert("1.0", self.data)
+
+        return self.text
+
+    def buttonbox(self):
+        self.copy = tk.Button(self, text="Copy to Clipboard", command=self.copy_command)
+        self.copy.pack(side=tk.LEFT)
+
+        self.close_button = tk.Button(self, text="Close", command=self.destroy)
+        self.close_button.pack(side=tk.BOTTOM)
+
+    def copy_command(self):
+        self.clipboard_clear()
+        self.clipboard_append(self.text.get("1.0", tk.END))
+
+        self.update()
+        self.destroy()

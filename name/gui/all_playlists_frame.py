@@ -30,6 +30,10 @@ class AllPlaylistsFrame(MemberHomeFrame):
         super().init_middle_grid()
         self.get_song_info_button.grid_forget()
 
+        # get a list of the current users spotify playlists if theyre logged in
+        if self.parent.logged_in:
+            print(self.spotify_manager.get_member_playlists())
+
     def init_lower_grid(self):
         super().init_lower_grid()
         self.edit_button.grid_forget()

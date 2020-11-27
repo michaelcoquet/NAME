@@ -35,25 +35,16 @@ class SongInfoFrame(HomePageFrame):
         self.song_info_scrolledtext = st.ScrolledText(self.middle_grid)
         self.song_info_scrolledtext.grid(row=0, column=0, sticky="nsew")
 
-        self.song_info_scrolledtext.insert(tk.INSERT,
-        """\
-Lots of song details
-    - sdf
-    - as
-    - ff
-    - n
-        """) # remove this when we get real results back
-
     def init_lower_grid(self):
         """TODO: fill in
         """
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
+        self.remove_button.grid_forget()
         self.similar_songs_button.grid_forget()
 
         self.start_over_button = tk.Button(self.lower_grid, text="Start Over",
             command=self.start_over_command)
-        self.start_over_button.grid(row=0, column=0)
 
         self.ply_from_ply_button = tk.Button(
             self.lower_grid,
@@ -61,6 +52,18 @@ Lots of song details
             command=self.ply_from_ply_command
         )
         self.ply_from_ply_button.grid(row=0, column=2)
+
+    def display_details(self, song):
+        """gets the details of a song from another frame and displays it in the scrolledText
+           widget
+
+        Args:
+            song (song):
+        """
+        # delete any details that might have already been in the display
+        self.song_info_scrolledtext.delete("1.0", "end")
+        # display new results
+        self.song_info_scrolledtext.insert("end", song.__str__())
 
     def start_over_command(self):
         """command for the start over button
@@ -73,3 +76,16 @@ Lots of song details
         # TODO: BACKEND - Do a search for similar songs to the songs in the currently selected
         #                 playlist
         self.open_search_progress()
+
+    def song_select_dropdown_command(self, item):
+        """ overrides parent song select dropdown command, dont super it though
+        """
+        super().song_select_dropdown_command(item)
+
+        self.ply_from_ply_button.grid_forget()
+
+        # pass the data to the scrolledText widget on the next screen
+        self.display_details(self.song_object_list[0])
+
+        # clear the list object after
+        self.song_object_list.clear()

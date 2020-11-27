@@ -25,6 +25,8 @@ class SearchResultsFrame(HomePageFrame):
     def init_lower_grid(self):
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
+        self.remove_button.grid_forget()
+
         self.start_over_button = tk.Button(self.lower_grid, command=self.start_over_command)
         self.start_over_button["text"] = "Start Over"
         self.start_over_button.grid(row=0, column=0)
