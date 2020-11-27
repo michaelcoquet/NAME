@@ -195,6 +195,9 @@ class NameFrame(tk.Frame):
         """
         self.grab_set()
         self.popup = tk.Toplevel(self)
+        # remove windows borders and stuff with splash screen option
+        self.popup.overrideredirect(1)
+        self.popup.attributes("-topmost", 1)
         self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
         self.popup.title("Pick a Song")
 
@@ -220,6 +223,15 @@ class NameFrame(tk.Frame):
             *formated_songs,
             command=self.song_select_dropdown_command)
         self.song_select_dropdown.pack()
+
+        # update stuff first before getting widths
+        self.update_idletasks()
+
+        # find the location of the cursor
+        x = self.winfo_pointerx() - (self.popup.winfo_width()/2)
+        y = self.winfo_pointery() - (self.popup.winfo_height()/2)
+        # open the popup window on the cursor
+        self.popup.geometry('+%d+%d' % (x, y))
 
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
