@@ -1,6 +1,3 @@
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-
 class Song:
     """
     A class for Song that stores the collected data
