@@ -64,6 +64,25 @@ class persistent_storage:
         """
         return 1
 
+    def get_users_playlists(self):
+        """ return all the users playlists on file
+
+        Returns:
+            playlists (Playlist[]): list of all the users Playlist on file
+        """
+        return 1
+
+    def get_playlist(self, playlist_id):
+        """ return a given playlist if it exists
+
+        Args:
+            playlist_id (string): the id of the desired playlsit
+
+        Returns:
+            output_playlist (Playlist): the desired Playlist object
+        """
+        return 1
+
     def save_new_group(self, new_group):
         """ save a new group to the users file
 
@@ -80,13 +99,43 @@ class persistent_storage:
         """
         return 1
 
+    def get_users_groups(self):
+        """ return all the users groups on file
+
+        Returns:
+            groups (Group[]): list of all Group objects on file
+        """
+        return 1
+
+    def get_group(self, group_id):
+        """ return the given group if it exists
+
+        Args:
+            group_id (integer): the desired groups id
+
+        Returns:
+            output_group (Group): the desired Group object
+        """
+        return 1
+
     def encrypt(self, input):
         """ function to help encrypt the data that needs encrypting
 
         Args:
-            input (string): the input string to be encrypted
+            input (string): the unencrypted input string to be encrypted
 
-        returns:
+        Returns:
             output (string): the enrypted input string
+        """
+        return 1
+
+    def decryptes(self, input):
+        """ function to help decrypt the data thats needs decrypting
+
+        Args:
+            input (string): the encrypted input string
+
+        Returns:
+            output (string): the unencrypted input string
         """
         return 1
