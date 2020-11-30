@@ -4,8 +4,10 @@
               detailed info about their favorite songs.
 """
 import json
+from cryptography.fernet import Fernet
 
-class persistent_storage:
+
+class PersistentStorage:
     """ class to handle the storage of data in json format (see wiki persistent storage)
     """
 
@@ -129,7 +131,7 @@ class persistent_storage:
         """
         return 1
 
-    def decryptes(self, input):
+    def decrypt(self, input):
         """ function to help decrypt the data thats needs decrypting
 
         Args:
@@ -139,3 +141,20 @@ class persistent_storage:
             output (string): the unencrypted input string
         """
         return 1
+
+
+# testing
+
+
+# use group test account id: vha6pttyppu7tnrc0l1j4k4de
+sp_id = "vha6pttyppu7tnrc0l1j4k4de"
+ps = PersistentStorage(sp_id)
+
+    # test 0: encrypt()
+unencrypted_text = "encrypt this testing message"
+encrypted_text = ps.encrypt(unencrypted_text)
+
+assert(encrypted_text != unencrypted_text)
+
+    # test 1: decrypt()
+assert(ps.decrypt(encrypted_text) == unencrypted_text)
