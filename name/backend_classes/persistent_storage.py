@@ -3,9 +3,9 @@
               user find other similar songs to the ones they are interested in, as well as
               detailed info about their favorite songs.
 """
+import os
+import base64
 import json
-from cryptography.fernet import Fernet
-
 
 class PersistentStorage:
     """ class to handle the storage of data in json format (see wiki persistent storage)
@@ -16,16 +16,34 @@ class PersistentStorage:
                                      the id before saving to disk for privacy concerns
         """
         self.unencrypted_spotify_id = unencrypted_spotify_id
+        self.encrypted_spotify_id = self.encrypt(unencrypted_spotify_id)
+
+        # init database
+        self.init_json_file()
+
+    def init_json_file(self):
+        """ this will check if the json file already exists and open it for reading/writing if
+            it does, and create it if doesn't already exist
+        """
+        if os.path.exists("database.json"):
+            print("exists")
+        else:
+            with open("database.json", "w") as json_file:
+                pass
 
     def create_new_member(self):
         """ This will initiate a new user in the database, this will simply create a blank entry
             with a corresponding spotify id and will need to be loaded with users data in
             another step
         """
-        return 1
+        if self.check_if_user_exists() == True:
+            return 1
 
     def check_if_user_exists(self):
         """ check if the user already has information stored
+
+        Returns:
+            exists (bool): true if user exists false otherwie
         """
         return 1
 
@@ -129,7 +147,7 @@ class PersistentStorage:
         Returns:
             output (string): the enrypted input string
         """
-        return 1
+        return base64.b64encode(input.encode("utf-8")).decode("utf-8")
 
     def decrypt(self, input):
         """ function to help decrypt the data thats needs decrypting
@@ -140,7 +158,7 @@ class PersistentStorage:
         Returns:
             output (string): the unencrypted input string
         """
-        return 1
+        return base64.b64decode(input.encode("utf-8")).decode("utf-8")
 
 
 # testing
@@ -158,3 +176,22 @@ assert(encrypted_text != unencrypted_text)
 
     # test 1: decrypt()
 assert(ps.decrypt(encrypted_text) == unencrypted_text)
+
+    # test 2: decrypting again after reinitialization
+ps = PersistentStorage(sp_id)
+assert(ps.decrypt(encrypted_text) == unencrypted_text)
+
+    # test 3: create new member
+ps.create_new_member()
+
+found = 0
+with open("database.json") as json_file:
+    data = json.load(json_file)
+    for v in data.values():
+        if v["encrypted_spotify_id"] == ps.encrypt(sp_id):
+            found = 1
+
+assert(found)
+
+    # test 4: check if user exists
+assert(ps.check_if_user_exists())
