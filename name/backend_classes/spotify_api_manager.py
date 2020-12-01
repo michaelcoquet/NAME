@@ -60,9 +60,11 @@ class SpotifyAPIManager:
             # Either the user is a guest, or the api request failed
             return None
 
-    def search_songs(self, song_list):
+    def search_songs(self, song_list, offset=0):
         """ Searches the spotify api for the given list of songs.
         song_list: list of songs to search for.
+        offset: offset of song results to return. Defaults to 0, which
+        would return the first page (e.g. first 10 songs).
         returns: a dictionary with the song titles from song list,
         as well as a list of dictionaries containing info for all
         the songs that were returned for that song title
@@ -71,7 +73,7 @@ class SpotifyAPIManager:
                           "found songs": []}
         for song in song_list:
             search_results["query title"].append(song)
-            result = self.spotify.search(q=song, limit=10, type="track")
+            result = self.spotify.search(q=song, limit=10, type="track", offset=offset)
             # go through list of found songs and save results
             # in the dictionary
             for found_song in result["tracks"]["items"]:
@@ -87,7 +89,7 @@ class SpotifyAPIManager:
         return search_results
 
     def get_album(self, album_id):
-        """ Given an album id, search for album info 
+        """ Given an album id, search for album info
         and return an Album object.
         album_id: string value of the album id
         returns: an album object.
@@ -97,7 +99,7 @@ class SpotifyAPIManager:
         return album
 
     def get_artist(self, artist_id):
-        """ Given an artist id, search for artist info 
+        """ Given an artist id, search for artist info
         and return an Artist object.
         artist_id: string value of the artist id
         returns: an artist object.
@@ -123,12 +125,14 @@ class SpotifyAPIManager:
         user_id = self.get_user_id()
         playlists_data = self.spotify.user_playlists(user_id)
         playlist_list = []
-        for playlist_data in playlists_data:
-            songs = playlist_data["tracks"]
+        for playlist_data in playlists_data["items"]:
+            songs = self.spotify.playlist_items(playlist_data["id"])["items"]
             songs_list = []
+            # Get the tracks of the playlist
             for song in songs:
-                song_details = self.get_audio_features([song["id"]])[0]
-                songs_list.append(Song(song, song_details))
+                song_details = self.get_audio_features(song["track"]["id"])
+                songs_list.append(Song(song["track"], song_details))
+            # Convert into Playlist Object
             playlist = Playlist(playlist_data, songs_list)
             playlist_list.append(playlist)
         return playlist_list

@@ -1,6 +1,3 @@
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-
 class Song:
     """
     A class for Song that stores the collected data
@@ -16,31 +13,14 @@ class Song:
         self.album_details = Album(song['album'])
         self.audio_features = song_details
 
-    # Placeholder function until spotify api manager implements it
-    # def get_audio_features(self):
-    #     client_id='805b88ab14814deea1ae9a0f650b12fc'
-    #     client_secret='c20fae8240cb44e0aa720ed23053f307'
-    #     auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-    #     sp = spotipy.Spotify(auth_manager=auth_manager)
-    #     features = sp.audio_features(self.song_id)
-    #     return features[0]
-
-    # def __eq__(self, other):
-    #     """
-    #     A utility function that compares whether the two objects are equal
-    #     """
-    #     if self.song_id == other.song_id:
-    #         return True
-
-    #     return False
-
     def __str__(self):
         """
         A string representation of the object
         """
         return ("Name: {} \n"
                 "Artist: {} \n"
-                "--Details--{}").format(self.song_name, self.song_artist.name,
+                "--Details--{}").format(self.song_name,
+                                        [artist.name for artist in self.song_artist],
                                         self.audio_features)
 
     def __repr__(self):
@@ -49,21 +29,21 @@ class Song:
 
 class Artist:
     """
-    A class that stores the data of an artist collected from Spotify
+    A class that stores the data of each artist of the song
     """
     def __init__(self, artist):
         """
-        artist: An artist objects containing the data of the song's artist
+        artist: A list of artist object
         """
         self.artist = artist
-        self.artist_id = artist["id"]
-        self.name = artist["name"]
+        self.artist_id = artist['id']
+        self.name = artist['name']
 
-    def __eq__(self, other):
-        if self.artist_id == other.artist_id:
-            return True
+    # def __eq__(self, other):
+    #     if self.artist_id == other.artist_id:
+    #         return True
 
-        return False
+        # return False
 
     def __str__(self):
         return f"{self.artist_id,self.name}"
