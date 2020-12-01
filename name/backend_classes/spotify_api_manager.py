@@ -117,22 +117,52 @@ class SpotifyAPIManager:
         song_details = SongDetails(features)
         return song_details
 
+    def create_playlist_object(self, playlist_data):
+        """ Given the json object Spotify returns as a playlist,
+        convert it to one of our Playlist objects. 
+        playlist_data: a json formatted spotify playlist
+        """
+        songs = self.spotify.playlist_items(playlist_data["id"])["items"]
+        songs_list = []
+        # Get the tracks of the playlist
+        for song in songs:
+            song_details = self.get_audio_features(song["track"]["id"])
+            songs_list.append(Song(song["track"], song_details))
+        # Convert into Playlist Object
+        playlist = Playlist(playlist_data, songs_list)
+        return playlist
+
     def get_member_playlists(self):
         """ Gets a list of all playlists if the user is logged in
         to their spotify account.
-        returns: a list of spotify playlist objects (json format)
+        returns: a list of spotify playlist objects
         """
         user_id = self.get_user_id()
         playlists_data = self.spotify.user_playlists(user_id)
         playlist_list = []
         for playlist_data in playlists_data["items"]:
-            songs = self.spotify.playlist_items(playlist_data["id"])["items"]
-            songs_list = []
-            # Get the tracks of the playlist
-            for song in songs:
-                song_details = self.get_audio_features(song["track"]["id"])
-                songs_list.append(Song(song["track"], song_details))
-            # Convert into Playlist Object
-            playlist = Playlist(playlist_data, songs_list)
+            playlist = self.create_playlist_object(playlist_data)
             playlist_list.append(playlist)
         return playlist_list
+
+    def add_member_playlist(self, playlist):
+        """" Saves the given playlist object to the
+        the playlist owner's Spotify account.
+        playlist: a playlist object
+        returns: A copy of the new playlist object that was created
+        (for verification purposes)
+        """
+        # First, create a new empty playlist in spotify
+        user_id = self.get_user_id()
+        playlist_name = playlist.playlist_name
+        description = "A N.A.M.E. similarity playlist"
+        new_playlist = self.spotify.user_playlist_create(user=user_id, name=playlist_name, 
+                                                         description=description)
+        new_playlist_id = new_playlist["id"]
+        # Get spotify track objects for each song in the given playlist
+        song_ids = [song.song_id for song in playlist.songs]
+        # Add all the tracks to the new playlist
+        self.spotify.playlist_add_items(new_playlist_id, song_ids)
+        return self.create_playlist_object(new_playlist)
+
+

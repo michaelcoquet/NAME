@@ -224,6 +224,40 @@ def test_get_artist_v1():
     assert artist.artist_id == artist_id
 
 
+def test_get_member_playlists():
+    """ Test ID: Spotify11. Tests that the user's spotify
+    playlists are correctly returned as a list of playlist objects.
+    This also indirectly tests the helper function, create_playlist_object.
+    """
+    # wait two seconds before running this test so that the API
+    # doesn't reject the connection
+    time.sleep(2)
+    spotify_api_manager = SpotifyAPIManager()
+    spotify_api_manager.link_spotify_account()
+    playlists = spotify_api_manager.get_member_playlists()
+    # determine if a list of playlist objects are indeed returned
+    # However, check manually if the details are correct
+    assert len(playlists) != 0
+    assert playlists[0].playlist_name != ""
+    assert playlists[0].songs != []
+
+
+# def test_add_member_playlist():
+#     """ TestID: Spotify13. Tests that a new playlist can 
+#     be added to the member's spotify account. Comment
+#     this test out after running once to avoid created a whole
+#     bunch of copies of the same playlist
+#     """
+#     time.sleep(2)
+#     spotify_api_manager = SpotifyAPIManager()
+#     spotify_api_manager.link_spotify_account()
+#     a_playlist = spotify_api_manager.spotify.playlist("5IkBS6w09oYhVIBRmAvHEv")
+#     playlist = spotify_api_manager.create_playlist_object(a_playlist)
+#     result = spotify_api_manager.add_member_playlist(playlist)
+#     assert result != []
+#     assert result.playlist_name == "Opera"
+#     assert result.songs != []
+
 # Tests for the Query class
 def test_update_filter_list():
     """ Test ID: Query03 - Query07.
