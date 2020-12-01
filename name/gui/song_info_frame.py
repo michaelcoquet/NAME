@@ -34,8 +34,8 @@ class SongInfoFrame(HomePageFrame):
 
         self.song_info_scrolledtext = st.ScrolledText(self.middle_grid)
         self.song_info_scrolledtext.grid(row=0, column=0, sticky="nsew")
-        self.song_lyrics_scrolltext = st.ScrolledText(self.middle_grid)
-        self.song_lyrics_scrolltext.grid(row=0, column=1, sticky="nsew")
+        self.song_lyrics_scrolledtext = st.ScrolledText(self.middle_grid)
+        self.song_lyrics_scrolledtext.grid(row=0, column=1, sticky="nsew")
 
     def init_lower_grid(self):
         """TODO: fill in
@@ -67,9 +67,9 @@ class SongInfoFrame(HomePageFrame):
         # display new results
         self.song_info_scrolledtext.insert("end", song.__str__())
         # display the song lyrics in the other textbox
-        self.song_lyrics_scrolltext.delete("1.0", "end")
+        self.song_lyrics_scrolledtext.delete("1.0", "end")
         lyrics_obj = Lyrics(song.song_name, song.song_artist[0].name)
-        self.song_lyrics_scrolltext.insert("end", "Lyrics:\n\n" + song.song_name + " - " +
+        self.song_lyrics_scrolledtext.insert("end", "Lyrics:\n\n" + song.song_name + " - " +
                                                   song.song_artist[0].name +
                                                   ":\n\n" + lyrics_obj.get_lyrics())
 

@@ -40,9 +40,6 @@ class NameFrame(tk.Frame):
 
         self.final_song_selection = []
 
-        #instantiate the spotify api manager
-        self.spotify_manager = SpotifyAPIManager()
-
     def grid_forget(self):
         self.upper_grid.grid_forget()
         self.middle_grid.grid_forget()
@@ -134,7 +131,8 @@ class NameFrame(tk.Frame):
         """ Button command to link to a spotify account and if succesfully linked switch to the
             member frame (frame_id = 2).
         """
-        if self.spotify_manager.link_spotify_account() == True:
+        self.parent.spotify_manager = SpotifyAPIManager()
+        if self.parent.spotify_manager.link_spotify_account() == True:
             self.parent.logged_in = 1
             self.init_member_menu()
         else:
@@ -146,7 +144,6 @@ class NameFrame(tk.Frame):
         """
         # delete the cache file
         os.remove(".cache")
-        self.spotify_manager = SpotifyAPIManager()
         self.parent.logged_in = 0
         self.init_guest_menu()
 
@@ -161,7 +158,7 @@ class NameFrame(tk.Frame):
         # Return the users spotify ID that they can share with other users to
         # form groups
         if self.parent.logged_in:
-            message = self.spotify_manager.get_user_id()
+            message = self.parent.spotify_manager.get_user_id()
             ShareableIdDialog(self.container, title="NAME", text=message)
 
         # TODO: GUI     - Display the returned ID in the following messagebox popup
@@ -175,6 +172,7 @@ class NameFrame(tk.Frame):
             filters (dict): the selected filters
         """
         # TODO: BACKEND - single song search connection return a list of songs
+        # TODO: do this in another thread
         self.api_search_results = self.query_object.search_single_song(title)
         self.open_song_search_popup(self.api_search_results)
 
@@ -198,6 +196,9 @@ class NameFrame(tk.Frame):
         """
         self.grab_set()
         self.popup = tk.Toplevel(self)
+        # remove windows borders and stuff with splash screen option
+        self.popup.overrideredirect(1)
+        self.popup.attributes("-topmost", 1)
         self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
         self.popup.title("Pick a Song")
 
@@ -223,6 +224,27 @@ class NameFrame(tk.Frame):
             *formated_songs,
             command=self.song_select_dropdown_command)
         self.song_select_dropdown.pack()
+
+        # update stuff first before getting widths
+        self.update_idletasks()
+
+        # find the location of the cursor
+        x = self.winfo_pointerx() - (self.popup.winfo_width()/2)
+        y = self.winfo_pointery() - (self.popup.winfo_height()/2)
+        # open the popup window on the cursor
+        self.popup.geometry('+%d+%d' % (x, y))
+
+        # bind the up/down keys to scroll the list of songs
+        self.parent.bind("<Up>", self.scroll_song_select_up)
+        self.parent.bind("<Down>", self.scroll_song_select_down)
+
+    def scroll_song_select_up(self, event):
+        # TODO: try to implement this
+        return 1
+
+    def scroll_song_select_down(self, event):
+        # TODO: try to implement this
+        return 1
 
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist

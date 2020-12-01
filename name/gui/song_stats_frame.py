@@ -34,7 +34,7 @@ class SongStatsFrame(SongInfoFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_lyrics_scrolltext.grid_forget()
+        self.song_lyrics_scrolledtext.grid_forget()
 
         # load song data here
         # TODO: make it look better in a table or something, fine for the demo
@@ -51,5 +51,7 @@ class SongStatsFrame(SongInfoFrame):
     def start_over_command(self):
         self.switch_frame("Compare Songs")
 
-    def display_data(self, tuple):
+    def display(self, tuple):
         self.sim_score_label["text"] = "These songs are " + str(tuple[0]) + "% similar"
+        for song in tuple[1]:
+            self.song_info_scrolledtext.insert("end", str(song) + "\n\n")

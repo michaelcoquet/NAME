@@ -64,7 +64,7 @@ class SpotifyAPIManager:
         """ Searches the spotify api for the given list of songs.
         song_list: list of songs to search for.
         offset: offset of song results to return. Defaults to 0, which
-        would return the first page (e.g. first 10 songs). 
+        would return the first page (e.g. first 10 songs).
         returns: a dictionary with the song titles from song list,
         as well as a list of dictionaries containing info for all
         the songs that were returned for that song title
@@ -89,7 +89,7 @@ class SpotifyAPIManager:
         return search_results
 
     def get_album(self, album_id):
-        """ Given an album id, search for album info 
+        """ Given an album id, search for album info
         and return an Album object.
         album_id: string value of the album id
         returns: an album object.
@@ -99,7 +99,7 @@ class SpotifyAPIManager:
         return album
 
     def get_artist(self, artist_id):
-        """ Given an artist id, search for artist info 
+        """ Given an artist id, search for artist info
         and return an Artist object.
         artist_id: string value of the artist id
         returns: an artist object.
@@ -130,7 +130,7 @@ class SpotifyAPIManager:
             songs_list = []
             # Get the tracks of the playlist
             for song in songs:
-                song_details = self.get_audio_features([song["track"]["id"]])
+                song_details = self.get_audio_features(song["track"]["id"])
                 songs_list.append(Song(song["track"], song_details))
             # Convert into Playlist Object
             playlist = Playlist(playlist_data, songs_list)

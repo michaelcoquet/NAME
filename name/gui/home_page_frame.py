@@ -146,6 +146,19 @@ class HomePageFrame(NameFrame):
             text="Search")
         self.song_search_button.grid(row=2, column=2)
 
+        # bind the focus events to the given functions to allow automatically selectall text on
+        # click
+        self.song_search_entry.bind("<FocusIn>", self.song_search_entry_callback)
+
+        # also bind the return key to the song_search_command
+        self.parent.bind("<Return>", self.song_search_command_bind)
+
+    def song_search_entry_callback(self, event):
+        self.song_search_entry.delete(0, tk.END)
+
+    def song_search_command_bind(self, event):
+        self.song_search_command()
+
     def display_data(self, song_list):
         """display the given song list in the latest playlist treeview
 
@@ -170,7 +183,6 @@ class HomePageFrame(NameFrame):
         """
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         self.query_object.update_filter_list(self.formatted_filters)
-        print(self.formatted_filters)
 
     def compare_songs_command(self):
         """ command when compare songs btn is pushed
@@ -200,9 +212,11 @@ class HomePageFrame(NameFrame):
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         search_object = CheckingSongSimilarity(self.formatted_filters)
 
-        similar_songs = search_object.random_search(self.parent.song_object_list)
+        result = search_object.random_search(self.parent.song_object_list)
 
-        print(len(similar_songs))
+        # switch to search results frame, and give it the results to be displayed
+        self.switch_frame("Search Results")
+        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
 
     def convert_filters_list(self, tk_filters):
         """ convert the original dict of filters into something the backend can use

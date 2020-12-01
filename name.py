@@ -1,9 +1,14 @@
-"""CMPT 370 Group 5 Project: NAME
-    Summary: TODO: fill in summary of app
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Summary:  is a piece of software to compare songs using the Spotify API. NAME will help the
+              user find other similar songs to the ones they are interested in, as well as
+              detailed info about their favorite songs.
 """
+import os
 import name.gui as gui
 import tkinter as tk
 from tkinter import Grid
+
+from name.backend_classes import SpotifyAPIManager
 
 
 class Name(tk.Tk):
@@ -22,7 +27,7 @@ class Name(tk.Tk):
         self.logged_in = 0
 
         self.title("Nearly Analagous Music Engine")
-        # self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be
+        self.iconbitmap("name\\resources\\ravencon.ico") # TODO: make suren to change this to be
                                                    # accessable from anywhere
         Grid.rowconfigure(self, 0, weight=1)
         Grid.columnconfigure(self, 0, weight=1)
@@ -34,8 +39,10 @@ class Name(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         container.grid(padx="10", pady="10")
 
-
+        # working list of songs (displayed in the song_treeview widgets)
         self.song_object_list = []
+        #instantiate the spotify api manager
+        self.spotify_manager = SpotifyAPIManager()
 
         # instantiate frame array
         self.frames = {}
@@ -138,6 +145,8 @@ def main():
     """
     app = Name()
     app.mainloop()
+    if os.path.exists(".cache"):
+        os.remove(".cache")
 
 if __name__ == "__main__":
     main()
