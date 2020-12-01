@@ -133,8 +133,7 @@ class SpotifyAPIManager:
         return playlist
 
     def get_member_playlists(self):
-        """ Gets a list of all playlists if the user is logged in
-        to their spotify account.
+        """ Gets a list of all playlists for the current user.
         returns: a list of spotify playlist objects
         """
         user_id = self.get_user_id()
@@ -165,4 +164,49 @@ class SpotifyAPIManager:
         self.spotify.playlist_add_items(new_playlist_id, song_ids)
         return self.create_playlist_object(new_playlist)
 
+    def get_recently_played_songs(self, limit):
+        """ Gets a list of the current member's last played tracks
+        limit: the total number of tracks to return
+        returns: a list of up to the limit of song objects
+        """
+        recent_tracks = self.spotify.current_user_recently_played(limit)
+        # convert to song objects
+        songs = []
+        for track in recent_tracks["items"]:
+            song_details = self.get_audio_features(track["track"]["id"])
+            song = Song(track["track"], song_details)
+            # don't add duplicates to the list
+            if len(songs) == 0 or song.song_name not in [song.song_name for song in songs]:
+                songs.append(song)
+        return songs
 
+    def get_top_songs(self):
+        """ Gets a list of the current member's top tracks. 
+        The maximum number that can be returned is 20.
+        returns: at most a list of 20 song objects
+        """
+        top_tracks = self.spotify.current_user_top_tracks()
+        # convert to song objects
+        songs = []
+        for track in top_tracks["items"]:
+            song_details = self.get_audio_features(track["id"])
+            song = Song(track, song_details)
+            # don't add duplicates to the list
+            if len(songs) == 0 or song.song_name not in [song.song_name for song in songs]:
+                songs.append(song)
+        return songs
+
+    def get_top_artists(self):
+        """ Gets a list of the current member's top artists.
+        The maximum number that can be returned is 20. 
+        returns: at most a list of 20 artist objects.
+        """
+        top_artists = self.spotify.current_user_top_artists()
+        # convert to artists objects
+        artists = []
+        for artist in top_artists["items"]:
+            new_artist = self.get_artist(artist["id"])
+            # don't add duplicates to the list
+            if len(artists) == 0 or new_artist.name not in [artist.name for artist in artists]:
+                artists.append(new_artist)
+        return artists
