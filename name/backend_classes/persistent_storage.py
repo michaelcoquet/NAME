@@ -25,9 +25,7 @@ class PersistentStorage:
         """ this will check if the json file already exists and open it for reading/writing if
             it does, and create it if doesn't already exist
         """
-        if os.path.exists("database.json"):
-            print("exists")
-        else:
+        if os.path.exists("database.json") == False:
             with open("database.json", "w") as json_file:
                 pass
 
@@ -38,6 +36,16 @@ class PersistentStorage:
         """
         if self.check_if_user_exists() == True:
             return 1
+        else:
+            data = [
+                {
+                "encrypted_spotify_id": self.encrypted_spotify_id,
+                "playlists": [],
+                "groups": []
+                }
+            ]
+            with open("database.json", "w") as json_file:
+                json.dump(data, json_file)
 
     def check_if_user_exists(self):
         """ check if the user already has information stored
@@ -45,7 +53,14 @@ class PersistentStorage:
         Returns:
             exists (bool): true if user exists false otherwie
         """
-        return 1
+        found = False
+        with open("database.json") as json_file:
+            data = json.load(json_file)
+            for d in data:
+                if(d["encrypted_spotify_id"] == self.encrypted_spotify_id):
+                    found = True
+
+        return found
 
     def check_if_playlist_exists(self, playlist_id):
         """ check if a the given playlist id exists for a user in either spotify or json
@@ -187,11 +202,12 @@ ps.create_new_member()
 found = 0
 with open("database.json") as json_file:
     data = json.load(json_file)
-    for v in data.values():
-        if v["encrypted_spotify_id"] == ps.encrypt(sp_id):
+    for d in data:
+        if(d["encrypted_spotify_id"] == ps.encrypt(sp_id)):
             found = 1
 
 assert(found)
 
     # test 4: check if user exists
 assert(ps.check_if_user_exists())
+
