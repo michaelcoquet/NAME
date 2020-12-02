@@ -6,6 +6,8 @@
 import os
 import base64
 import json
+from spotify_api_manager import SpotifyAPIManager
+
 
 class PersistentStorage:
     """ class to handle the storage of data in json format (see wiki persistent storage)
@@ -26,17 +28,6 @@ class PersistentStorage:
             it does, and create it if doesn't already exist
         """
         if os.path.exists("database.json") == False:
-            with open("database.json", "w") as json_file:
-                pass
-
-    def create_new_member(self):
-        """ This will initiate a new user in the database, this will simply create a blank entry
-            with a corresponding spotify id and will need to be loaded with users data in
-            another step
-        """
-        if self.check_if_user_exists() == True:
-            return 1
-        else:
             data = [
                 {
                 "encrypted_spotify_id": self.encrypted_spotify_id,
@@ -45,6 +36,23 @@ class PersistentStorage:
                 }
             ]
             with open("database.json", "w") as json_file:
+                json.dump(data, json_file)
+
+    def create_new_member(self):
+        """ This will initiate a new user in the database, this will simply create a blank entry
+            with a corresponding spotify id and will need to be loaded with users data in
+            another step
+        """
+        if self.check_if_user_exists() == False:
+            new_data ={
+                "encrypted_spotify_id": self.encrypted_spotify_id,
+                "playlists": [],
+                "groups": []
+                }
+            with open("database.json", "r+") as json_file:
+                data = json.load(json_file)
+                data.append(new_data)
+                json_file.seek(0)
                 json.dump(data, json_file)
 
     def check_if_user_exists(self):
@@ -62,6 +70,53 @@ class PersistentStorage:
 
         return found
 
+    def load_all_playlists(self, playlists):
+        """ puts all the playlists in the input into the users persistent storage
+            should be used with the spotify api managers get_users_playlists() to load all the
+            users playlist objects into the database
+
+        Args:
+            playlists (Playlist[]): list of playlist objects to store
+        """
+        if self.check_if_user_exists():
+            with open("database.json") as json_file:
+                data = json.load(json_file)
+                for d in data:
+                    if(d["encrypted_spotify_id"] == self.encrypted_spotify_id):
+                        # found the correct users file now load their playlists with the input
+                        # list
+                        d["playlists"] = self.serialize_user_data(playlists)
+                        # save it back to the json
+                        with open("database.json", "w") as json_write:
+                            json.dump(data, json_write)
+
+                        break
+        else:
+            print("error: user doesnt exist yet, create it first")
+
+    def serialize_user_data(self, playlists):
+        serialized_user = {}
+        serialized_user["encrypted_spotify_id"] = self.encrypted_spotify_id
+        serialized_user["playlists"] = []
+        serialized_user["groups"] = []
+        playlist_strings = []
+        for playlist in playlists:
+            playlist_string = {}
+            playlist_string["playlist_name"] = playlist.playlist_name
+            playlist_string["playlist_id"] = playlist.playlist_id
+            # serialize the songs now
+            song_strings = []
+            for song in playlist.songs:
+                song_string = {}
+                song_string["song_name"] = song.song_name
+                song_string["song_id"] = song.song_id
+                song_strings.append(song_string)
+            # put the songs in the json format
+            playlist_string["songs"] = song_strings
+            playlist_strings.append(playlist_string)
+
+        return playlist_strings
+
     def check_if_playlist_exists(self, playlist_id):
         """ check if a the given playlist id exists for a user in either spotify or json
 
@@ -75,11 +130,6 @@ class PersistentStorage:
 
         Args:
             group_id (integer): the id for the desired group
-        """
-        return 1
-
-    def save_all_existing_playlists(self):
-        """ find all the playlists for the user and save them to our json file
         """
         return 1
 
@@ -178,9 +228,13 @@ class PersistentStorage:
 
 # testing
 
+# need to be logged into the test spotify account: cmpt370.group5@gmail.com account for these
+# tests to pass
+sp_manager = SpotifyAPIManager()
+sp_manager.link_spotify_account()
 
-# use group test account id: vha6pttyppu7tnrc0l1j4k4de
-sp_id = "vha6pttyppu7tnrc0l1j4k4de"
+sp_id = sp_manager.get_user_id()
+
 ps = PersistentStorage(sp_id)
 
     # test 0: encrypt()
@@ -210,4 +264,19 @@ assert(found)
 
     # test 4: check if user exists
 assert(ps.check_if_user_exists())
+
+    # test 5: load_all_playlists
+playlists = sp_manager.get_member_playlists()
+
+ps.load_all_playlists(playlists)
+
+found = 0
+with open("database.json") as json_file:
+    data = json.load(json_file)
+    for d in data:
+        if d["encrypted_spotify_id"] == ps.encrypt(sp_id):
+            for playlist in d["playlists"]:
+                if(playlist["playlist_name"] == "testing0"):
+                    found = 1
+assert(found)
 

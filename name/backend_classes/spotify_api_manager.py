@@ -3,11 +3,11 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from name.backend_classes.song import Artist
-from name.backend_classes.song import Album
-from name.backend_classes.song import Song
-from name.backend_classes.song import SongDetails
-from name.backend_classes.playlist import Playlist
+from song import Artist
+from song import Album
+from song import Song
+from song import SongDetails
+from playlist import Playlist
 
 
 class SpotifyAPIManager:
@@ -60,9 +60,11 @@ class SpotifyAPIManager:
             # Either the user is a guest, or the api request failed
             return None
 
-    def search_songs(self, song_list):
+    def search_songs(self, song_list, offset=0):
         """ Searches the spotify api for the given list of songs.
         song_list: list of songs to search for.
+        offset: offset of song results to return. Defaults to 0, which
+        would return the first page (e.g. first 10 songs).
         returns: a dictionary with the song titles from song list,
         as well as a list of dictionaries containing info for all
         the songs that were returned for that song title
@@ -71,7 +73,7 @@ class SpotifyAPIManager:
                           "found songs": []}
         for song in song_list:
             search_results["query title"].append(song)
-            result = self.spotify.search(q=song, limit=10, type="track")
+            result = self.spotify.search(q=song, limit=10, type="track", offset=offset)
             # go through list of found songs and save results
             # in the dictionary
             for found_song in result["tracks"]["items"]:
@@ -87,7 +89,7 @@ class SpotifyAPIManager:
         return search_results
 
     def get_album(self, album_id):
-        """ Given an album id, search for album info 
+        """ Given an album id, search for album info
         and return an Album object.
         album_id: string value of the album id
         returns: an album object.
@@ -97,7 +99,7 @@ class SpotifyAPIManager:
         return album
 
     def get_artist(self, artist_id):
-        """ Given an artist id, search for artist info 
+        """ Given an artist id, search for artist info
         and return an Artist object.
         artist_id: string value of the artist id
         returns: an artist object.
@@ -115,20 +117,96 @@ class SpotifyAPIManager:
         song_details = SongDetails(features)
         return song_details
 
+    def create_playlist_object(self, playlist_data):
+        """ Given the json object Spotify returns as a playlist,
+        convert it to one of our Playlist objects.
+        playlist_data: a json formatted spotify playlist
+        """
+        songs = self.spotify.playlist_items(playlist_data["id"])["items"]
+        songs_list = []
+        # Get the tracks of the playlist
+        for song in songs:
+            song_details = self.get_audio_features(song["track"]["id"])
+            songs_list.append(Song(song["track"], song_details))
+        # Convert into Playlist Object
+        playlist = Playlist(playlist_data, songs_list)
+        return playlist
+
     def get_member_playlists(self):
-        """ Gets a list of all playlists if the user is logged in
-        to their spotify account.
-        returns: a list of spotify playlist objects (json format)
+        """ Gets a list of all playlists for the current user.
+        returns: a list of spotify playlist objects
         """
         user_id = self.get_user_id()
         playlists_data = self.spotify.user_playlists(user_id)
         playlist_list = []
-        for playlist_data in playlists_data:
-            songs = playlist_data["tracks"]
-            songs_list = []
-            for song in songs:
-                song_details = self.get_audio_features([song["id"]])[0]
-                songs_list.append(Song(song, song_details))
-            playlist = Playlist(playlist_data, songs_list)
+        for playlist_data in playlists_data["items"]:
+            playlist = self.create_playlist_object(playlist_data)
             playlist_list.append(playlist)
         return playlist_list
+
+    def add_member_playlist(self, playlist):
+        """" Saves the given playlist object to the
+        the playlist owner's Spotify account.
+        playlist: a playlist object
+        returns: A copy of the new playlist object that was created
+        (for verification purposes)
+        """
+        # First, create a new empty playlist in spotify
+        user_id = self.get_user_id()
+        playlist_name = playlist.playlist_name
+        description = "A N.A.M.E. similarity playlist"
+        new_playlist = self.spotify.user_playlist_create(user=user_id, name=playlist_name,
+                                                         description=description)
+        new_playlist_id = new_playlist["id"]
+        # Get spotify track objects for each song in the given playlist
+        song_ids = [song.song_id for song in playlist.songs]
+        # Add all the tracks to the new playlist
+        self.spotify.playlist_add_items(new_playlist_id, song_ids)
+        return self.create_playlist_object(new_playlist)
+
+    def get_recently_played_songs(self, limit):
+        """ Gets a list of the current member's last played tracks
+        limit: the total number of tracks to return
+        returns: a list of up to the limit of song objects
+        """
+        recent_tracks = self.spotify.current_user_recently_played(limit)
+        # convert to song objects
+        songs = []
+        for track in recent_tracks["items"]:
+            song_details = self.get_audio_features(track["track"]["id"])
+            song = Song(track["track"], song_details)
+            # don't add duplicates to the list
+            if len(songs) == 0 or song.song_name not in [song.song_name for song in songs]:
+                songs.append(song)
+        return songs
+
+    def get_top_songs(self):
+        """ Gets a list of the current member's top tracks.
+        The maximum number that can be returned is 20.
+        returns: at most a list of 20 song objects
+        """
+        top_tracks = self.spotify.current_user_top_tracks()
+        # convert to song objects
+        songs = []
+        for track in top_tracks["items"]:
+            song_details = self.get_audio_features(track["id"])
+            song = Song(track, song_details)
+            # don't add duplicates to the list
+            if len(songs) == 0 or song.song_name not in [song.song_name for song in songs]:
+                songs.append(song)
+        return songs
+
+    def get_top_artists(self):
+        """ Gets a list of the current member's top artists.
+        The maximum number that can be returned is 20.
+        returns: at most a list of 20 artist objects.
+        """
+        top_artists = self.spotify.current_user_top_artists()
+        # convert to artists objects
+        artists = []
+        for artist in top_artists["items"]:
+            new_artist = self.get_artist(artist["id"])
+            # don't add duplicates to the list
+            if len(artists) == 0 or new_artist.name not in [artist.name for artist in artists]:
+                artists.append(new_artist)
+        return artists
