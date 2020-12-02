@@ -36,11 +36,6 @@ class SongStatsFrame(SongInfoFrame):
         super().init_middle_grid()
         self.song_lyrics_scrolledtext.grid_forget()
 
-        # load song data here
-        # TODO: make it look better in a table or something, fine for the demo
-        for song in self.parent.song_object_list:
-            self.song_info_scrolledtext.insert("end", str(song) + "\n\n")
-
     def init_lower_grid(self):
         super().init_lower_grid()
         self.ply_from_ply_button.grid_forget()
