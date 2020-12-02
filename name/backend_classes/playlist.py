@@ -18,6 +18,17 @@ class Playlist:
         self.size = playlist['tracks']['total']
         self.songs = playlist_tracks
 
+    def __iter__(self):
+        playlist_string = {
+                            "playlist_name": self.playlist_name
+                          }
+        song_string = []
+        for song in self.songs:
+            song_string.append(dict(song))
+        song_dict = { "songs": song_string }
+        playlist_dict = playlist_string | song_dict
+        yield from playlist_dict.items()
+
     def add_song(self, song):
         """
         A function that adds song to the playlist,

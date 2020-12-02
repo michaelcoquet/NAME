@@ -7,6 +7,7 @@ import os
 import base64
 import json
 from spotify_api_manager import SpotifyAPIManager
+from playlist import Playlist
 
 
 class PersistentStorage:
@@ -31,7 +32,7 @@ class PersistentStorage:
             data = [
                 {
                 "encrypted_spotify_id": self.encrypted_spotify_id,
-                "playlists": [],
+                "current_playlist": {},
                 "groups": []
                 }
             ]
@@ -46,7 +47,7 @@ class PersistentStorage:
         if self.check_if_user_exists() == False:
             new_data ={
                 "encrypted_spotify_id": self.encrypted_spotify_id,
-                "playlists": [],
+                "current_playlist": {},
                 "groups": []
                 }
             with open("database.json", "r+") as json_file:
@@ -70,13 +71,11 @@ class PersistentStorage:
 
         return found
 
-    def load_all_playlists(self, playlists):
-        """ puts all the playlists in the input into the users persistent storage
-            should be used with the spotify api managers get_users_playlists() to load all the
-            users playlist objects into the database
+    def save_current_playlist(self, playlist):
+        """ puts the active playlist in the input into the users persistent storage
 
         Args:
-            playlists (Playlist[]): list of playlist objects to store
+            playlist (Playlist): list of playlist objects to store
         """
         if self.check_if_user_exists():
             with open("database.json") as json_file:
@@ -85,86 +84,19 @@ class PersistentStorage:
                     if(d["encrypted_spotify_id"] == self.encrypted_spotify_id):
                         # found the correct users file now load their playlists with the input
                         # list
-                        d["playlists"] = self.serialize_user_data(playlists)
+                        d["current_playlist"] = dict(playlist)
                         # save it back to the json
                         with open("database.json", "w") as json_write:
                             json.dump(data, json_write)
-
                         break
         else:
             print("error: user doesnt exist yet, create it first")
-
-    def serialize_user_data(self, playlists):
-        serialized_user = {}
-        serialized_user["encrypted_spotify_id"] = self.encrypted_spotify_id
-        serialized_user["playlists"] = []
-        serialized_user["groups"] = []
-        playlist_strings = []
-        for playlist in playlists:
-            playlist_string = {}
-            playlist_string["playlist_name"] = playlist.playlist_name
-            playlist_string["playlist_id"] = playlist.playlist_id
-            # serialize the songs now
-            song_strings = []
-            for song in playlist.songs:
-                song_string = {}
-                song_string["song_name"] = song.song_name
-                song_string["song_id"] = song.song_id
-                song_strings.append(song_string)
-            # put the songs in the json format
-            playlist_string["songs"] = song_strings
-            playlist_strings.append(playlist_string)
-
-        return playlist_strings
-
-    def check_if_playlist_exists(self, playlist_id):
-        """ check if a the given playlist id exists for a user in either spotify or json
-
-        Args:
-            playlist_id(string): the spotify id for the desired playlist
-        """
-        return 1
 
     def check_if_group_exists(self, group_id):
         """ check if the given group exists or not
 
         Args:
             group_id (integer): the id for the desired group
-        """
-        return 1
-
-    def save_new_playlist(self, new_playlist):
-        """ save a new playlist to the users file
-
-        Args:
-            new_playlist(Playlist): the new playlist to be saved to the users file
-        """
-        return 1
-
-    def update_playlist(self, playlist_id):
-        """ update a playlist in the users file
-
-        Args:
-            playlist_id(string): the spotify id for the desired playlist
-        """
-        return 1
-
-    def get_users_playlists(self):
-        """ return all the users playlists on file
-
-        Returns:
-            playlists (Playlist[]): list of all the users Playlist on file
-        """
-        return 1
-
-    def get_playlist(self, playlist_id):
-        """ return a given playlist if it exists
-
-        Args:
-            playlist_id (string): the id of the desired playlsit
-
-        Returns:
-            output_playlist (Playlist): the desired Playlist object
         """
         return 1
 
@@ -189,17 +121,6 @@ class PersistentStorage:
 
         Returns:
             groups (Group[]): list of all Group objects on file
-        """
-        return 1
-
-    def get_group(self, group_id):
-        """ return the given group if it exists
-
-        Args:
-            group_id (integer): the desired groups id
-
-        Returns:
-            output_group (Group): the desired Group object
         """
         return 1
 
@@ -265,18 +186,17 @@ assert(found)
     # test 4: check if user exists
 assert(ps.check_if_user_exists())
 
-    # test 5: load_all_playlists
+    # test 5: save_current_playlist
+
 playlists = sp_manager.get_member_playlists()
 
-ps.load_all_playlists(playlists)
+ps.save_current_playlist(playlists[2])
 
 found = 0
 with open("database.json") as json_file:
     data = json.load(json_file)
     for d in data:
         if d["encrypted_spotify_id"] == ps.encrypt(sp_id):
-            for playlist in d["playlists"]:
-                if(playlist["playlist_name"] == "testing0"):
+                if d["current_playlist"]["playlist_name"] == "testing1":
                     found = 1
 assert(found)
-
