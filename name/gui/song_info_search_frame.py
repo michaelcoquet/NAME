@@ -65,7 +65,8 @@ class SongInfoSearchFrame(HomePageFrame):
         self.parent.frames[f].ply_from_ply_button.grid_forget()
 
         # pass the data to the scrolledText widget on the next screen
-        self.parent.frames[f].display_details(self.parent.song_object_list[0])
+        s = self.parent.song_object_list[len(self.parent.song_object_list) - 1]
+        self.parent.frames[f].display_details(s)
 
-        # clear the list object after
-        self.parent.song_object_list.clear()
+        # delete last item in the song_object_list so it doesnt carry over to other pages
+        del self.parent.song_object_list[-1]
