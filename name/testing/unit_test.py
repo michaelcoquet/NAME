@@ -285,6 +285,24 @@ def test_get_top_songs():
     assert top_songs[0].song_name != ""
 
 
+def test_refresh_auth_token():
+    """ Test ID: Spotify20. Tests that an auth token is
+    properly collected from the cache and refreshed.
+    Note that manual testing had to be done, since the tokens
+    take an hour to expire.
+    """
+    # wait two seconds to avoid a timeout from the API
+    time.sleep(2)
+    spotify_api_manager = SpotifyAPIManager()
+    spotify_api_manager.link_spotify_account()
+    # try getting some user info
+    id = spotify_api_manager.get_user_id()
+    # try to refresh the token when it definitely won't be expired
+    spotify_api_manager.refresh_auth_token()
+    assert id == spotify_api_manager.get_user_id()
+    
+
+
 def test_get_top_artists():
     """ Test ID: Spotify20. Tests that the users top artists
     can be returned properly as a list of artist objects.

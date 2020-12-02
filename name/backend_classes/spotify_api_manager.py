@@ -134,10 +134,14 @@ class SpotifyAPIManager:
 
     def get_member_playlists(self):
         """ Gets a list of all playlists for the current user.
-        returns: a list of spotify playlist objects
+        returns: a list of playlist objects
         """
+        # make sure the auth token is valid and refresh if needed
+        self.refresh_auth_token()
+        # get the playlists
         user_id = self.get_user_id()
         playlists_data = self.spotify.user_playlists(user_id)
+        # convert to a list of playlist objects
         playlist_list = []
         for playlist_data in playlists_data["items"]:
             playlist = self.create_playlist_object(playlist_data)
@@ -151,6 +155,8 @@ class SpotifyAPIManager:
         returns: A copy of the new playlist object that was created
         (for verification purposes)
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
         # First, create a new empty playlist in spotify
         user_id = self.get_user_id()
         playlist_name = playlist.playlist_name
@@ -169,6 +175,9 @@ class SpotifyAPIManager:
         limit: the total number of tracks to return
         returns: a list of up to the limit of song objects
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
+        # Get recent tracks
         recent_tracks = self.spotify.current_user_recently_played(limit)
         # convert to song objects
         songs = []
@@ -185,6 +194,9 @@ class SpotifyAPIManager:
         The maximum number that can be returned is 20.
         returns: at most a list of 20 song objects
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
+        # Get top tracks
         top_tracks = self.spotify.current_user_top_tracks()
         # convert to song objects
         songs = []
@@ -201,6 +213,9 @@ class SpotifyAPIManager:
         The maximum number that can be returned is 20. 
         returns: at most a list of 20 artist objects.
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
+        # Get top artists
         top_artists = self.spotify.current_user_top_artists()
         # convert to artists objects
         artists = []
@@ -210,3 +225,14 @@ class SpotifyAPIManager:
             if len(artists) == 0 or new_artist.name not in [artist.name for artist in artists]:
                 artists.append(new_artist)
         return artists
+
+    def refresh_auth_token(self):
+        """ Checks to see if the member's auth token is
+        expired or not. If it is expired, creates a new auth token.
+        """
+        token = self.auth_manager.get_cached_token()
+        print(token)
+
+        expired = self.auth_manager.is_token_expired(token)
+        if expired:
+            self.auth_manager.refresh_access_token(token["refresh_token"])
