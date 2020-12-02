@@ -224,6 +224,99 @@ def test_get_artist_v1():
     assert artist.artist_id == artist_id
 
 
+def test_get_member_playlists():
+    """ Test ID: Spotify11. Tests that the user's spotify
+    playlists are correctly returned as a list of playlist objects.
+    This also indirectly tests the helper function, create_playlist_object.
+    """
+    # wait two seconds before running this test so that the API
+    # doesn't reject the connection
+    time.sleep(2)
+    spotify_api_manager = SpotifyAPIManager()
+    spotify_api_manager.link_spotify_account()
+    playlists = spotify_api_manager.get_member_playlists()
+    # determine if a list of playlist objects are indeed returned
+    # However, check manually if the details are correct
+    assert len(playlists) != 0
+    assert playlists[0].playlist_name != ""
+    assert playlists[0].songs != []
+
+
+# def test_add_member_playlist():
+#     """ TestID: Spotify13. Tests that a new playlist can 
+#     be added to the member's spotify account. Comment
+#     this test out after running once to avoid created a whole
+#     bunch of copies of the same playlist
+#     """
+#     time.sleep(2)
+#     spotify_api_manager = SpotifyAPIManager()
+#     spotify_api_manager.link_spotify_account()
+#     a_playlist = spotify_api_manager.spotify.playlist("5IkBS6w09oYhVIBRmAvHEv")
+#     playlist = spotify_api_manager.create_playlist_object(a_playlist)
+#     result = spotify_api_manager.add_member_playlist(playlist)
+#     assert result != []
+#     assert result.playlist_name == "Opera"
+#     assert result.songs != []
+
+
+def test_get_recently_played_songs():
+    """ Test ID: Spotify18. Tests that recently
+    played songs can be returned properly as a list of song objects.
+    """
+    # wait two seconds to avoid a timeout from the API
+    time.sleep(2)
+    spotify_api_manager = SpotifyAPIManager()
+    spotify_api_manager.link_spotify_account()
+    recent_songs = spotify_api_manager.get_recently_played_songs(10)
+    assert len(recent_songs) > 0 and len(recent_songs) <= 10
+    assert recent_songs[0].song_name != ""
+
+
+def test_get_top_songs():
+    """ Test ID: Spotify19. Tests that the users top songs
+    can be returned properly as a list of song objects.
+    """
+    # wait two seconds to avoid a timeout from the API
+    time.sleep(2)
+    spotify_api_manager = SpotifyAPIManager()
+    spotify_api_manager.link_spotify_account()
+    top_songs = spotify_api_manager.get_top_songs()
+    assert len(top_songs) > 0 and len(top_songs) <= 20
+    assert top_songs[0].song_name != ""
+
+
+def test_refresh_auth_token():
+    """ Test ID: Spotify20. Tests that an auth token is
+    properly collected from the cache and refreshed.
+    Note that manual testing had to be done, since the tokens
+    take an hour to expire.
+    """
+    # wait two seconds to avoid a timeout from the API
+    time.sleep(2)
+    spotify_api_manager = SpotifyAPIManager()
+    spotify_api_manager.link_spotify_account()
+    # try getting some user info
+    id = spotify_api_manager.get_user_id()
+    # try to refresh the token when it definitely won't be expired
+    spotify_api_manager.refresh_auth_token()
+    assert id == spotify_api_manager.get_user_id()
+    
+
+
+def test_get_top_artists():
+    """ Test ID: Spotify20. Tests that the users top artists
+    can be returned properly as a list of artist objects.
+    The shared account is actually too new to have any top artists,
+    so for now just check that this returns an empty list
+    """
+    # wait two seconds to avoid a timeout from the API
+    time.sleep(2)
+    spotify_api_manager = SpotifyAPIManager()
+    spotify_api_manager.link_spotify_account()
+    top_artists = spotify_api_manager.get_top_artists()
+    assert top_artists == []
+
+
 # Tests for the Query class
 def test_update_filter_list():
     """ Test ID: Query03 - Query07.

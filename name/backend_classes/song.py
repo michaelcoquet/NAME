@@ -118,3 +118,33 @@ class SongDetails:
                                               self.acousticness, self.instrumentalness,
                                               self.liveness, self.valence,
                                               self.time_signature)
+
+
+# Testing
+
+# client_id = '0e48c2ec84d3401e9262a2159a277d82'
+# client_secret = 'aa650130a5b544598f4b058bfd264b21'
+# auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+# spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+# # a random song
+# song1 = '4oVdhvxZrKQTM9ZsUIZa3S'
+# test_song = spotify.track(song1)
+# a_song = Song(test_song)
+
+# # Test for song name
+# expected = 'December'
+# test1 = a_song.song_name
+# if expected != test1:
+#     print("Test1: Error, did not meet the expected result")
+
+# # Test for song id
+# expected2 = '4oVdhvxZrKQTM9ZsUIZa3S'
+# test2 = a_song.song_id
+# if expected2 != test2:
+#     print("Test2: Error, did not meet the expected result")
+
+# # Test for song artists
+# test3 = a_song.song_artist
+
+# # Test for song
