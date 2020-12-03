@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from .group_home_frame import GroupHomeFrame
+from name.backend_classes.group import Group
 
 
 class EditGroupFrame(GroupHomeFrame):
@@ -12,10 +13,6 @@ class EditGroupFrame(GroupHomeFrame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def __init__(self, parent, container):
-        super().__init__(parent, container)
-        self.container = container
-        self.parent = parent
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -91,12 +88,17 @@ class EditGroupFrame(GroupHomeFrame):
     def save_group_command(self):
         """command for the create group button
         """
-        # TODO: BACKEND - add this new group details to the persisiten storage
         self.init_member_menu()
         group_name = self.group_name_entry.get()
         self.group_menu.add_command(label=group_name)
+        member_list = [ "asdfasdfasdfasdff", "testing", "TODO", "change", "This"]
 
-        self.switch_frame("Group Home")
+        group = Group(group_name, self.user.spotify_id, member_list)
+        # add this new group details to the persisiten storage
+        if self.user.create_group(group):
+            self.switch_frame("Group Home")
+        else:
+            tk.messagebox.showerror(title="Error", message="This group already exists")
 
     def add_friend_command(self):
         """command for the add friend button

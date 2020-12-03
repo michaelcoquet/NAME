@@ -1,9 +1,14 @@
-"""CMPT 370 Group 5 Project: NAME
-    Summary: TODO: fill in summary of app
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Summary:  is a piece of software to compare songs using the Spotify API. NAME will help the
+              user find other similar songs to the ones they are interested in, as well as
+              detailed info about their favorite songs.
 """
+import os
 import name.gui as gui
 import tkinter as tk
 from tkinter import Grid
+
+from name.backend_classes.user import User
 
 
 class Name(tk.Tk):
@@ -19,10 +24,9 @@ class Name(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.logged_in = 0
 
         self.title("Nearly Analagous Music Engine")
-        # self.iconbitmap("resources\\ravencon.ico") # TODO: make suren to change this to be
+        self.iconbitmap("name\\resources\\ravencon.ico") # TODO: make suren to change this to be
                                                    # accessable from anywhere
         Grid.rowconfigure(self, 0, weight=1)
         Grid.columnconfigure(self, 0, weight=1)
@@ -34,28 +38,34 @@ class Name(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         container.grid(padx="10", pady="10")
 
+        # working list of songs (displayed in the song_treeview widgets)
+        self.song_object_list = []
+
         # instantiate frame array
         self.frames = {}
 
+        # instantiate the user
+        self.user = User()
+
         # instantiate the frames
-        self.frames[0] = gui.CompareSongsFrame(self, container)
-        self.frames[1] = gui.SearchResultsFrame(self, container)
-        self.frames[2] = gui.SongInfoSearchFrame(self, container)
-        self.frames[3] = gui.SongInfoFrame(self, container)
-        self.frames[4] = gui.SongStatsFrame(self, container)
-        self.frames[5] = gui.MemberHomeFrame(self, container)
-        self.frames[6] = gui.PlaylistInfoFrame(self, container)
-        self.frames[7] = gui.PlaylistEditFrame(self, container)
-        self.frames[8] = gui.AllPlaylistsFrame(self, container)
-        self.frames[9] = gui.CreateSimPlaylistFrame(self, container)
-        self.frames[10] = gui.ListeningHabitsFrame(self, container)
-        self.frames[11] = gui.HomePageFrame(self, container)
+        self.frames[0] = gui.CompareSongsFrame(self, container, self.user)
+        self.frames[1] = gui.SearchResultsFrame(self, container, self.user)
+        self.frames[2] = gui.SongInfoSearchFrame(self, container, self.user)
+        self.frames[3] = gui.SongInfoFrame(self, container, self.user)
+        self.frames[4] = gui.SongStatsFrame(self, container, self.user)
+        self.frames[5] = gui.MemberHomeFrame(self, container, self.user)
+        self.frames[6] = gui.PlaylistInfoFrame(self, container, self.user)
+        self.frames[7] = gui.PlaylistEditFrame(self, container, self.user)
+        self.frames[8] = gui.AllPlaylistsFrame(self, container, self.user)
+        self.frames[9] = gui.CreateSimPlaylistFrame(self, container, self.user)
+        self.frames[10] = gui.ListeningHabitsFrame(self, container, self.user)
+        self.frames[11] = gui.HomePageFrame(self, container, self.user)
 
         #instantiate group frames
-        self.frames[12] = gui.EditGroupFrame(self, container)
-        self.frames[13] = gui.GroupStatsFrame(self, container)
-        self.frames[14] = gui.EditGroupPlaylistFrame(self, container)
-        self.frames[15] = gui.GroupHomeFrame(self, container)
+        self.frames[12] = gui.EditGroupFrame(self, container, self.user)
+        self.frames[13] = gui.GroupStatsFrame(self, container, self.user)
+        self.frames[14] = gui.EditGroupPlaylistFrame(self, container, self.user)
+        self.frames[15] = gui.GroupHomeFrame(self, container, self.user)
 
         for i in self.frames:
             self.frames[i].grid_forget()
@@ -135,6 +145,8 @@ def main():
     """
     app = Name()
     app.mainloop()
+    if os.path.exists(".cache"):
+        os.remove(".cache")
 
 if __name__ == "__main__":
     main()

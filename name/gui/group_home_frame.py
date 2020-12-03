@@ -15,11 +15,6 @@ class GroupHomeFrame(NameFrame):
 
     group_name = "TODO: change this"
 
-    def __init__(self, parent, container):
-        super().__init__(parent, container)
-        self.container = container
-        self.parent = parent
-
     def grid_forget(self):
         super().grid_forget()
         self.edit_playlist_button.grid_forget()

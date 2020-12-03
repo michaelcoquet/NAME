@@ -6,8 +6,10 @@
 import os
 import base64
 import json
-from spotify_api_manager import SpotifyAPIManager
-from playlist import Playlist
+import pymongo
+from name.backend_classes.spotify_api_manager import SpotifyAPIManager
+from name.backend_classes.playlist import Playlist
+from name.backend_classes.group import Group
 
 
 class PersistentStorage:
@@ -22,22 +24,22 @@ class PersistentStorage:
         self.encrypted_spotify_id = self.encrypt(unencrypted_spotify_id)
 
         # init database
-        self.init_json_file()
+        self.init_mongodb()
 
-    def init_json_file(self):
+    def init_mongodb(self):
         """ this will check if the json file already exists and open it for reading/writing if
             it does, and create it if doesn't already exist
         """
-        if os.path.exists("database.json") == False:
-            data = [
-                {
-                "encrypted_spotify_id": self.encrypted_spotify_id,
-                "current_playlist": {},
-                "groups": []
-                }
-            ]
-            with open("database.json", "w") as json_file:
-                json.dump(data, json_file)
+        mdb_str = "mongodb+srv://cmpt370group5:pennywise_1640@namecluster.8pmis.mongodb.net/use\
+r_db?retryWrites=true&w=majority"
+        try:
+            self.client = pymongo.MongoClient(mdb_str)
+        except Exception as e:
+            print(e)
+            exit()
+
+        self.db = self.client.user_db
+        self.collection = self.db.user_collection
 
     def create_new_member(self):
         """ This will initiate a new user in the database, this will simply create a blank entry
@@ -45,16 +47,13 @@ class PersistentStorage:
             another step
         """
         if self.check_if_user_exists() == False:
-            new_data ={
+            new_data = {
                 "encrypted_spotify_id": self.encrypted_spotify_id,
                 "current_playlist": {},
                 "groups": []
-                }
-            with open("database.json", "r+") as json_file:
-                data = json.load(json_file)
-                data.append(new_data)
-                json_file.seek(0)
-                json.dump(data, json_file)
+            }
+
+            self.collection.insert_one(new_data)
 
     def check_if_user_exists(self):
         """ check if the user already has information stored
@@ -62,14 +61,12 @@ class PersistentStorage:
         Returns:
             exists (bool): true if user exists false otherwie
         """
-        found = False
-        with open("database.json") as json_file:
-            data = json.load(json_file)
-            for d in data:
-                if(d["encrypted_spotify_id"] == self.encrypted_spotify_id):
-                    found = True
+        query = { "encrypted_spotify_id": self.encrypted_spotify_id }
 
-        return found
+        if self.collection.count_documents(query, limit = 1) > 0:
+            return True
+        else:
+            return False
 
     def save_current_playlist(self, playlist):
         """ puts the active playlist in the input into the users persistent storage
@@ -78,35 +75,78 @@ class PersistentStorage:
             playlist (Playlist): list of playlist objects to store
         """
         if self.check_if_user_exists():
-            with open("database.json") as json_file:
-                data = json.load(json_file)
-                for d in data:
-                    if(d["encrypted_spotify_id"] == self.encrypted_spotify_id):
-                        # found the correct users file now load their playlists with the input
-                        # list
-                        d["current_playlist"] = dict(playlist)
-                        # save it back to the json
-                        with open("database.json", "w") as json_write:
-                            json.dump(data, json_write)
-                        break
-        else:
-            print("error: user doesnt exist yet, create it first")
+           query = { "encrypted_spotify_id": self.encrypted_spotify_id }
 
-    def check_if_group_exists(self, group_id):
+           new_data = { "$set": {
+               "encrypted_spotify_id": self.encrypted_spotify_id,
+               "current_playlist": dict(playlist),
+               "groups": []
+           }}
+
+           self.collection.update_one(query, new_data)
+
+    def get_current_playlist(self):
+        """ gets the current_playlist entry in the database, then converts to playlist object
+
+        Returns:
+            playlist_obj (Playlist): playlist object rebuilt from the json
+        """
+        query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+
+        # if self.check_if_user_exists():
+        #     print(self.collection.find_one(query))
+
+    def check_if_group_exists(self, group_id, group_name):
         """ check if the given group exists or not
 
         Args:
             group_id (integer): the id for the desired group
         """
-        return 1
+        query = { "encrypted_spotify_id": self.encrypted_spotify_id,
+                  "groups": {"$elemMatch": { "group_id": group_id}} }
+        query_2 = { "encrypted_spotify_id": self.encrypted_spotify_id,
+                    "groups": {"$elemMatch": { "group_name": group_name}} }
 
-    def save_new_group(self, new_group):
-        """ save a new group to the users file
+        if self.collection.count_documents(query, limit = 1) > 0:
+            return True
 
-        Args:
-            new_group(Group): the new group to be save to the users file
+        if self.collection.count_documents(query_2, limit=1) > 0:
+            return True
+
+        return False
+
+    def create_new_group(self, group_name, owner_id, member_list):
+        """ save a new empty group to the users file
         """
-        return 1
+        query = { "group_counter": {"$exists": "true"} }
+
+        if self.collection.count_documents(query, limit = 1) > 0:
+            q = self.collection.find_one(query)
+            q["group_counter"] = q["group_counter"] + 1
+            self.collection.update_one(query, {"$set": { "group_counter": q["group_counter"]}})
+        else:
+            return False
+
+        query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+
+        if self.check_if_group_exists(q["group_counter"], group_name) == False:
+            new_group = Group(group_name, owner_id, member_list)
+            new_group.assign_id(q["group_counter"])
+            groups = self.get_users_groups()
+            groups.append(new_group)
+            group_string = []
+            for group in groups:
+                group_string.append(dict(group))
+            new_data = {
+                "encrypted_spotify_id": self.encrypted_spotify_id,
+                "groups": group_string
+            }
+
+            self.collection.update_one(query, { "$set": new_data })
+        else:
+            return False
+
+        return True
 
     def update_group(self, group_id):
         """ update the given group
@@ -122,7 +162,17 @@ class PersistentStorage:
         Returns:
             groups (Group[]): list of all Group objects on file
         """
-        return 1
+        if self.check_if_user_exists():
+            query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+            groups = []
+            for group_dict in self.collection.find_one(query)["groups"]:
+                new_group = Group(group_dict["group_name"],
+                                  group_dict["owner_id"],
+                                  group_dict["member_list"])
+                new_group.assign_id(group_dict["group_id"])
+                groups.append(new_group)
+
+            return groups
 
     def encrypt(self, input):
         """ function to help encrypt the data that needs encrypting
@@ -146,57 +196,46 @@ class PersistentStorage:
         """
         return base64.b64decode(input.encode("utf-8")).decode("utf-8")
 
+# # testing
 
-# testing
+# # need to be logged into the test spotify account: cmpt370.group5@gmail.com account for these
+# # tests to pass
+# sp_manager = SpotifyAPIManager()
+# sp_manager.link_spotify_account()
 
-# need to be logged into the test spotify account: cmpt370.group5@gmail.com account for these
-# tests to pass
-sp_manager = SpotifyAPIManager()
-sp_manager.link_spotify_account()
+# sp_id = sp_manager.get_user_id()
 
-sp_id = sp_manager.get_user_id()
+# ps = PersistentStorage(sp_id)
 
-ps = PersistentStorage(sp_id)
+#     # test 0: encrypt()
+# unencrypted_text = "encrypt this testing message"
+# encrypted_text = ps.encrypt(unencrypted_text)
 
-    # test 0: encrypt()
-unencrypted_text = "encrypt this testing message"
-encrypted_text = ps.encrypt(unencrypted_text)
+# assert(encrypted_text != unencrypted_text)
 
-assert(encrypted_text != unencrypted_text)
+#     # test 1: decrypt()
+# assert(ps.decrypt(encrypted_text) == unencrypted_text)
 
-    # test 1: decrypt()
-assert(ps.decrypt(encrypted_text) == unencrypted_text)
+#     # test 2: decrypting again after reinitialization
+# ps = PersistentStorage(sp_id)
+# assert(ps.decrypt(encrypted_text) == unencrypted_text)
 
-    # test 2: decrypting again after reinitialization
-ps = PersistentStorage(sp_id)
-assert(ps.decrypt(encrypted_text) == unencrypted_text)
+#     # test 3: create new member
+# ps.create_new_member()
 
-    # test 3: create new member
-ps.create_new_member()
+#     # test 4: check if user exists
+# assert(ps.check_if_user_exists())
 
-found = 0
-with open("database.json") as json_file:
-    data = json.load(json_file)
-    for d in data:
-        if(d["encrypted_spotify_id"] == ps.encrypt(sp_id)):
-            found = 1
+#     # test 5: save_current_playlist
+# playlists = sp_manager.get_member_playlists()
 
-assert(found)
+# ps.save_current_playlist(playlists[2])
 
-    # test 4: check if user exists
-assert(ps.check_if_user_exists())
+# query_obj = {
+#     "encrypted_spotify_id": ps.encrypted_spotify_id,
+#     "current_playlist": dict(playlists[2]),
+#     "groups": []
+# }
 
-    # test 5: save_current_playlist
+# assert(ps.collection.count_documents(query_obj, limit=1) > 0)
 
-playlists = sp_manager.get_member_playlists()
-
-ps.save_current_playlist(playlists[2])
-
-found = 0
-with open("database.json") as json_file:
-    data = json.load(json_file)
-    for d in data:
-        if d["encrypted_spotify_id"] == ps.encrypt(sp_id):
-                if d["current_playlist"]["playlist_name"] == "testing1":
-                    found = 1
-assert(found)

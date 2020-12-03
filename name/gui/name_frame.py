@@ -2,14 +2,13 @@
 """
 import time
 import tkinter as tk
+from tkinter import simpledialog
 from tkinter import StringVar
 from tkinter import Grid
 from tkinter import Menu
 from tkinter import ttk
-from tkinter import messagebox
 
 from name.backend_classes import Query
-from name.backend_classes import SpotifyAPIManager
 
 
 class NameFrame(tk.Frame):
@@ -18,10 +17,12 @@ class NameFrame(tk.Frame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def __init__(self, parent, container):
+    def __init__(self, parent, container, user):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.container = container
+        self.user = user
+
         self.init_upper_grid()
         self.init_middle_grid()
         self.init_lower_grid()
@@ -38,9 +39,6 @@ class NameFrame(tk.Frame):
         self.api_search_results = []
 
         self.final_song_selection = []
-
-        #instantiate the spotify api manager
-        self.spotify_manager = SpotifyAPIManager()
 
     def grid_forget(self):
         self.upper_grid.grid_forget()
@@ -73,6 +71,10 @@ class NameFrame(tk.Frame):
         self.group_menu.add_command(label="Create Group", command=self.create_group)
         self.group_menu.add_separator()
         self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
+
+        for group in self.user.groups:
+            self.group_menu.add_command(label=group.group_name)
+
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
 
@@ -133,16 +135,16 @@ class NameFrame(tk.Frame):
         """ Button command to link to a spotify account and if succesfully linked switch to the
             member frame (frame_id = 2).
         """
-        if self.spotify_manager.link_spotify_account() == True:
+        if self.user.link_spotify_account() == True:
             self.init_member_menu()
         else:
             print("error unsuccessfully linked spotify account")
 
     def log_out(self):
-        """ Command for the logout button, should be able to just reinstantiate Spotify API
-            Manager
+        """ Command for the logout button
         """
-        self.spotify_manager = SpotifyAPIManager()
+        # delete the cache file
+        self.user.logout()
         self.init_guest_menu()
 
     def member_home_command(self):
@@ -153,10 +155,14 @@ class NameFrame(tk.Frame):
     def get_id_command(self):
         """ Command for the get shareable ID menu item
         """
-        # TODO: BACKEND - Return the users spotify ID that they can share with other users to
-        #                 form groups
+        # Return the users spotify ID that they can share with other users to
+        # form groups
+        if self.user.has_account:
+            message = self.user.get_account_id()
+            ShareableIdDialog(self.container, title="NAME", text=message)
+
         # TODO: GUI     - Display the returned ID in the following messagebox popup
-        messagebox.showinfo("My Shareable ID", "this is the id")
+
 
     def start_single_search(self, title, filters):
         """ Search the spotify API for the given song
@@ -166,6 +172,7 @@ class NameFrame(tk.Frame):
             filters (dict): the selected filters
         """
         # TODO: BACKEND - single song search connection return a list of songs
+        # TODO: do this in another thread
         self.api_search_results = self.query_object.search_single_song(title)
         self.open_song_search_popup(self.api_search_results)
 
@@ -180,6 +187,8 @@ class NameFrame(tk.Frame):
         Returns:
             song[]: return a list of songs that match (or partial match) the title
         """
+
+
         return 1
 
     def open_song_search_popup(self, api_results):
@@ -187,6 +196,9 @@ class NameFrame(tk.Frame):
         """
         self.grab_set()
         self.popup = tk.Toplevel(self)
+        # remove windows borders and stuff with splash screen option
+        self.popup.overrideredirect(1)
+        self.popup.attributes("-topmost", 1)
         self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
         self.popup.title("Pick a Song")
 
@@ -204,6 +216,7 @@ class NameFrame(tk.Frame):
                 artists_string_list.append(artist.name)
             artists_string = ", ".join(artists_string_list)
             formated_songs.append(song.song_name + "  -  " + artists_string)
+            artists_string_list.clear()
 
         self.song_select_dropdown = tk.OptionMenu(
             self.popup,
@@ -211,6 +224,27 @@ class NameFrame(tk.Frame):
             *formated_songs,
             command=self.song_select_dropdown_command)
         self.song_select_dropdown.pack()
+
+        # update stuff first before getting widths
+        self.update_idletasks()
+
+        # find the location of the cursor
+        x = self.winfo_pointerx() - (self.popup.winfo_width()/2)
+        y = self.winfo_pointery() - (self.popup.winfo_height()/2)
+        # open the popup window on the cursor
+        self.popup.geometry('+%d+%d' % (x, y))
+
+        # bind the up/down keys to scroll the list of songs
+        self.parent.bind("<Up>", self.scroll_song_select_up)
+        self.parent.bind("<Down>", self.scroll_song_select_down)
+
+    def scroll_song_select_up(self, event):
+        # TODO: try to implement this
+        return 1
+
+    def scroll_song_select_down(self, event):
+        # TODO: try to implement this
+        return 1
 
     def open_search_progress(self):
         """open a new window that updates the user on the progress of similarity playlist
@@ -301,7 +335,14 @@ class NameFrame(tk.Frame):
 
         # TODO : GUI - need to update the search results screen with the results
         # for testing purposes
-        song_list = ["hfhsjkhfs", "uiosfios", "sywyquq", "asdfsd", "ddddd", "ccccc"]
+        song_list = [
+                        ["TODO: title1", "TODO: album1", "TODO: artist1"],
+                        ["TODO: title2", "TODO: album2", "TODO: artist2"],
+                        ["TODO: title3", "TODO: album3", "TODO: artist3"],
+                        ["TODO: title4", "TODO: album4", "TODO: artist4"],
+                        ["TODO: title5", "TODO: album5", "TODO: artist5"],
+                        ["TODO: title6", "TODO: album6", "TODO: artist6"],
+                    ]
 
         self.parent.update_search_results(song_list)
 
@@ -320,7 +361,34 @@ class NameFrame(tk.Frame):
         self.popup.destroy()
         self.grab_release()
 
-    def song_select_dropdown_command(self, item):
-        """ function to get the users selection of the song select dropdown box
-        """
-        self.close_single_search_window()
+
+class ShareableIdDialog(simpledialog.Dialog):
+
+    def __init__(self, parent, title=None, text=None):
+        self.data = text
+        simpledialog.Dialog.__init__(self, parent, title=title)
+
+    def body(self, parent):
+        self.lbl = tk.Label(self, text="Your Spotify ID (share with your friends): ")
+        self.lbl.pack(side=tk.TOP)
+
+        self.text = tk.Text(self, width=25, height=2)
+        self.text.pack(fill="both", expand=False)
+
+        self.text.insert("1.0", self.data)
+
+        return self.text
+
+    def buttonbox(self):
+        self.copy = tk.Button(self, text="Copy to Clipboard", command=self.copy_command)
+        self.copy.pack(side=tk.LEFT)
+
+        self.close_button = tk.Button(self, text="Close", command=self.destroy)
+        self.close_button.pack(side=tk.BOTTOM)
+
+    def copy_command(self):
+        self.clipboard_clear()
+        self.clipboard_append(self.text.get("1.0", tk.END))
+
+        self.update()
+        self.destroy()
