@@ -302,9 +302,8 @@ def test_refresh_auth_token():
     assert id == spotify_api_manager.get_user_id()
     
 
-
 def test_get_top_artists():
-    """ Test ID: Spotify20. Tests that the users top artists
+    """ Test ID: Spotify21. Tests that the users top artists
     can be returned properly as a list of artist objects.
     The shared account is actually too new to have any top artists,
     so for now just check that this returns an empty list
@@ -315,6 +314,26 @@ def test_get_top_artists():
     spotify_api_manager.link_spotify_account()
     top_artists = spotify_api_manager.get_top_artists()
     assert top_artists == []
+
+
+def test_get_song_genres():
+    """ Test ID: Spotify22. Tests that a list of genres
+    are returned correctly for a given song object. Make sure
+    this works whether or not the user is logged in to spotify.
+    """
+    # subtest 1: not logged in
+    spotify_api_manager = SpotifyAPIManager()
+    songs = spotify_api_manager.search_songs(["Highway to Hell"])
+    song = songs["found songs"][0]
+    genres = spotify_api_manager.get_song_genres(song)
+    assert genres != []
+    # rock should be here, so check to see if it is
+    assert "rock" in genres
+    # subtest 2: logged in
+    spotify_api_manager.link_spotify_account()
+    genres = spotify_api_manager.get_song_genres(song)
+    assert genres != []
+    assert "rock" in genres
 
 
 # Tests for the Query class

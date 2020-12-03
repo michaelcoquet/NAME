@@ -226,13 +226,26 @@ class SpotifyAPIManager:
                 artists.append(new_artist)
         return artists
 
+    def get_song_genres(self, song):
+        """ Given a song object, find all the genres
+        associated with the song. 
+        song: a song object
+        returns: a list of genres (strings)
+        """
+        # to get genres, we need to look at the artist info
+        artists = song.song_artist
+        # get a list of genres for each artist
+        genres = []
+        for artist in artists:
+            artist_info = self.spotify.artist(artist.artist_id)
+            genres.extend(artist_info["genres"])
+        return genres
+
     def refresh_auth_token(self):
         """ Checks to see if the member's auth token is
         expired or not. If it is expired, creates a new auth token.
         """
         token = self.auth_manager.get_cached_token()
-        print(token)
-
         expired = self.auth_manager.is_token_expired(token)
         if expired:
             self.auth_manager.refresh_access_token(token["refresh_token"])
