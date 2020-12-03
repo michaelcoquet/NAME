@@ -16,12 +16,11 @@ class PersistentStorage:
     """ class to handle the storage of data in json format (see wiki persistent storage)
     """
 
-    def __init__(self, unencrypted_spotify_id):
+    def __init__(self, spotify_id):
         """ unencrypted_spotify_id : the users unencrypted spotify ID, this class will encrypt
                                      the id before saving to disk for privacy concerns
         """
-        self.unencrypted_spotify_id = unencrypted_spotify_id
-        self.encrypted_spotify_id = self.encrypt(unencrypted_spotify_id)
+        self.spotify_id = spotify_id
 
         # init database
         self.init_mongodb()
@@ -48,7 +47,7 @@ r_db?retryWrites=true&w=majority"
         """
         if self.check_if_user_exists() == False:
             new_data = {
-                "encrypted_spotify_id": self.encrypted_spotify_id,
+                "spotify_id": self.spotify_id,
                 "current_playlist": {},
                 "groups": []
             }
@@ -61,7 +60,7 @@ r_db?retryWrites=true&w=majority"
         Returns:
             exists (bool): true if user exists false otherwie
         """
-        query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+        query = { "spotify_id": self.spotify_id }
 
         if self.collection.count_documents(query, limit = 1) > 0:
             return True
@@ -75,10 +74,10 @@ r_db?retryWrites=true&w=majority"
             playlist (Playlist): list of playlist objects to store
         """
         if self.check_if_user_exists():
-           query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+           query = { "spotify_id": self.spotify_id }
 
            new_data = { "$set": {
-               "encrypted_spotify_id": self.encrypted_spotify_id,
+               "spotify_id": self.spotify_id,
                "current_playlist": dict(playlist),
                "groups": []
            }}
@@ -91,7 +90,7 @@ r_db?retryWrites=true&w=majority"
         Returns:
             playlist_obj (Playlist): playlist object rebuilt from the json
         """
-        query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+        query = { "spotify_id": self.spotify_id }
 
         # if self.check_if_user_exists():
         #     print(self.collection.find_one(query))
@@ -102,9 +101,9 @@ r_db?retryWrites=true&w=majority"
         Args:
             group_id (integer): the id for the desired group
         """
-        query = { "encrypted_spotify_id": self.encrypted_spotify_id,
+        query = { "spotify_id": self.spotify_id,
                   "groups": {"$elemMatch": { "group_id": group_id}} }
-        query_2 = { "encrypted_spotify_id": self.encrypted_spotify_id,
+        query_2 = { "spotify_id": self.spotify_id,
                     "groups": {"$elemMatch": { "group_name": group_name}} }
 
         if self.collection.count_documents(query, limit = 1) > 0:
@@ -127,7 +126,7 @@ r_db?retryWrites=true&w=majority"
         else:
             return False
 
-        query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+        query = { "spotify_id": self.spotify_id }
 
         if self.check_if_group_exists(q["group_counter"], group_name) == False:
             new_group = Group(group_name, owner_id, member_list)
@@ -138,7 +137,7 @@ r_db?retryWrites=true&w=majority"
             for group in groups:
                 group_string.append(dict(group))
             new_data = {
-                "encrypted_spotify_id": self.encrypted_spotify_id,
+                "spotify_id": self.spotify_id,
                 "groups": group_string
             }
 
@@ -163,7 +162,7 @@ r_db?retryWrites=true&w=majority"
             groups (Group[]): list of all Group objects on file
         """
         if self.check_if_user_exists():
-            query = { "encrypted_spotify_id": self.encrypted_spotify_id }
+            query = { "spotify_id": self.spotify_id }
             groups = []
             for group_dict in self.collection.find_one(query)["groups"]:
                 new_group = Group(group_dict["group_name"],
@@ -174,27 +173,18 @@ r_db?retryWrites=true&w=majority"
 
             return groups
 
-    def encrypt(self, input):
-        """ function to help encrypt the data that needs encrypting
-
-        Args:
-            input (string): the unencrypted input string to be encrypted
-
-        Returns:
-            output (string): the enrypted input string
+    def find_invites(self):
+        """ find group invites for the given member
         """
-        return base64.b64encode(input.encode("utf-8")).decode("utf-8")
+        # { "groups": {"$elemMatch": { "member_list": {"$in": ["vha6pttyppu7tnrc0l1j4k4de"]} }}}
+        query = { "groups":
+         {"$elemMatch": { "member_list": {"$in": [self.spotify_id]} }}}
 
-    def decrypt(self, input):
-        """ function to help decrypt the data thats needs decrypting
+        if self.check_if_user_exists():
+            if self.collection.count_documents(query, limit = 1) > 0:
+                return True
 
-        Args:
-            input (string): the encrypted input string
-
-        Returns:
-            output (string): the unencrypted input string
-        """
-        return base64.b64decode(input.encode("utf-8")).decode("utf-8")
+        return False
 
 # # testing
 

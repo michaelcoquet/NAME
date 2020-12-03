@@ -43,3 +43,19 @@ class Group:
     def update_playlist(self):
         return 1
 
+    def add_member(self, member_id):
+        """ add a member to the list
+
+        Args:
+            member_id (string): unencrypted spotify id
+        """
+        self.member_list.append(member_id)
+
+    def member_exists(self, member_id):
+        """ check if the member already exists in the list
+        """
+        for member in self.member_list:
+            if member == member_id:
+                return True
+
+        return False

@@ -47,7 +47,7 @@ class User:
         """
         self.groups.append(group)
         if self.persistent_storage.create_new_group(group.group_name,
-            self.persistent_storage.encrypted_spotify_id, group.member_list) == False:
+            self.persistent_storage.spotify_id, group.member_list) == False:
             return False
         else:
             return True
@@ -84,12 +84,27 @@ class User:
                 # deserialize here
                 self.current_playlist = self.persistent_storage.get_current_playlist()
                 self.groups = self.persistent_storage.get_users_groups()
+                # check if they have any group invites already
+                if self.persistent_storage.find_invites():
+                    print("found some invites")
+                else:
+                    print("no invites")
             else:
                 self.persistent_storage.create_new_member()
-                # TODO: check if they have any group invites already
+                # check if they have any group invites already
+                if self.persistent_storage.find_invites():
+                    print("found some invites")
+                else:
+                    print("no invites")
             return True
         else:
             return False
+
+    def find_group_invites(self):
+        """ search for groups that I am a member of but dont yet show up in this objects group
+            list, indicating an unaccepted group invite
+        """
+
 
     def logout(self):
         """ log out the current user
