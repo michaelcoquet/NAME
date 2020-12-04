@@ -116,8 +116,12 @@ class MemberHomeFrame(HomePageFrame):
         """
         self.switch_frame("Listening Habits")
         # populate the listening habits page with info
+        # top songs
         top_songs = self.parent.spotify_manager.get_top_songs()
         self.parent.frames[self.parent.get_frame_id("Listening Habits")].display_top_songs(top_songs)
+        # recent songs
+        recent_songs = self.parent.spotify_manager.get_recently_played_songs(limit=25)
+        self.parent.frames[self.parent.get_frame_id("Listening Habits")].display_recent_songs(recent_songs)
 
     def edit_command(self):
         """command for the edit button
