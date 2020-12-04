@@ -92,7 +92,23 @@ class User:
                     for invite in invite_list:
                         t = "Would you like to join group: " + str(invite["group_name"]) + \
                             "(id: " + str(invite["group_id"]) + ")"
-                        tk.messagebox.askyesno(title="Group Invitation", message=t)
+
+                        answer = tk.messagebox.askyesnocancel(
+                                title="Group Invitation", message=t
+                            )
+
+                        if answer == True:
+                            # invite accepted add the group to this users group list
+                            print("invite accepted")
+                            invite_group = self.persistent_storage.get_group(invite["group_id"])
+                            print(dict(invite_group))
+                        elif answer == False:
+                            # invite decline remove this user from the other groups member list
+                            print("invite declined")
+                        else:
+                            # invite cancelled, ask again next time they log in
+                            print("invite postponed")
+
                     return True
             else:
                 self.persistent_storage.create_new_member()

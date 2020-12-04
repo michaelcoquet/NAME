@@ -174,17 +174,39 @@ r_db?retryWrites=true&w=majority"
 
             return groups
 
-    def get_group(self, group_id, group_name):
+    def get_group(self, group_id):
         """ return the desired group object with given id
 
         Args:
             group_id (int64): the desired group object to return
-            group_name (string): the unique group name
         """
-        if self.check_if_user_exists() & self.check_if_group_exists(group_id, group_name):
-            query = { "groups": {"$elemMatch": { "group_id": group_id}} }
-            q_curs = self.collection.find_one(query)
-            print(q_curs)
+        if self.check_if_user_exists():
+            agg = [
+                    {
+                        '$unwind': {
+                            'path': '$groups'
+                        }
+                    }, {
+                        '$match': {
+                            'groups.member_list': self.spotify_id
+                        }
+                    }
+                ]
+
+            q_curs = self.collection.aggregate(agg)
+            for doc in q_curs:
+                # forget about my own group list
+                if doc["spotify_id"] != self.spotify_id:
+                    return_group = Group(
+                            doc["groups"]["group_name"],
+                            doc["groups"]["owner_id"],
+                            doc["groups"]["member_list"]
+                    )
+                    return_group.assign_id(doc["groups"]["group_id"])
+                    return_group.update_playlists(doc["groups"]["group_playlists"])
+                    return return_group
+
+            return None
 
     def find_invites(self):
         """ find group invites for the given member
@@ -198,7 +220,7 @@ r_db?retryWrites=true&w=majority"
                     }
                 }, {
                     '$match': {
-                        'groups.member_list': 'vha6pttyppu7tnrc0l1j4k4de'
+                        'groups.member_list': self.spotify_id
                     }
                 }
               ]

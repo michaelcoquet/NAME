@@ -43,6 +43,15 @@ class Group:
     def update_playlist(self):
         return 1
 
+    def update_playlists(self, playlists):
+        """ give a list of playlist objects to replace group_playlists with
+            helpful for making new group objects or loading them from storage
+
+        Args:
+            playlists (Playlist[]): new list of group playlists
+        """
+        self.group_playlists = playlists
+
     def add_member(self, member_id):
         """ add a member to the list
 
