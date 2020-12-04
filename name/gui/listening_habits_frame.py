@@ -97,8 +97,9 @@ class ListeningHabitsFrame(MemberHomeFrame):
                     genres[genre] = 1
                 else:
                     genres[genre] += 1
-        # get top 5 genres
-        top_genres = dict(sorted(genres.items(), key=operator.itemgetter(1), reverse=True)[:5])
+        # get top 5 genres, or less if fewer are returned
+        limit = min(5, len(genres.keys()))
+        top_genres = dict(sorted(genres.items(), key=operator.itemgetter(1), reverse=True)[:limit])
         # first add some newlines so it looks nicer
         self.top_songs_scrolledtext.insert("end", "\n\n\n")
         self.top_songs_scrolledtext.insert("end", "Your top 5 genres are: \n\n")
