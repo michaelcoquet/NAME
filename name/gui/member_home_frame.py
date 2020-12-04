@@ -117,7 +117,7 @@ class MemberHomeFrame(HomePageFrame):
         self.switch_frame("Listening Habits")
         # populate the listening habits page with info
         d = "testing"
-        self.parent.frames[self.parent.get_frame_id("Listening Habits")].display_top_songs(d)
+        self.parent.frames[self.parent.get_frame_id("Listening Habits")].display(d)
 
     def edit_command(self):
         """command for the edit button

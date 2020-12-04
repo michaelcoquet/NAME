@@ -29,15 +29,15 @@ class ListeningHabitsFrame(MemberHomeFrame):
         self.save_spotify_button.grid_forget()
         self.playlist_info_button.grid_forget()
 
-
     def init_middle_grid(self):
         super().init_middle_grid()
+        self.song_treeview.grid_forget()
 
-        self.top_songs_scrolledtext = st.ScrolledText(self.middle_grid)
+        self.top_songs_scrolledtext = st.ScrolledText(self.middle_grid, width=40)
         self.top_songs_scrolledtext.grid(row=0, column=0, sticky="nsew")
-        self.top_artists_scrolledtext = st.ScrolledText(self.middle_grid)
+        self.top_artists_scrolledtext = st.ScrolledText(self.middle_grid, width=40)
         self.top_artists_scrolledtext.grid(row=0, column=1, sticky="nsew")
-        self.recent_songs_scrolledtext = st.ScrolledText(self.middle_grid)
+        self.recent_songs_scrolledtext = st.ScrolledText(self.middle_grid, width=40)
         self.recent_songs_scrolledtext.grid(row=0, column=2, sticky="nsew")
 
     def init_upper_grid(self):
