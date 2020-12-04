@@ -3,6 +3,7 @@
 import tkinter as tk
 
 from .home_page_frame import HomePageFrame
+from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
 class CompareSongsFrame(HomePageFrame):
     """ TODO: fill in
@@ -32,7 +33,13 @@ class CompareSongsFrame(HomePageFrame):
         """ command for song stats btn
         """
         self.switch_frame("Song Stats")
-        # TODO: BACKEND - Return similarities of the two or more selected songs
 
-        # TODO: GUI - Update the srcolledText widget in the song stats frame with the
-        #             returned data
+        # Return similarities of the two or more selected songs
+        self.formatted_filters = self.convert_filters_list(self.parent.song_object_list)
+        sim_scores_obj = CheckingSongSimilarity(self.formatted_filters)
+        sim_score = sim_scores_obj.get_songs_similarity_score(self.parent.song_object_list)
+
+        # Update the srcolledText widget in the song stats frame with the
+        # returned data
+        d = [int(sim_score), self.parent.song_object_list]
+        self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)

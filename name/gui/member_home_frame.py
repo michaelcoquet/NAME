@@ -20,9 +20,13 @@ class MemberHomeFrame(HomePageFrame):
         self.listening_habits_button.grid_forget()
         self.get_song_info_button.grid_forget()
 
+    def grid_remember(self):
+        super().grid_remember()
+
     def init_lower_grid(self):
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
+        self.remove_button.grid_forget()
         self.similar_songs_button.grid_forget()
 
         self.edit_button = tk.Button(

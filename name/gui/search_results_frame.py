@@ -21,6 +21,8 @@ class SearchResultsFrame(HomePageFrame):
     def init_lower_grid(self):
         super().init_lower_grid()
         self.remove_all_button.grid_forget()
+        self.remove_button.grid_forget()
+
         self.start_over_button = tk.Button(self.lower_grid, command=self.start_over_command)
         self.start_over_button["text"] = "Start Over"
         self.start_over_button.grid(row=0, column=0)
@@ -42,3 +44,17 @@ class SearchResultsFrame(HomePageFrame):
         """command for start over button
         """
         self.switch_frame("Home Page")
+
+    def display_data(self, songlist):
+        """ display the results of the similarity search in the tree view
+        """
+        artists_string_list = []
+        for song in songlist:
+            for artist in song.song_artist:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+
+            artists_string_list.clear()
+
+            self.song_treeview.insert("", "end", values=(song.song_name,
+                            song.album_details.name, artists_string))

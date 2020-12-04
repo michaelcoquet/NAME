@@ -5,23 +5,26 @@ from name.backend_classes.song_similarity import SongSimilarity
 class Query:
 
     def __init__(self, filter_list):
-        """ Instantiation function. 
+        """ Instantiation function.
         filter_list: A list of filter names to search for
         """
         self.filter_list = filter_list
 
     def update_filter_list(self, filter_list):
-        """ Updates the filter list. 
+        """ Updates the filter list.
         filter_list: updated filter list
         """
         self.filter_list = filter_list
 
-    def search_single_song(self, song):
+    def search_single_song(self, song, offset=0):
         """ Searches for a single song.
-        returns: a list of song objects(from the Song class) 
+        song: name or formatted query to search for.
+        offset: offest of the song results to return. Default is
+        0, which returns the first page of results.
+        returns: a list of song objects(from the Song class)
         """
         spotify_api_manager = SpotifyAPIManager()
-        search_result = spotify_api_manager.search_songs([song])
+        search_result = spotify_api_manager.search_songs(song_list=[song], offset=offset)
         return search_result["found songs"]
 
     def get_song_info(self, song):
@@ -54,7 +57,7 @@ class Query:
         return filtered_song_details
 
     def get_similarity_score(self, songs):
-        """ Gets a similarity score for the given songs. 
+        """ Gets a similarity score for the given songs.
         Only considers features from the filter list.
         songs: a list of song objects
         returns: a similarity score value (float)

@@ -4,9 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import StringVar
 
-
 from .name_frame import NameFrame
-
+from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
 class HomePageFrame(NameFrame):
     """ Could possibly be a splash screen but for now this is the home page screen
@@ -22,7 +21,9 @@ class HomePageFrame(NameFrame):
         super().__init__(parent, container, user)
         self.frame_id = self.parent.get_frame_id("Home Page")
 
-        self.songs_in_list = []
+        self.parent.song_object_list = []
+
+        self.formatted_filters = []
 
     def grid_forget(self):
         super().grid_forget()
@@ -41,6 +42,7 @@ class HomePageFrame(NameFrame):
         super().grid_remember()
         self.song_search_entry.delete(0, "end")
         self.song_search_entry.insert(0, "Find a Song")
+        self.display_data(self.parent.song_object_list)
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -109,7 +111,7 @@ class HomePageFrame(NameFrame):
         self.filters_dropdown.grid(row=2, column=0)
 
         self.selected_filters = {}
-        self.choices = (
+        self.choices = [
                 "duration_ms",
                 "key",
                 "tempo",
@@ -123,7 +125,7 @@ class HomePageFrame(NameFrame):
                 "liveness",
                 "valence",
                 "time_signature"
-                )
+                ]
         for choice in self.choices:
             self.selected_filters[choice] = tk.IntVar(value=0)
             menu.add_checkbutton(label=choice, variable=self.selected_filters[choice],
@@ -142,12 +144,43 @@ class HomePageFrame(NameFrame):
             text="Search")
         self.song_search_button.grid(row=2, column=2)
 
+        # bind the focus events to the given functions to allow automatically selectall text on
+        # click
+        self.song_search_entry.bind("<FocusIn>", self.song_search_entry_callback)
+
+        # also bind the return key to the song_search_command
+        self.parent.bind("<Return>", self.song_search_command_bind)
+
+    def song_search_entry_callback(self, event):
+        self.song_search_entry.delete(0, tk.END)
+
+    def song_search_command_bind(self, event):
+        self.song_search_command()
+
+    def display_data(self, song_list):
+        """display the given song list in the latest playlist treeview
+
+        Args:
+            song_list (list): list of songs that will appear in the treeview
+        """
+        artists_string_list = []
+        for song in song_list:
+            for artist in song.song_artist:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+
+            artists_string_list.clear()
+
+            self.song_treeview.insert("", "end", values=(song.song_name,
+                                        song.album_details.name, artists_string))
+
     def filter_command(self):
         """ Filters available for the user to search with
             TODO: link the users choice of filter with the search function for now just return
                   anything
         """
-        self.query_object.update_filter_list(self.selected_filters)
+        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        self.query_object.update_filter_list(self.formatted_filters)
 
     def compare_songs_command(self):
         """ command when compare songs btn is pushed
@@ -163,7 +196,7 @@ class HomePageFrame(NameFrame):
         """command for the song search button
         """
         # run the single song search function with will connect with the back end
-        self.start_single_search(self.song_search_entry.get(), self.selected_filters)
+        self.start_single_search(self.song_search_entry.get(), self.formatted_filters)
 
     def create_playlist_command(self):
         """command for the create playlist button, just brings us back to the home page
@@ -173,10 +206,40 @@ class HomePageFrame(NameFrame):
     def similar_songs_command(self):
         """command for the find similar songs button
         """
-        self.open_search_progress()
+        # get the current working list of songs to be searched and pass it to the backend
+        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        search_object = CheckingSongSimilarity(self.formatted_filters)
+
+        result = search_object.random_search(self.parent.song_object_list)
+
+        # switch to search results frame, and give it the results to be displayed
+        self.switch_frame("Search Results")
+        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
+
+    def convert_filters_list(self, tk_filters):
+        """ convert the original dict of filters into something the backend can use
+
+        Args:
+            tk_filters (dict): the dictionary of selected filters
+
+        return:
+            formated_filters (list): list of the string names of the selected filters
+        """
+        formated_filters = []
+
+        found = 0
+        for item in self.choices:
+            if self.selected_filters[item].get() == 1:
+                formated_filters.append(item)
+                found = 1
+
+        if found == 0:
+            return self.choices
+        else:
+            return formated_filters
 
     def song_select_dropdown_command(self, item):
-        """ overrides parent song select command for button
+        """ overrides parent song select dropdown command
         """
         # make sure the user has actually made a selection
         if self.song_selection.get() != self.song_selection_default:
@@ -190,27 +253,36 @@ class HomePageFrame(NameFrame):
             for artist in song.song_artist:
                 artists_string_list.append(artist.name)
             artists_string = ", ".join(artists_string_list)
-            # print(artists_string.__str__())
+
+            artists_string_list.clear()
+
             comp_str = song.song_name + "  -  " + artists_string
-            # print(item + " == " + comp_str + " is: " + str(item == comp_str))
+
             if item == comp_str:
                 # this is the correct item add it to the treeview
                 self.song_treeview.insert("", "end", values=(song.song_name,
                                           song.album_details.name, artists_string))
                 # add this song to the list of songs
-                self.songs_in_list = song
+                self.parent.song_object_list.append(song)
                 break
-        super().song_select_dropdown_command(item)
+
+        # close the popup window after the user makes a selection
+        self.close_single_search_window()
 
     def remove_command(self):
         """ command for the remove song button, can potentially have multiple songs selected
         """
         selected_items = self.song_treeview.selection()
         for item in selected_items:
-            self.song_treeview.delete(item)
-
-            # TODO: GUI -- must now search through list of songs in the working list for the selected items
+            # must now search through list of songs in the working list for the selected items
             # and remove them from the list
+            for song in self.parent.song_object_list:
+                # found the song in the song object list, delete it
+                if song.song_name == self.song_treeview.item(item)["values"][0]:
+                    self.parent.song_object_list.remove(song)
+
+            # delete the item from the treeview
+            self.song_treeview.delete(item)
 
     def remove_all_command(self):
         """comamnd for the rmeove all button
@@ -218,5 +290,4 @@ class HomePageFrame(NameFrame):
         for item in self.song_treeview.get_children():
             self.song_treeview.delete(item)
 
-        # TODO: GUI -- must now search through list of songs in the working list for the selected items
-        # and remove them from the list
+        self.parent.song_object_list.clear()

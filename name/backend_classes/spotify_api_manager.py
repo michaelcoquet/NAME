@@ -119,7 +119,7 @@ class SpotifyAPIManager:
 
     def create_playlist_object(self, playlist_data):
         """ Given the json object Spotify returns as a playlist,
-        convert it to one of our Playlist objects.
+        convert it to one of our Playlist objects. 
         playlist_data: a json formatted spotify playlist
         """
         songs = self.spotify.playlist_items(playlist_data["id"])["items"]
@@ -134,10 +134,14 @@ class SpotifyAPIManager:
 
     def get_member_playlists(self):
         """ Gets a list of all playlists for the current user.
-        returns: a list of spotify playlist objects
+        returns: a list of playlist objects
         """
+        # make sure the auth token is valid and refresh if needed
+        self.refresh_auth_token()
+        # get the playlists
         user_id = self.get_user_id()
         playlists_data = self.spotify.user_playlists(user_id)
+        # convert to a list of playlist objects
         playlist_list = []
         for playlist_data in playlists_data["items"]:
             playlist = self.create_playlist_object(playlist_data)
@@ -151,11 +155,13 @@ class SpotifyAPIManager:
         returns: A copy of the new playlist object that was created
         (for verification purposes)
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
         # First, create a new empty playlist in spotify
         user_id = self.get_user_id()
         playlist_name = playlist.playlist_name
         description = "A N.A.M.E. similarity playlist"
-        new_playlist = self.spotify.user_playlist_create(user=user_id, name=playlist_name,
+        new_playlist = self.spotify.user_playlist_create(user=user_id, name=playlist_name, 
                                                          description=description)
         new_playlist_id = new_playlist["id"]
         # Get spotify track objects for each song in the given playlist
@@ -169,6 +175,9 @@ class SpotifyAPIManager:
         limit: the total number of tracks to return
         returns: a list of up to the limit of song objects
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
+        # Get recent tracks
         recent_tracks = self.spotify.current_user_recently_played(limit)
         # convert to song objects
         songs = []
@@ -181,10 +190,13 @@ class SpotifyAPIManager:
         return songs
 
     def get_top_songs(self):
-        """ Gets a list of the current member's top tracks.
+        """ Gets a list of the current member's top tracks. 
         The maximum number that can be returned is 20.
         returns: at most a list of 20 song objects
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
+        # Get top tracks
         top_tracks = self.spotify.current_user_top_tracks()
         # convert to song objects
         songs = []
@@ -198,9 +210,12 @@ class SpotifyAPIManager:
 
     def get_top_artists(self):
         """ Gets a list of the current member's top artists.
-        The maximum number that can be returned is 20.
+        The maximum number that can be returned is 20. 
         returns: at most a list of 20 artist objects.
         """
+        # Make sure the access token is valid and refresh if needed
+        self.refresh_auth_token()
+        # Get top artists
         top_artists = self.spotify.current_user_top_artists()
         # convert to artists objects
         artists = []
@@ -210,3 +225,27 @@ class SpotifyAPIManager:
             if len(artists) == 0 or new_artist.name not in [artist.name for artist in artists]:
                 artists.append(new_artist)
         return artists
+
+    def get_song_genres(self, song):
+        """ Given a song object, find all the genres
+        associated with the song. 
+        song: a song object
+        returns: a list of genres (strings)
+        """
+        # to get genres, we need to look at the artist info
+        artists = song.song_artist
+        # get a list of genres for each artist
+        genres = []
+        for artist in artists:
+            artist_info = self.spotify.artist(artist.artist_id)
+            genres.extend(artist_info["genres"])
+        return genres
+
+    def refresh_auth_token(self):
+        """ Checks to see if the member's auth token is
+        expired or not. If it is expired, creates a new auth token.
+        """
+        token = self.auth_manager.get_cached_token()
+        expired = self.auth_manager.is_token_expired(token)
+        if expired:
+            self.auth_manager.refresh_access_token(token["refresh_token"])
