@@ -5,6 +5,7 @@
 """
 import os
 import pymongo
+import tkinter as tk
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 from name.backend_classes.persistent_storage import PersistentStorage
 
@@ -85,17 +86,16 @@ class User:
                 self.current_playlist = self.persistent_storage.get_current_playlist()
                 self.groups = self.persistent_storage.get_users_groups()
                 # check if they have any group invites already
-                if self.persistent_storage.find_invites():
-                    print("found some invites")
-                else:
-                    print("no invites")
+                invite_list = self.persistent_storage.find_invites()
+                if len(invite_list) > 0:
+                    # found some group invitations, ask the user if they want to accept
+                    for invite in invite_list:
+                        t = "Would you like to join group: " + str(invite["group_name"]) + \
+                            "(id: " + str(invite["group_id"]) + ")"
+                        tk.messagebox.askyesno(title="Group Invitation", message=t)
+                    return True
             else:
                 self.persistent_storage.create_new_member()
-                # check if they have any group invites already
-                if self.persistent_storage.find_invites():
-                    print("found some invites")
-                else:
-                    print("no invites")
             return True
         else:
             return False

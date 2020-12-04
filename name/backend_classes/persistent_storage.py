@@ -100,6 +100,7 @@ r_db?retryWrites=true&w=majority"
 
         Args:
             group_id (integer): the id for the desired group
+            group_name (string): the unique name of the group
         """
         query = { "spotify_id": self.spotify_id,
                   "groups": {"$elemMatch": { "group_id": group_id}} }
@@ -173,18 +174,44 @@ r_db?retryWrites=true&w=majority"
 
             return groups
 
+    def get_group(self, group_id, group_name):
+        """ return the desired group object with given id
+
+        Args:
+            group_id (int64): the desired group object to return
+            group_name (string): the unique group name
+        """
+        if self.check_if_user_exists() & self.check_if_group_exists(group_id, group_name):
+            query = { "groups": {"$elemMatch": { "group_id": group_id}} }
+            q_curs = self.collection.find_one(query)
+            print(q_curs)
+
     def find_invites(self):
         """ find group invites for the given member
         """
-        # { "groups": {"$elemMatch": { "member_list": {"$in": ["vha6pttyppu7tnrc0l1j4k4de"]} }}}
-        query = { "groups":
-         {"$elemMatch": { "member_list": {"$in": [self.spotify_id]} }}}
+        # query = { "groups":
+        #  {"$elemMatch": { "member_list": {"$in": [self.spotify_id]} }}}
+        agg = [
+                {
+                    '$unwind': {
+                        'path': '$groups'
+                    }
+                }, {
+                    '$match': {
+                        'groups.member_list': 'vha6pttyppu7tnrc0l1j4k4de'
+                    }
+                }
+              ]
+
+        list_of_invites = []
 
         if self.check_if_user_exists():
-            if self.collection.count_documents(query, limit = 1) > 0:
-                return True
+            q_curs = self.collection.aggregate(agg)
+            for doc in q_curs:
+                list_of_invites.append({"group_id": doc["groups"]["group_id"],
+                                        "group_name": doc["groups"]["group_name"]})
 
-        return False
+        return list_of_invites
 
 # # testing
 
