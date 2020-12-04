@@ -59,7 +59,7 @@ class User:
         if self.has_account:
             return self.spotify_id
 
-    def has_account(self):
+    def is_member(self):
         """ returns true if the user doesn't have a spotify account linked, false if they do
         """
         return self.has_account
@@ -110,7 +110,7 @@ class User:
         """ log out the current user
         """
         if self.has_account:
-            self.has_account = 0
+            self.has_account = False
             self.spotify_manager = None
             if os.path.exists(".cache"):
                 os.remove(".cache")
