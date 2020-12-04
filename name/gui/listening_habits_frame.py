@@ -2,6 +2,7 @@
 """
 import tkinter as tk
 import tkinter.scrolledtext as st
+import operator
 
 from .member_home_frame import MemberHomeFrame
 
@@ -78,11 +79,30 @@ class ListeningHabitsFrame(MemberHomeFrame):
         self.switch_frame("Member Home")
 
     def display_top_songs(self, songs):
-        """ Displays each of the top songs in the
-        top song scrolldown section.
+        """ Displays each of the top songs in the top song scrolldown section.
+        Also displays a list of top genres.
         songs: a list of song objects
         """
         # delete any details that might have already been in the display
+        self.top_songs_scrolledtext.configure(state="normal")
         self.top_songs_scrolledtext.delete("1.0", "end")
-        # display new results
-        self.top_songs_scrolledtext.insert("end", song[0].__str__())
+        # add top songs and collect genre info
+        genres = {}
+        self.top_songs_scrolledtext.insert("end", "These are your top songs: \n\n")
+        for song in songs:
+            self.top_songs_scrolledtext.insert("end", song.song_name + "\n")
+            genre_lst = self.parent.spotify_manager.get_song_genres(song)
+            for genre in genre_lst:
+                if genre not in genres:
+                    genres[genre] = 1
+                else:
+                    genres[genre] += 1
+        # get top 5 genres
+        top_genres = dict(sorted(genres.items(), key=operator.itemgetter(1), reverse=True)[:5])
+        # first add some newlines so it looks nicer
+        self.top_songs_scrolledtext.insert("end", "\n\n\n")
+        self.top_songs_scrolledtext.insert("end", "Your top 5 genres are: \n\n")
+        for genre in top_genres:
+            self.top_songs_scrolledtext.insert("end", genre + "\n")
+        # prevent users from typing in the text area
+        self.top_songs_scrolledtext.configure(state="disabled")
