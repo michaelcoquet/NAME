@@ -51,7 +51,7 @@ class AllPlaylistsFrame(MemberHomeFrame):
 
         # get a list of the current users spotify playlists if theyre logged in
         if self.user.is_member():
-            plist = self.parent.spotify_manager.get_member_playlists()
+            plist = self.user.get_playlists()
             self.display_data(plist)
 
     def init_lower_grid(self):

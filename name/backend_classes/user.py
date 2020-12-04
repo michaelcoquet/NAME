@@ -118,6 +118,11 @@ class User:
         else:
             return False
 
+    def get_playlists(self):
+        """ get this users current playlist
+        """
+        return self.spotify_manager.get_member_playlists()
+
     def find_group_invites(self):
         """ search for groups that I am a member of but dont yet show up in this objects group
             list, indicating an unaccepted group invite
