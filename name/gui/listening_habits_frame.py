@@ -1,11 +1,12 @@
 """ TODO: fill in
 """
 import tkinter as tk
+import tkinter.scrolledtext as st
 
-from .song_info_frame import SongInfoFrame
+from .member_home_frame import MemberHomeFrame
 
 
-class ListeningHabitsFrame(SongInfoFrame):
+class ListeningHabitsFrame(MemberHomeFrame):
     """ TODO: fill in
 
     Args:
@@ -24,8 +25,20 @@ class ListeningHabitsFrame(SongInfoFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.start_over_button.grid_forget()
-        self.ply_from_ply_button.grid_forget()
+        self.edit_button.grid_forget()
+        self.save_spotify_button.grid_forget()
+        self.playlist_info_button.grid_forget()
+
+
+    def init_middle_grid(self):
+        super().init_middle_grid()
+
+        self.top_songs_scrolledtext = st.ScrolledText(self.middle_grid)
+        self.top_songs_scrolledtext.grid(row=0, column=0, sticky="nsew")
+        self.top_artists_scrolledtext = st.ScrolledText(self.middle_grid)
+        self.top_artists_scrolledtext.grid(row=0, column=1, sticky="nsew")
+        self.recent_songs_scrolledtext = st.ScrolledText(self.middle_grid)
+        self.recent_songs_scrolledtext.grid(row=0, column=2, sticky="nsew")
 
     def init_upper_grid(self):
         super().init_upper_grid()
@@ -63,3 +76,13 @@ class ListeningHabitsFrame(SongInfoFrame):
         """command for the latest playlist button
         """
         self.switch_frame("Member Home")
+
+    def display_top_songs(self, songs):
+        """ Displays each of the top songs in the
+        top song scrolldown section.
+        songs: a list of song objects
+        """
+        # delete any details that might have already been in the display
+        self.top_songs_scrolledtext.delete("1.0", "end")
+        # display new results
+        self.top_songs_scrolledtext.insert("end", song[0].__str__())
