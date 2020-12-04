@@ -26,6 +26,15 @@ class Song:
     def __repr__(self):
         return self.song_name
 
+    def __iter__(self):
+        artist_string = [artist.name for artist in self.song_artist]
+        song_string = {
+            "song_name": self.song_name,
+            "album_details": dict(self.album_details),
+            "song_artist": artist_string,
+            "song_id": self.song_id
+        }
+        yield from song_string.items()
 
 class Artist:
     """
@@ -48,6 +57,13 @@ class Artist:
     def __str__(self):
         return f"{self.artist_id,self.name}"
 
+    def __iter__(self):
+        artist_string = {
+            "artist": self.artist,
+            "artist_id": self.artist_id,
+            "name": self.name
+        }
+        yield from artist_string.items()
 
 class Album:
     """
@@ -74,7 +90,12 @@ class Album:
                 "Album Id: {} \n"
                 "Total songs: {} ").format(self.name,  self.type,
                                            self.album_id, self.size)
-
+    def __iter__(self):
+        album_string = {
+            "album_name": self.name,
+            "album_id": self.album_id
+        }
+        yield from album_string.items()
 
 class SongDetails:
     """

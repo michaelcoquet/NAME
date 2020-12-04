@@ -12,10 +12,6 @@ class EditGroupPlaylistFrame(CreateSimPlaylistFrame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def __init__(self, parent, container):
-        super().__init__(parent, container)
-        self.container = container
-        self.parent = parent
 
     def init_lower_grid(self):
         super().init_lower_grid()
