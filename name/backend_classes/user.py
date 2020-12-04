@@ -48,7 +48,7 @@ class User:
         """
         self.groups.append(group)
         if self.persistent_storage.create_new_group(group.group_name,
-            self.persistent_storage.spotify_id, group.member_list) == False:
+            self.persistent_storage.spotify_id, group.invite_list) == False:
             return False
         else:
             return True

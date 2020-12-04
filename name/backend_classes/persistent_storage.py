@@ -115,11 +115,10 @@ r_db?retryWrites=true&w=majority"
 
         return False
 
-    def create_new_group(self, group_name, owner_id, member_list):
+    def create_new_group(self, group_name, owner_id, invite_list):
         """ save a new empty group to the users file
         """
         query = { "group_counter": {"$exists": "true"} }
-
         if self.collection.count_documents(query, limit = 1) > 0:
             q = self.collection.find_one(query)
             q["group_counter"] = q["group_counter"] + 1
@@ -130,7 +129,7 @@ r_db?retryWrites=true&w=majority"
         query = { "spotify_id": self.spotify_id }
 
         if self.check_if_group_exists(q["group_counter"], group_name) == False:
-            new_group = Group(group_name, owner_id, member_list)
+            new_group = Group(group_name, owner_id, invite_list, [])
             new_group.assign_id(q["group_counter"])
             groups = self.get_users_groups()
             groups.append(new_group)
@@ -168,6 +167,7 @@ r_db?retryWrites=true&w=majority"
             for group_dict in self.collection.find_one(query)["groups"]:
                 new_group = Group(group_dict["group_name"],
                                   group_dict["owner_id"],
+                                  group_dict["invite_list"],
                                   group_dict["member_list"])
                 new_group.assign_id(group_dict["group_id"])
                 groups.append(new_group)
@@ -188,7 +188,7 @@ r_db?retryWrites=true&w=majority"
                         }
                     }, {
                         '$match': {
-                            'groups.member_list': self.spotify_id
+                            'groups.invite_list': self.spotify_id
                         }
                     }
                 ]
@@ -200,6 +200,7 @@ r_db?retryWrites=true&w=majority"
                     return_group = Group(
                             doc["groups"]["group_name"],
                             doc["groups"]["owner_id"],
+                            doc["groups"]["invite_list"],
                             doc["groups"]["member_list"]
                     )
                     return_group.assign_id(doc["groups"]["group_id"])
@@ -220,7 +221,7 @@ r_db?retryWrites=true&w=majority"
                     }
                 }, {
                     '$match': {
-                        'groups.member_list': self.spotify_id
+                        'groups.invite_list': self.spotify_id
                     }
                 }
               ]
