@@ -123,7 +123,8 @@ class MemberHomeFrame(HomePageFrame):
         recent_songs = self.parent.spotify_manager.get_recently_played_songs(limit=25)
         self.parent.frames[self.parent.get_frame_id("Listening Habits")].display_recent_songs(recent_songs)
         # top artists
-        self.parent.frames[self.parent.get_frame_id("Listening Habits")].display_top_artists()
+        top_artists = self.parent.spotify_manager.get_top_artists()
+        self.parent.frames[self.parent.get_frame_id("Listening Habits")].display_top_artists(top_artists)
 
     def edit_command(self):
         """command for the edit button

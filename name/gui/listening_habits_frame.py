@@ -122,16 +122,14 @@ class ListeningHabitsFrame(MemberHomeFrame):
         # prevent users from typing in the text area
         self.recent_songs_scrolledtext.configure(state="disabled")
 
-    def display_top_artists(self):
-        """ Display's the member's top artists. """
+    def display_top_artists(self, artists):
+        """ Display's the member's top artists. 
+        artists: a list of artist objects
+        """
         # delete any details that might have already been in the display
         self.top_artists_scrolledtext.configure(state="normal")
         self.top_artists_scrolledtext.delete("1.0", "end")
-        # loading message
-        self.top_artists_scrolledtext.insert("end", "Loading....")
-        artists = self.parent.spotify_manager.get_top_artists()
-        # clear and display artists
-        self.top_artists_scrolledtext.delete("1.0", "end")
+        # display artists
         self.top_artists_scrolledtext.insert("end", "Your top artists are: \n\n")
         for artist in artists:
             self.top_artists_scrolledtext.insert("end", artist.name + "\n")
