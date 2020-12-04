@@ -49,7 +49,6 @@ r_db?retryWrites=true&w=majority"
             new_data = {
                 "spotify_id": self.spotify_id,
                 "current_playlist": {},
-                "groups": []
             }
 
             self.collection.insert_one(new_data)
@@ -79,7 +78,6 @@ r_db?retryWrites=true&w=majority"
            new_data = { "$set": {
                "spotify_id": self.spotify_id,
                "current_playlist": dict(playlist),
-               "groups": []
            }}
 
            self.collection.update_one(query, new_data)
@@ -90,30 +88,23 @@ r_db?retryWrites=true&w=majority"
         Returns:
             playlist_obj (Playlist): playlist object rebuilt from the json
         """
-        query = { "spotify_id": self.spotify_id }
-
-        # if self.check_if_user_exists():
-        #     print(self.collection.find_one(query))
+        return []
 
     def check_if_group_exists(self, group_id, group_name):
         """ check if the given group exists or not
 
         Args:
-            group_id (integer): the id for the desired group
-            group_name (string): the unique name of the group
+            group_id (int64): the id for the desired group
         """
-        query = { "spotify_id": self.spotify_id,
-                  "groups": {"$elemMatch": { "group_id": group_id}} }
-        query_2 = { "spotify_id": self.spotify_id,
-                    "groups": {"$elemMatch": { "group_name": group_name}} }
+        query_0 = { "group_id": group_id }
+        query_1 = { "group_name": group_name } # make both id and name unique
 
-        if self.collection.count_documents(query, limit = 1) > 0:
+        if self.collection.count_documents(query_0) > 0:
             return True
-
-        if self.collection.count_documents(query_2, limit=1) > 0:
+        elif self.collection.count_documents(query_1) > 0:
             return True
-
-        return False
+        else:
+            return False
 
     def create_new_group(self, group_name, owner_id, invite_list):
         """ save a new empty group to the users file
@@ -126,34 +117,41 @@ r_db?retryWrites=true&w=majority"
         else:
             return False
 
-        query = { "spotify_id": self.spotify_id }
-
         if self.check_if_group_exists(q["group_counter"], group_name) == False:
-            new_group = Group(group_name, owner_id, invite_list, [])
-            new_group.assign_id(q["group_counter"])
-            groups = self.get_users_groups()
-            groups.append(new_group)
-            group_string = []
-            for group in groups:
-                group_string.append(dict(group))
-            new_data = {
-                "spotify_id": self.spotify_id,
-                "groups": group_string
+            new_group_data = {
+                "group_id": q["group_counter"],
+                "group_name": group_name,
+                "owner_id": owner_id,
+                "member_list": [owner_id],
+                "invite_list": invite_list,
+                "playlists": []
             }
-
-            self.collection.update_one(query, { "$set": new_data })
+            self.collection.insert_one(new_group_data)
         else:
             return False
 
         return True
 
-    def update_group(self, group_id):
+    def update_group(self, group):
         """ update the given group
 
         Args:
-            group_id (integer): the groups id to be updated
+            group (Group): the group to be updated
         """
-        return 1
+        query = { "group_id": group.group_id }
+
+        new_group_data = { "$set":
+            {
+                "group_id": group.group_id,
+                "group_name": group.group_name,
+                "owner_id": group.owner_id,
+                "member_list": group.member_list,
+                "invite_list": group.invite_list,
+                "playlists": group.playlists
+            }
+        }
+
+        self.collection.update_one(query, new_group_data)
 
     def get_users_groups(self):
         """ return all the users groups on file
@@ -161,10 +159,10 @@ r_db?retryWrites=true&w=majority"
         Returns:
             groups (Group[]): list of all Group objects on file
         """
+        groups = []
         if self.check_if_user_exists():
-            query = { "spotify_id": self.spotify_id }
-            groups = []
-            for group_dict in self.collection.find_one(query)["groups"]:
+            query = { "member_list": self.spotify_id }
+            for group_dict in self.collection.find(query):
                 new_group = Group(group_dict["group_name"],
                                   group_dict["owner_id"],
                                   group_dict["invite_list"],
@@ -172,7 +170,7 @@ r_db?retryWrites=true&w=majority"
                 new_group.assign_id(group_dict["group_id"])
                 groups.append(new_group)
 
-            return groups
+        return groups
 
     def get_group(self, group_id):
         """ return the desired group object with given id
@@ -180,59 +178,36 @@ r_db?retryWrites=true&w=majority"
         Args:
             group_id (int64): the desired group object to return
         """
-        if self.check_if_user_exists():
-            agg = [
-                    {
-                        '$unwind': {
-                            'path': '$groups'
-                        }
-                    }, {
-                        '$match': {
-                            'groups.invite_list': self.spotify_id
-                        }
-                    }
-                ]
+        query = { "group_id": group_id }
 
-            q_curs = self.collection.aggregate(agg)
-            for doc in q_curs:
-                # forget about my own group list
-                if doc["spotify_id"] != self.spotify_id:
-                    return_group = Group(
-                            doc["groups"]["group_name"],
-                            doc["groups"]["owner_id"],
-                            doc["groups"]["invite_list"],
-                            doc["groups"]["member_list"]
-                    )
-                    return_group.assign_id(doc["groups"]["group_id"])
-                    return_group.update_playlists(doc["groups"]["group_playlists"])
-                    return return_group
+        doc = self.collection.find_one(query)
 
-            return None
+        return_group = Group(
+            doc["group_name"],
+            doc["owner_id"],
+            doc["invite_list"],
+            doc["member_list"]
+        )
+        return_group.update_playlists = self.get_group_playlists(group_id)
+        return_group.assign_id(doc["group_id"])
+
+        return return_group
+
+    def get_group_playlists(self, group_id):
+        return []
 
     def find_invites(self):
         """ find group invites for the given member
         """
-        # query = { "groups":
-        #  {"$elemMatch": { "member_list": {"$in": [self.spotify_id]} }}}
-        agg = [
-                {
-                    '$unwind': {
-                        'path': '$groups'
-                    }
-                }, {
-                    '$match': {
-                        'groups.invite_list': self.spotify_id
-                    }
-                }
-              ]
+        query = { "invite_list": self.spotify_id }
 
         list_of_invites = []
 
         if self.check_if_user_exists():
-            q_curs = self.collection.aggregate(agg)
+            q_curs = self.collection.find(query)
             for doc in q_curs:
-                list_of_invites.append({"group_id": doc["groups"]["group_id"],
-                                        "group_name": doc["groups"]["group_name"]})
+                list_of_invites.append({"group_id": doc["group_id"],
+                                        "group_name": doc["group_name"]})
 
         return list_of_invites
 

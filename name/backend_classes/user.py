@@ -98,17 +98,19 @@ class User:
                             )
 
                         if answer == True:
-                            # invite accepted add the group to this users group list
+                            # invite accepted
                             print("invite accepted")
                             invite_group = self.persistent_storage.get_group(invite["group_id"])
-                            print(dict(invite_group))
+                            self.groups.append(invite_group) # add to the group object list
+                            invite_group.accecpt_invite(self.spotify_id)
+                            # save the data back to the database
+                            self.persistent_storage.update_group(invite_group)
                         elif answer == False:
-                            # invite decline remove this user from the other groups member list
+                            # invite decline
                             print("invite declined")
-                        else:
-                            # invite cancelled, ask again next time they log in
-                            print("invite postponed")
-
+                            # now need to remove the user from the invite list
+                            # dont add them to the member list
+                            # save the invite list back to the original group entry
                     return True
             else:
                 self.persistent_storage.create_new_member()

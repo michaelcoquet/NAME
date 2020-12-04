@@ -23,19 +23,19 @@ class Group:
 
         self.invite_list = invite_list
 
-        self.group_playlists = []
+        self.playlists = []
 
     def __iter__(self):
         member_string = [member for member in self.member_list]
         invite_string = [invite for invite in self.invite_list]
-        playlist_string = [plist for plist in self.group_playlists]
+        playlist_string = [plist for plist in self.playlists]
         group_string = {
             "group_id": self.group_id,
             "group_name": self.group_name,
             "owner_id": self.owner_id,
             "invite_list": invite_string,
             "member_list": member_string,
-            "group_playlists": playlist_string
+            "playlists": playlist_string
         }
         yield from group_string.items()
 
@@ -73,8 +73,11 @@ class Group:
             member_id (int64): member_id who accepted the invitation to this group
         """
         # remove the member from the invite list
-        # add them to the member list
-        return 1
+        for id in self.invite_list:
+            if id == member_id:
+                self.invite_list.remove(id)
+                # add them to the member list
+                self.member_list.append(id)
 
     def decline_invite(self, member_id):
         """ the member with emmber_id declined the invitation, take action
