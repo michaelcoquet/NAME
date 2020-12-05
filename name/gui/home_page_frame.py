@@ -25,21 +25,34 @@ class HomePageFrame(NameFrame):
 
         self.formatted_filters = []
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.remove_all_button.grid_forget()
-        self.remove_button.grid_forget()
-        self.similar_songs_button.grid_forget()
-        self.song_treeview.grid_forget()
-        self.create_playlist_button.grid_forget()
-        self.compare_songs_button.grid_forget()
-        self.get_song_info_button.grid_forget()
-        self.filters_dropdown.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.song_treeview.grid_remove()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
 
     def grid_remember(self):
         super().grid_remember()
+        self.remove_all_button.grid()
+        self.remove_button.grid()
+        self.similar_songs_button.grid()
+        self.song_treeview.grid()
+        self.create_playlist_button.grid()
+        self.compare_songs_button.grid()
+        self.get_song_info_button.grid()
+        self.filters_dropdown.grid()
+        self.song_search_entry.grid()
+        self.song_search_button.grid()
+
+    def grid_init(self):
+        super().grid_init()
         self.song_search_entry.delete(0, "end")
         self.song_search_entry.insert(0, "Find a Song")
         self.display_data(self.parent.song_object_list)

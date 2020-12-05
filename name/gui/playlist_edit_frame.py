@@ -12,15 +12,15 @@ class PlaylistEditFrame(HomePageFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        # self.delete_playlist_button.grid_forget()
-        self.done_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        # self.delete_playlist_button.grid_remove()
+        self.done_button.grid_remove()
 
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.similar_songs_button.grid_forget()
+        self.similar_songs_button.grid_remove()
 
         self.done_button = tk.Button(
             self.lower_grid,
@@ -30,13 +30,13 @@ class PlaylistEditFrame(HomePageFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.create_playlist_button.grid_forget()
-        self.get_song_info_button.grid_forget()
-        self.compare_songs_button.grid_forget()
+        self.create_playlist_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.compare_songs_button.grid_remove()
 
-        # self.filters_dropdown.grid_forget()
-        # self.song_search_entry.grid_forget()
-        # self.song_search_button.grid_forget()
+        # self.filters_dropdown.grid_remove()
+        # self.song_search_entry.grid_remove()
+        # self.song_search_button.grid_remove()
 
     def delete_command(self):
         """command for the delete button

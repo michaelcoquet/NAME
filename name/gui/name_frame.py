@@ -41,15 +41,20 @@ class NameFrame(tk.Frame):
 
         self.final_song_selection = []
 
-    def grid_forget(self):
-        self.upper_grid.grid_forget()
-        self.middle_grid.grid_forget()
-        self.lower_grid.grid_forget()
+    def grid_unmap(self):
+        self.upper_grid.grid_remove()
+        self.middle_grid.grid_remove()
+        self.lower_grid.grid_remove()
 
-    def grid_remember(self):
+    def grid_init(self):
         self.init_lower_grid()
         self.init_middle_grid()
         self.init_upper_grid()
+
+    def grid_remember(self):
+        self.upper_grid.grid(row=0, column=0, sticky="nw")
+        self.lower_grid.grid(row=2, column=0, sticky="ew")
+        self.middle_grid.grid(row=1, column=0, sticky="nsew")
 
     def init_guest_menu(self):
         """ make the default menu for guest users
@@ -209,7 +214,7 @@ class NameFrame(tk.Frame):
     def no_songs_found_popup(self):
         """ In the case that spotify can't find any songs for the
         title the user entered, display this popup window so that
-        the gui doesn't break. 
+        the gui doesn't break.
         """
         self.grab_set()
         popup = tk.Toplevel(self)

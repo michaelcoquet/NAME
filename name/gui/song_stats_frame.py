@@ -12,15 +12,15 @@ class SongStatsFrame(SongInfoFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.sim_score_label.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.sim_score_label.grid_remove()
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
-        self.filters_dropdown.grid_forget()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
+        self.filters_dropdown.grid_remove()
 
         self.create_playlist_button["state"] = tk.NORMAL
         self.compare_songs_button["state"] = tk.DISABLED
@@ -30,7 +30,7 @@ class SongStatsFrame(SongInfoFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_lyrics_scrolledtext.grid_forget()
+        self.song_lyrics_scrolledtext.grid_remove()
 
     def init_lower_grid(self):
         super().init_lower_grid()

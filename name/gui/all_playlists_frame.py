@@ -20,10 +20,17 @@ class AllPlaylistsFrame(MemberHomeFrame):
         super().__init__(parent, container, user)
         self.playlists = []
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.list_from_list_button.grid_forget()
-        self.song_sim_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.list_from_list_button.grid_remove()
+        self.song_sim_button.grid_remove()
+        self.playlist_treeview.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.list_from_list_button.grid()
+        self.song_sim_button.grid()
+        self.playlist_treeview.grid()
 
     def init_upper_grid(self):
         super().init_upper_grid()
@@ -32,10 +39,10 @@ class AllPlaylistsFrame(MemberHomeFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.get_song_info_button.grid_forget()
+        self.get_song_info_button.grid_remove()
 
         # we dont have a song_treeview here so we need to make a playlist treeview
-        self.song_treeview.grid_forget()
+        self.song_treeview.grid_remove()
         self.playlist_treeview = ttk.Treeview(self.middle_grid)
         self.playlist_treeview["columns"] = ("Name", "Size", "Owner")
 
@@ -56,8 +63,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.edit_button.grid_forget()
-        self.save_spotify_button.grid_forget()
+        self.edit_button.grid_remove()
+        self.save_spotify_button.grid_remove()
 
         self.list_from_list_button = tk.Button(
             self.lower_grid,

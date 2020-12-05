@@ -23,21 +23,21 @@ class SongInfoSearchFrame(HomePageFrame):
 
         self.song_search_entry.delete(0,25)
         self.song_search_entry.insert(0, "Song title")
-        self.filters_dropdown.grid_forget()
+        self.filters_dropdown.grid_remove()
 
     def init_middle_grid(self):
         """TODO: fill in
         """
         super().init_middle_grid()
-        self.song_treeview.grid_forget()
+        self.song_treeview.grid_remove()
 
     def init_lower_grid(self):
         """TODO: fill in
         """
         super().init_lower_grid()
-        self.remove_all_button.grid_forget()
-        self.remove_button.grid_forget()
-        self.similar_songs_button.grid_forget()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
 
     def song_search_command(self):
         """ command for song search button

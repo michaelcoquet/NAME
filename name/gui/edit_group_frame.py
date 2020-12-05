@@ -21,8 +21,8 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.edit_playlist_button.grid_forget()
-        self.save_playlist_button.grid_forget()
+        self.edit_playlist_button.grid_remove()
+        self.save_playlist_button.grid_remove()
 
         self.cancel_button = tk.Button(
             self.lower_grid,
@@ -67,11 +67,11 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_listbox.grid_forget()
-        self.playlist_dropdown.grid_forget()
-        self.new_playlist_button.grid_forget()
-        self.group_song_stats_button.grid_forget()
-        self.edit_group_button.grid_forget()
+        self.song_listbox.grid_remove()
+        self.playlist_dropdown.grid_remove()
+        self.new_playlist_button.grid_remove()
+        self.group_song_stats_button.grid_remove()
+        self.edit_group_button.grid_remove()
 
         f_container = tk.Frame(self.middle_grid)
         f_container.grid(row=0, column=1, sticky="n")
@@ -163,5 +163,15 @@ class EditGroupFrame(GroupHomeFrame):
     def display_group(self, group):
         """[summary]
         """
+        # would like to be able to get these spotify ids back as usernames or something nicer
         for member in group.member_list:
-            print(member)
+            msg = member + "\t\t"
+            if member == self.user.spotify_id:
+                msg = msg + "(Me)"
+            if member == group.owner_id:
+                msg = msg + "(Group Owner)"
+
+            self.member_listbox.insert("end", msg)
+
+        # now load the groups playlists into the dropdown
+

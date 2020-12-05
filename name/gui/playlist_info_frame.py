@@ -12,9 +12,9 @@ class PlaylistInfoFrame(MemberHomeFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.song_sim_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.song_sim_button.grid_remove()
 
     def init_lower_grid(self):
         super().init_lower_grid()

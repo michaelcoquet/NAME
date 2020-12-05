@@ -12,16 +12,16 @@ class SearchResultsFrame(HomePageFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.start_over_button.grid_forget()
-        self.get_stats_button.grid_forget()
-        self.save_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.start_over_button.grid_remove()
+        self.get_stats_button.grid_remove()
+        self.save_button.grid_remove()
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.remove_all_button.grid_forget()
-        self.remove_button.grid_forget()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
 
         self.start_over_button = tk.Button(self.lower_grid, command=self.start_over_command)
         self.start_over_button["text"] = "Start Over"
@@ -31,7 +31,7 @@ class SearchResultsFrame(HomePageFrame):
         self.get_stats_button["text"] = "Get Stats"
         self.get_stats_button.grid(row=0, column=1)
 
-        self.similar_songs_button.grid_forget()
+        self.similar_songs_button.grid_remove()
         self.save_button = tk.Button(self.lower_grid, text="Save")
         self.save_button.grid(row=0, column=2)
 

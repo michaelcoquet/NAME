@@ -14,21 +14,21 @@ class ListeningHabitsFrame(MemberHomeFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.latest_playlist_button.grid_forget()
-        self.all_playlists_button.grid_forget()
-        self.listening_habits_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.latest_playlist_button.grid_remove()
+        self.all_playlists_button.grid_remove()
+        self.listening_habits_button.grid_remove()
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.edit_button.grid_forget()
-        self.save_spotify_button.grid_forget()
-        self.playlist_info_button.grid_forget()
+        self.edit_button.grid_remove()
+        self.save_spotify_button.grid_remove()
+        self.playlist_info_button.grid_remove()
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_treeview.grid_forget()
+        self.song_treeview.grid_remove()
 
         self.top_songs_scrolledtext = st.ScrolledText(self.middle_grid, width=40)
         self.top_songs_scrolledtext.grid(row=0, column=0, sticky="nsew")
@@ -39,12 +39,12 @@ class ListeningHabitsFrame(MemberHomeFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.create_playlist_button.grid_forget()
-        self.compare_songs_button.grid_forget()
-        self.get_song_info_button.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.filters_dropdown.grid_forget()
-        self.song_search_button.grid_forget()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_button.grid_remove()
 
         self.latest_playlist_button = tk.Button(
             self.upper_grid,
@@ -120,7 +120,7 @@ class ListeningHabitsFrame(MemberHomeFrame):
         self.recent_songs_scrolledtext.configure(state="disabled")
 
     def display_top_artists(self, artists):
-        """ Display's the member's top artists. 
+        """ Display's the member's top artists.
         artists: a list of artist objects
         """
         # delete any details that might have already been in the display

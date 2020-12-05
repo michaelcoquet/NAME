@@ -11,23 +11,23 @@ class MemberHomeFrame(HomePageFrame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def grid_forget(self):
-        super().grid_forget()
-        self.edit_button.grid_forget()
-        self.save_spotify_button.grid_forget()
-        self.latest_playlist_button.grid_forget()
-        self.all_playlists_button.grid_forget()
-        self.listening_habits_button.grid_forget()
-        self.get_song_info_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.edit_button.grid_remove()
+        self.save_spotify_button.grid_remove()
+        self.latest_playlist_button.grid_remove()
+        self.all_playlists_button.grid_remove()
+        self.listening_habits_button.grid_remove()
+        self.get_song_info_button.grid_remove()
 
-    def grid_remember(self):
-        super().grid_remember()
+    def grid_init(self):
+        super().grid_init()
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.remove_all_button.grid_forget()
-        self.remove_button.grid_forget()
-        self.similar_songs_button.grid_forget()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
 
         self.edit_button = tk.Button(
             self.lower_grid,
@@ -58,12 +58,12 @@ class MemberHomeFrame(HomePageFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.create_playlist_button.grid_forget()
-        self.compare_songs_button.grid_forget()
-        self.get_song_info_button.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.filters_dropdown.grid_forget()
-        self.song_search_button.grid_forget()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_button.grid_remove()
 
         self.latest_playlist_button = tk.Button(
             self.upper_grid,

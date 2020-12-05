@@ -13,14 +13,23 @@ class CreateSimPlaylistFrame(NameFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.new_list_entry.grid_forget()
-        self.filters_dropdown.grid_forget()
-        self.listbox_label.grid_forget()
-        self.songs_listbox.grid_forget()
-        self.cancel_button.grid_forget()
-        self.sim_playlist_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.new_list_entry.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.listbox_label.grid_remove()
+        self.songs_listbox.grid_remove()
+        self.cancel_button.grid_remove()
+        self.sim_playlist_button.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.new_list_entry.grid()
+        self.filters_dropdown.grid()
+        self.listbox_label.grid()
+        self.songs_listbox.grid()
+        self.cancel_button.grid()
+        self.sim_playlist_button.grid()
 
     def init_upper_grid(self):
         super().init_upper_grid()

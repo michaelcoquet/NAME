@@ -15,13 +15,13 @@ class EditGroupPlaylistFrame(CreateSimPlaylistFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.sim_playlist_button.grid_forget()
+        self.sim_playlist_button.grid_remove()
 
         self.sim_playlist_button.grid(row=0, column=2, sticky="nsew")
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.new_list_entry.grid_forget()
+        self.new_list_entry.grid_remove()
 
         container = tk.Frame(self.middle_grid)
         container.grid(row=0, column=2)
@@ -48,7 +48,7 @@ class EditGroupPlaylistFrame(CreateSimPlaylistFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.listbox_label.grid_forget()
+        self.listbox_label.grid_remove()
 
     def sim_playlist_command(self):
         self.open_search_progress()

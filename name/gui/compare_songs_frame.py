@@ -12,9 +12,13 @@ class CompareSongsFrame(HomePageFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.get_stats_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.get_stats_button.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.get_stats_button.grid()
 
     def init_upper_grid(self):
         super().init_upper_grid()
@@ -23,7 +27,7 @@ class CompareSongsFrame(HomePageFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.similar_songs_button.grid_forget()
+        self.similar_songs_button.grid_remove()
 
         self.get_stats_button = tk.Button(self.lower_grid, command=self.song_stats_cmd)
         self.get_stats_button["text"] = "Get Stats"

@@ -69,9 +69,9 @@ class Name(tk.Tk):
         self.frames[15] = gui.GroupHomeFrame(self, container, self.user)
 
         for i in self.frames:
-            self.frames[i].grid_forget()
+            self.frames[i].grid_unmap()
 
-        self.frames[11].grid_remember()
+        self.frames[11].grid_init()
 
     def update_search_results(self, list):
         """ used to update the listbox in the search results frame
@@ -91,7 +91,7 @@ class Name(tk.Tk):
             old_id ([type]): TODO: Fill In
             new_id ([type]): TODO: Fill In
         """
-        self.frames[old_id].grid_forget()
+        self.frames[old_id].grid_unmap()
         self.frames[new_id].grid_remember()
         self.previous_frame = old_id
         self.active_frame = new_id

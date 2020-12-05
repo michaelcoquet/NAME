@@ -16,15 +16,25 @@ class GroupHomeFrame(NameFrame):
         super().__init__(parent, container, user)
         self.active_group = None
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.edit_playlist_button.grid_forget()
-        self.save_playlist_button.grid_forget()
-        self.song_listbox.grid_forget()
-        self.playlist_dropdown.grid_forget()
-        self.new_playlist_button.grid_forget()
-        self.group_song_stats_button.grid_forget()
-        self.edit_group_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.edit_playlist_button.grid_remove()
+        self.save_playlist_button.grid_remove()
+        self.song_listbox.grid_remove()
+        self.playlist_dropdown.grid_remove()
+        self.new_playlist_button.grid_remove()
+        self.group_song_stats_button.grid_remove()
+        self.edit_group_button.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.edit_playlist_button.grid()
+        self.save_playlist_button.grid()
+        self.song_listbox.grid()
+        self.playlist_dropdown.grid()
+        self.new_playlist_button.grid()
+        self.group_song_stats_button.grid()
+        self.edit_group_button.grid()
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -110,6 +120,8 @@ class GroupHomeFrame(NameFrame):
         """ comamnd for the edit group button
         """
         self.switch_frame("Edit Group")
+        id = self.parent.get_frame_id("Edit Group")
+        self.parent.frames[id].display_group(self.active_group)
 
     def group_song_stats_command(self):
         """ command for the get group song stats button

@@ -13,27 +13,27 @@ class SongInfoFrame(HomePageFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.song_info_scrolledtext.grid_forget()
-        self.start_over_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.song_info_scrolledtext.grid_remove()
+        self.start_over_button.grid_remove()
 
     def init_upper_grid(self):
         super().init_upper_grid()
         self.create_playlist_button["state"] = tk.NORMAL
         self.get_song_info_button["state"] = tk.DISABLED
-        self.filters_dropdown.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
+        self.filters_dropdown.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
 
     def init_middle_grid(self):
         """TODO: fill in
         """
         super().init_middle_grid()
-        self.filters_dropdown.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
-        self.song_treeview.grid_forget()
+        self.filters_dropdown.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
+        self.song_treeview.grid_remove()
 
         self.song_info_scrolledtext = st.ScrolledText(self.middle_grid)
         self.song_info_scrolledtext.grid(row=0, column=0, sticky="nsew")
@@ -44,9 +44,9 @@ class SongInfoFrame(HomePageFrame):
         """TODO: fill in
         """
         super().init_lower_grid()
-        self.remove_all_button.grid_forget()
-        self.remove_button.grid_forget()
-        self.similar_songs_button.grid_forget()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
 
         self.start_over_button = tk.Button(self.lower_grid, text="Start Over",
             command=self.start_over_command)
@@ -89,7 +89,7 @@ class SongInfoFrame(HomePageFrame):
         """
         super().song_select_dropdown_command(item)
 
-        self.ply_from_ply_button.grid_forget()
+        self.ply_from_ply_button.grid_remove()
 
         # pass the data to the scrolledText widget on the next screen
         self.display_details(self.song_object_list[0])
