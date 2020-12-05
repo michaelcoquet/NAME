@@ -38,6 +38,8 @@ class MemberHomeFrame(HomePageFrame):
         self.all_playlists_button.grid()
         self.listening_habits_button.grid()
 
+        self.display_data(self.parent.song_object_list)
+
     def grid_init(self):
         super().grid_init()
 

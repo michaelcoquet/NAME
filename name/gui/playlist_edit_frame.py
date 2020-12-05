@@ -17,11 +17,16 @@ class PlaylistEditFrame(HomePageFrame):
         # self.delete_playlist_button.grid_remove()
         self.done_button.grid_remove()
 
-
     def grid_remember(self):
         super().grid_remember()
+        self.similar_songs_button.grid_remove()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.filters_dropdown.grid_remove()
 
         self.done_button.grid()
+        self.display_data(self.parent.song_object_list)
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -54,4 +59,4 @@ class PlaylistEditFrame(HomePageFrame):
         """command for the done button
         """
         # TODO: save changes back tot he listbox on member home frame
-        self.switch_frame("Group Home")
+        self.parent.switch_to_previous_frame()
