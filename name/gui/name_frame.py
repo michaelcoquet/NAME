@@ -182,7 +182,10 @@ class NameFrame(tk.Frame):
         # TODO: BACKEND - single song search connection return a list of songs
         # TODO: do this in another thread
         self.api_search_results = self.query_object.search_single_song(title)
-        self.open_song_search_popup(self.api_search_results)
+        if self.api_search_results != []:
+            self.open_song_search_popup(self.api_search_results)
+        else:
+            self.no_songs_found_popup()
 
     def search_similar(self, titles, filters):
         """ Search the spotify API for songs that are similar to the list of titles
@@ -198,6 +201,22 @@ class NameFrame(tk.Frame):
 
 
         return 1
+
+    def no_songs_found_popup(self):
+        """ In the case that spotify can't find any songs for the
+        title the user entered, display this popup window so that
+        the gui doesn't break. 
+        """
+        self.grab_set()
+        popup = tk.Toplevel(self)
+        popup.title("No results")
+
+        label = tk.Label(popup, text="Sorry, Spotify couldn't find any songs with that title.")
+        label.grid(row=0, column=0)
+
+        button = ttk.Button(popup, text="Okay", command=popup.destroy)
+        button.grid(row=1, column=0)
+        self.grab_release()
 
     def open_song_search_popup(self, api_results):
         """ open a popup for the user to select the song they actually wanted to add to the list
