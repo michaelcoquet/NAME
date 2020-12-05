@@ -78,12 +78,12 @@ class MemberHomeFrame(HomePageFrame):
             command=self.get_song_info_command)
         self.get_song_info_button.grid(row=0, column=0)
 
-        self.find_similar_songs = tk.Button(
+        self.find_similar_songs_button = tk.Button(
             container,
             text="Add Similar Songs\nTo the Ones Selected",
             command=self.add_similar_songs_button_command
         )
-        self.find_similar_songs.grid(row=1, column=0)
+        self.find_similar_songs_button.grid(row=1, column=0)
 
     def init_upper_grid(self):
         super().init_upper_grid()
@@ -125,10 +125,7 @@ class MemberHomeFrame(HomePageFrame):
     def save_to_spotify_command(self):
         """command for the save to spotify button
         """
-
-        # TODO: BACKEND add logic to save this latest playlist (the one currently being
-        # displayed) to the users spotify account
-        return 1
+        self.switch_frame("Save Playlist")
 
     def all_playlists_command(self):
         """command for the all palylists button

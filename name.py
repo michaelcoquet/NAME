@@ -58,7 +58,7 @@ class Name(tk.Tk):
         self.frames[6] = gui.PlaylistInfoFrame(self, container, self.user)
         self.frames[7] = gui.PlaylistEditFrame(self, container, self.user)
         self.frames[8] = gui.AllPlaylistsFrame(self, container, self.user)
-        self.frames[9] = gui.CreateSimPlaylistFrame(self, container, self.user)
+        self.frames[9] = gui.SavePlaylistFrame(self, container, self.user)
         self.frames[10] = gui.ListeningHabitsFrame(self, container, self.user)
         self.frames[11] = gui.HomePageFrame(self, container, self.user)
 
@@ -129,7 +129,7 @@ class Name(tk.Tk):
             return 7
         elif name == "All Playlists":
             return 8
-        elif name == "Create Sim Playlist":
+        elif name == "Save Playlist":
             return 9
         elif name == "Listening Habits":
             return 10
