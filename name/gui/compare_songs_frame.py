@@ -21,6 +21,7 @@ class CompareSongsFrame(HomePageFrame):
         self.similar_songs_button.grid_remove()
 
         self.get_stats_button.grid()
+        self.display_data(self.parent.song_object_list)
 
     def init_upper_grid(self):
         super().init_upper_grid()

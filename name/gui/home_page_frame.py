@@ -176,6 +176,8 @@ class HomePageFrame(NameFrame):
         Args:
             song_list (list): list of songs that will appear in the treeview
         """
+        # clear the treeview first to avoid ghosting
+        self.song_treeview.delete(*self.song_treeview.get_children())
         artists_string_list = []
         for song in song_list:
             for artist in song.song_artist:
