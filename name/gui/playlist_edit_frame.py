@@ -18,6 +18,11 @@ class PlaylistEditFrame(HomePageFrame):
         self.done_button.grid_remove()
 
 
+    def grid_remember(self):
+        super().grid_remember()
+
+        self.done_button.grid()
+
     def init_lower_grid(self):
         super().init_lower_grid()
         self.similar_songs_button.grid_remove()

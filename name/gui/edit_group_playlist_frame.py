@@ -13,6 +13,13 @@ class EditGroupPlaylistFrame(CreateSimPlaylistFrame):
         tk ([type]): TODO: fill in
     """
 
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.sim_playlist_button.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+
     def init_lower_grid(self):
         super().init_lower_grid()
         self.sim_playlist_button.grid_remove()

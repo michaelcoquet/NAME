@@ -28,9 +28,18 @@ class AllPlaylistsFrame(MemberHomeFrame):
 
     def grid_remember(self):
         super().grid_remember()
+        self.get_song_info_button.grid_remove()
+        self.song_treeview.grid_remove()
+
         self.list_from_list_button.grid()
         self.song_sim_button.grid()
         self.playlist_treeview.grid()
+
+        # reload the playlists
+        if self.user.is_member():
+            if len(self.user.playlists) == 0:
+                plist = self.user.get_playlists()
+                self.display_data(plist)
 
     def init_upper_grid(self):
         super().init_upper_grid()
@@ -55,11 +64,6 @@ class AllPlaylistsFrame(MemberHomeFrame):
         self.playlist_treeview.heading("Size", text="Size", anchor="w")
         self.playlist_treeview.heading("Owner", text="Owner", anchor="w")
         self.playlist_treeview.grid(row=0, column=0, sticky="nsew")
-
-        # get a list of the current users spotify playlists if theyre logged in
-        if self.user.is_member():
-            plist = self.user.get_playlists()
-            self.display_data(plist)
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -119,6 +123,7 @@ class AllPlaylistsFrame(MemberHomeFrame):
                     # # switch to search results frame, and give it the results to be displayed
                     # self.switch_frame("Search Results")
                     # self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
+
 
     def latest_playlist_command(self):
         """command for the latest playlist button

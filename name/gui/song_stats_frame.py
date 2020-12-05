@@ -16,6 +16,26 @@ class SongStatsFrame(SongInfoFrame):
         super().grid_unmap()
         self.sim_score_label.grid_remove()
 
+    def grid_remember(self):
+        super().grid_remember()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
+        self.song_treeview.grid_remove()
+
+        self.start_over_button.grid()
+        self.sim_score_label.grid()
+        self.song_info_scrolledtext.grid()
+
+        self.song_info_scrolledtext.delete("1.0", "end")
+
+
     def init_upper_grid(self):
         super().init_upper_grid()
         self.song_search_entry.grid_remove()
@@ -39,9 +59,9 @@ class SongStatsFrame(SongInfoFrame):
         self.start_over_button.grid(row=0, column=0)
 
     def start_over_command(self):
-        self.switch_frame("Compare Songs")
+        self.parent.switch_to_previous_frame()
 
-    def display(self, tuple):
-        self.sim_score_label["text"] = "These songs are " + str(tuple[0]) + "% similar"
-        for song in tuple[1]:
+    def display(self, t):
+        self.sim_score_label["text"] = "These songs are " + str(t[0]) + "% similar"
+        for song in t[1]:
             self.song_info_scrolledtext.insert("end", str(song) + "\n\n")

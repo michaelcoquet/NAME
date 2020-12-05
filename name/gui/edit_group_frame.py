@@ -14,6 +14,36 @@ class EditGroupFrame(GroupHomeFrame):
         tk ([type]): TODO: fill in
     """
 
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.cancel_button.grid_remove()
+        self.create_group_button.grid_remove()
+        self.delete_button.grid_remove()
+        self.delete_all_button.grid_remove()
+        self.add_friend_button.grid_remove()
+        self.member_listbox.grid_remove()
+        self.member_list_label.grid_remove()
+        self.group_name_entry.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.add_friend_button.grid_remove()
+        self.save_playlist_button.grid_remove()
+        self.group_song_stats_button.grid_remove()
+        self.edit_group_button.grid_remove()
+        self.l_playlist_select.grid_remove()
+        self.playlist_dropdown.grid_remove()
+        self.new_playlist_button.grid_remove()
+
+        self.cancel_button.grid()
+        self.create_group_button.grid()
+        self.delete_button.grid()
+        self.delete_all_button.grid()
+        self.add_friend_button.grid()
+        self.member_listbox.grid()
+        self.member_list_label.grid()
+        self.group_name_entry.grid()
+
     def __init__(self, parent, container, user):
         super().__init__(parent, container, user)
         self.invite_id_list = []
@@ -67,12 +97,6 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_listbox.grid_remove()
-        self.playlist_dropdown.grid_remove()
-        self.new_playlist_button.grid_remove()
-        self.group_song_stats_button.grid_remove()
-        self.edit_group_button.grid_remove()
-
         f_container = tk.Frame(self.middle_grid)
         f_container.grid(row=0, column=1, sticky="n")
 

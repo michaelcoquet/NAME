@@ -52,9 +52,9 @@ class NameFrame(tk.Frame):
         self.init_upper_grid()
 
     def grid_remember(self):
-        self.upper_grid.grid(row=0, column=0, sticky="nw")
-        self.lower_grid.grid(row=2, column=0, sticky="ew")
-        self.middle_grid.grid(row=1, column=0, sticky="nsew")
+        self.upper_grid.grid()
+        self.lower_grid.grid()
+        self.middle_grid.grid()
 
     def init_guest_menu(self):
         """ make the default menu for guest users

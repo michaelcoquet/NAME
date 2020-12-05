@@ -18,6 +18,8 @@ class CompareSongsFrame(HomePageFrame):
 
     def grid_remember(self):
         super().grid_remember()
+        self.similar_songs_button.grid_remove()
+
         self.get_stats_button.grid()
 
     def init_upper_grid(self):

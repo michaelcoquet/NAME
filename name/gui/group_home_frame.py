@@ -114,7 +114,7 @@ class GroupHomeFrame(NameFrame):
     def edit_playlist_command(self):
         """ command for the edit playlist button
         """
-        self.switch_frame("Playlist Edit")
+        self.switch_frame("Edit Group Playlist")
 
     def edit_group_command(self):
         """ comamnd for the edit group button

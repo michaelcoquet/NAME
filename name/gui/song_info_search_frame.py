@@ -12,6 +12,13 @@ class SongInfoSearchFrame(HomePageFrame):
         tk ([type]): TODO: fill in
     """
 
+    def grid_remember(self):
+        super().grid_remember()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.song_treeview.grid_remove()
+
     def init_upper_grid(self):
         """TODO: fill in
         """

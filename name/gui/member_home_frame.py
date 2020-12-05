@@ -20,6 +20,24 @@ class MemberHomeFrame(HomePageFrame):
         self.listening_habits_button.grid_remove()
         self.get_song_info_button.grid_remove()
 
+    def grid_remember(self):
+        super().grid_remember()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.playlist_info_button.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_button.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+
+        self.edit_button.grid()
+        self.save_spotify_button.grid()
+        self.latest_playlist_button.grid()
+        self.all_playlists_button.grid()
+        self.listening_habits_button.grid()
+
     def grid_init(self):
         super().grid_init()
 
