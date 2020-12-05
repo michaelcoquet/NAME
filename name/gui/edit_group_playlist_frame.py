@@ -15,6 +15,8 @@ class EditGroupPlaylistFrame(CreateSimPlaylistFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
+        self.sim_playlist_button.grid_forget()
+
         self.sim_playlist_button.grid(row=0, column=2, sticky="nsew")
 
     def init_middle_grid(self):

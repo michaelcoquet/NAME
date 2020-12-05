@@ -74,7 +74,7 @@ class NameFrame(tk.Frame):
         self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
 
         for group in self.user.groups:
-            self.group_menu.add_command(label=group.group_name)
+            self.group_menu.add_command(label=group.group_name, command=self.group_menu_command)
 
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
@@ -147,6 +147,11 @@ class NameFrame(tk.Frame):
         # delete the cache file
         self.user.logout()
         self.init_guest_menu()
+
+    def group_menu_command(self):
+        """ Command for clicking a group menu button
+        """
+        self.switch_frame("Group Home")
 
     def member_home_command(self):
         """ command for the member home member menu item

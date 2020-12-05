@@ -14,20 +14,13 @@ class PlaylistEditFrame(HomePageFrame):
 
     def grid_forget(self):
         super().grid_forget()
-        self.delete_playlist_button.grid_forget()
+        # self.delete_playlist_button.grid_forget()
         self.done_button.grid_forget()
 
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.remove_all_button.grid_forget()
         self.similar_songs_button.grid_forget()
-
-        self.delete_playlist_button = tk.Button(
-            self.lower_grid,
-            text="Delete",
-            command=self.delete_command)
-        self.delete_playlist_button.grid(row=0, column=0)
 
         self.done_button = tk.Button(
             self.lower_grid,
@@ -41,9 +34,9 @@ class PlaylistEditFrame(HomePageFrame):
         self.get_song_info_button.grid_forget()
         self.compare_songs_button.grid_forget()
 
-        self.filters_dropdown.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
+        # self.filters_dropdown.grid_forget()
+        # self.song_search_entry.grid_forget()
+        # self.song_search_button.grid_forget()
 
     def delete_command(self):
         """command for the delete button
@@ -56,4 +49,4 @@ class PlaylistEditFrame(HomePageFrame):
         """command for the done button
         """
         # TODO: save changes back tot he listbox on member home frame
-        self.switch_frame("Member Home")
+        self.switch_frame("Group Home")
