@@ -12,14 +12,14 @@ class GroupHomeFrame(NameFrame):
     Args:
         tk ([type]): TODO: fill in
     """
-
-    group_name = "TODO: change this"
+    def __init__(self, parent, container, user):
+        super().__init__(parent, container, user)
+        self.active_group = None
 
     def grid_forget(self):
         super().grid_forget()
         self.edit_playlist_button.grid_forget()
         self.save_playlist_button.grid_forget()
-        self.list_1_label.grid_forget()
         self.song_listbox.grid_forget()
         self.playlist_dropdown.grid_forget()
         self.new_playlist_button.grid_forget()
@@ -49,33 +49,6 @@ class GroupHomeFrame(NameFrame):
         self.song_listbox = tk.Listbox(self.middle_grid)
         self.song_listbox.grid(row=0, column=0, sticky="nsew")
 
-        # TODO: add the proper filters to the dropdown list
-        container_0 = tk.Frame(self.middle_grid)
-        container_0.grid(row=0, column=1, sticky="n")
-
-        self.list_1_label = tk.Label(container_0)
-        self.list_1_label["text"] = "Group: " + self.group_name + "\nplaylists"
-        self.list_1_label.grid(row=0, column=0)
-
-        variable = StringVar(container_0)
-        variable.set("Last Created Playlist") # default value
-        self.playlist_dropdown = tk.OptionMenu(
-            container_0,
-            variable,
-            "Last Created Playlist",
-            "playlist 1",
-            "playlist 2",
-            "playlist 3",
-            command=self.playlist_dropdown_command)
-        self.playlist_dropdown.grid(row=1, column=0)
-
-        self.new_playlist_button = tk.Button(
-            container_0,
-            text="New Playlist",
-            command=self.new_playlist_command
-        )
-        self.new_playlist_button.grid(row=2, column=0)
-
         container_1 = tk.Frame(self.middle_grid)
         container_1.grid(row=0, column=2, sticky="n")
 
@@ -94,8 +67,39 @@ class GroupHomeFrame(NameFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.list_1_label = tk.Label(self.upper_grid, text="Last Created\nPlaylist")
-        self.list_1_label.grid(row=1, column=1)
+                # TODO: add the proper filters to the dropdown list
+        container_0 = tk.Frame(self.upper_grid)
+        container_0.grid(row=1, column=1)
+
+        self.l_group_name = tk.Label(container_0)
+        self.l_group_name.grid(row=0, column=1)
+        self.l_group_name.configure(font=("Helvetica BOLD", 18))
+
+        self.l_playlist_select = tk.Label(container_0, text="Playlist Select:")
+        self.l_playlist_select.grid(row=1, column=0)
+
+        variable = StringVar(container_0)
+        variable.set("Last Created Playlist") # default value
+        self.playlist_dropdown = tk.OptionMenu(
+            container_0,
+            variable,
+            "Last Created Playlist",
+            "playlist 1",
+            "playlist 2",
+            "playlist 3",
+            command=self.playlist_dropdown_command)
+        self.playlist_dropdown.grid(row=1, column=1)
+
+        self.new_playlist_button = tk.Button(
+            container_0,
+            text="New Playlist",
+            command=self.new_playlist_command
+        )
+        self.new_playlist_button.grid(row=1, column=2)
+
+    def display_group(self, group):
+        self.active_group = group
+        self.l_group_name["text"] = group.group_name
 
     def edit_playlist_command(self):
         """ command for the edit playlist button

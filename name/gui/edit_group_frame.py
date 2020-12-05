@@ -72,7 +72,6 @@ class EditGroupFrame(GroupHomeFrame):
         self.new_playlist_button.grid_forget()
         self.group_song_stats_button.grid_forget()
         self.edit_group_button.grid_forget()
-        self.list_1_label.grid_forget()
 
         f_container = tk.Frame(self.middle_grid)
         f_container.grid(row=0, column=1, sticky="n")
@@ -88,7 +87,6 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.list_1_label.grid_forget()
         self.member_list_label = tk.Label(self.upper_grid, text="Member List")
         self.member_list_label.grid(row=2,column=0)
 
