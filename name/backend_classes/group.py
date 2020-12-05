@@ -10,7 +10,7 @@ class Group:
     """
     A class to represent a group of freinds
     """
-    def __init__(self, group_name, owner_id, member_list):
+    def __init__(self, group_name, owner_id, invite_list, member_list):
         """ initialize all fields
 
         group (json): the group representation from the database
@@ -20,17 +20,22 @@ class Group:
         self.owner_id = owner_id
 
         self.member_list = member_list
-        self.group_playlists = []
+
+        self.invite_list = invite_list
+
+        self.playlists = []
 
     def __iter__(self):
         member_string = [member for member in self.member_list]
-        playlist_string = [plist for plist in self.group_playlists]
+        invite_string = [invite for invite in self.invite_list]
+        playlist_string = [plist for plist in self.playlists]
         group_string = {
             "group_id": self.group_id,
             "group_name": self.group_name,
             "owner_id": self.owner_id,
+            "invite_list": invite_string,
             "member_list": member_string,
-            "group_playlists": playlist_string
+            "playlists": playlist_string
         }
         yield from group_string.items()
 
@@ -41,6 +46,46 @@ class Group:
         return 1
 
     def update_playlist(self):
+        return 1
+
+    def update_playlists(self, playlists):
+        """ give a list of playlist objects to replace group_playlists with
+            helpful for making new group objects or loading them from storage
+
+        Args:
+            playlists (Playlist[]): new list of group playlists
+        """
+        self.group_playlists = playlists
+
+    def invite_members(self, member_ids):
+        """ send invites to the following members
+
+        Args:
+            member_ids (int64[]): list of member ids to send invites to
+        """
+        for member_id in member_ids:
+            self.invite_list.append(member_id)
+
+    def accecpt_invite(self, member_id):
+        """ the member with member_id accepted the invitation, take action
+
+        Args:
+            member_id (int64): member_id who accepted the invitation to this group
+        """
+        # remove the member from the invite list
+        for id in self.invite_list:
+            if id == member_id:
+                self.invite_list.remove(id)
+                # add them to the member list
+                self.member_list.append(id)
+
+    def decline_invite(self, member_id):
+        """ the member with emmber_id declined the invitation, take action
+
+        Args:
+            member_id (int64): member_id who declined the invitation to this group
+        """
+        # remove the member from the invite list, but dont add them to the member list
         return 1
 
     def add_member(self, member_id):

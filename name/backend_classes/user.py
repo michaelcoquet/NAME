@@ -48,7 +48,7 @@ class User:
         """
         self.groups.append(group)
         if self.persistent_storage.create_new_group(group.group_name,
-            self.persistent_storage.spotify_id, group.member_list) == False:
+            self.persistent_storage.spotify_id, group.invite_list) == False:
             return False
         else:
             return True
@@ -59,7 +59,7 @@ class User:
         if self.has_account:
             return self.spotify_id
 
-    def has_account(self):
+    def is_member(self):
         """ returns true if the user doesn't have a spotify account linked, false if they do
         """
         return self.has_account
@@ -92,13 +92,36 @@ class User:
                     for invite in invite_list:
                         t = "Would you like to join group: " + str(invite["group_name"]) + \
                             "(id: " + str(invite["group_id"]) + ")"
-                        tk.messagebox.askyesno(title="Group Invitation", message=t)
+
+                        answer = tk.messagebox.askyesnocancel(
+                                title="Group Invitation", message=t
+                            )
+
+                        if answer == True:
+                            # invite accepted
+                            print("invite accepted")
+                            invite_group = self.persistent_storage.get_group(invite["group_id"])
+                            self.groups.append(invite_group) # add to the group object list
+                            invite_group.accecpt_invite(self.spotify_id)
+                            # save the data back to the database
+                            self.persistent_storage.update_group(invite_group)
+                        elif answer == False:
+                            # invite decline
+                            print("invite declined")
+                            # now need to remove the user from the invite list
+                            # dont add them to the member list
+                            # save the invite list back to the original group entry
                     return True
             else:
                 self.persistent_storage.create_new_member()
             return True
         else:
             return False
+
+    def get_playlists(self):
+        """ get this users current playlist
+        """
+        return self.spotify_manager.get_member_playlists()
 
     def find_group_invites(self):
         """ search for groups that I am a member of but dont yet show up in this objects group
@@ -110,7 +133,7 @@ class User:
         """ log out the current user
         """
         if self.has_account:
-            self.has_account = 0
+            self.has_account = False
             self.spotify_manager = None
             if os.path.exists(".cache"):
                 os.remove(".cache")
