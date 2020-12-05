@@ -224,26 +224,47 @@ class HomePageFrame(NameFrame):
     def similar_songs_command(self):
         """command for the find similar songs button
         """
-        # get the current working list of songs to be searched and pass it to the backend
-        self.formatted_filters = self.convert_filters_list(self.selected_filters)
-        search_object = CheckingSongSimilarity(self.formatted_filters)
+        # if no songs have been entered yet, display the error popup
+        if len(self.parent.song_object_list) < 1:
+            message = "You must enter at least one song!"
+            self.enter_more_songs_popup(message)
+        else:
+            # get the current working list of songs to be searched and pass it to the backend
+            self.formatted_filters = self.convert_filters_list(self.selected_filters)
+            search_object = CheckingSongSimilarity(self.formatted_filters)
 
-        # do the search in a seperate thread
-        pool = ProcessPoolExecutor(max_workers=1)
+            # do the search in a seperate thread
+            pool = ProcessPoolExecutor(max_workers=1)
 
-        futures = [pool.submit(
-            self.threaded_search,
-            search_object,
-            self.parent.song_object_list
-        )]
+            futures = [pool.submit(
+                self.threaded_search,
+                search_object,
+                self.parent.song_object_list
+            )]
 
-        wait(futures)
-        for future in futures:
-            print(future.result())
+            wait(futures)
+            for future in futures:
+                print(future.result())
 
-        # self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
-        # switch to search results frame, and give it the results to be displayed
-        self.switch_frame("Search Results")
+            # self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
+            # switch to search results frame, and give it the results to be displayed
+            self.switch_frame("Search Results")
+
+    def enter_more_songs_popup(self, text):
+        """ In the case that not enough songs are entered
+        for the task, display this popup
+        text: the specific message to be displayed in the popup
+        """
+        self.grab_set()
+        popup = tk.Toplevel(self)
+        popup.title("Not enough songs")
+
+        label = tk.Label(popup, text=text)
+        label.grid(row=0, column=0)
+
+        button = ttk.Button(popup, text="Okay", command=popup.destroy)
+        button.grid(row=1, column=0)
+        self.grab_release()
 
     def threaded_search(self, search_object, song_list):
         """ runs in a seperate thread to avoid the app hanging up during long searches

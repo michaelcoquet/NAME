@@ -42,7 +42,8 @@ class CompareSongsFrame(HomePageFrame):
         """
         # check to make sure two or more songs have been entered
         if len(self.parent.song_object_list) < 2:
-            self.only_one_song_popup()
+            message = "Enter at least two songs to compare their stats!"
+            self.enter_more_songs_popup(message)
         else:
             self.switch_frame("Song Stats")
 
@@ -55,19 +56,3 @@ class CompareSongsFrame(HomePageFrame):
             # returned data
             d = [int(sim_score), self.parent.song_object_list]
             self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)
-
-    def only_one_song_popup(self):
-        """ In the case that only one song is entered 
-        for the song comparison, display this popup to enter more
-        songs first.
-        """
-        self.grab_set()
-        popup = tk.Toplevel(self)
-        popup.title("Not enough songs")
-
-        label = tk.Label(popup, text="Enter at least two songs to compare their stats!")
-        label.grid(row=0, column=0)
-
-        button = ttk.Button(popup, text="Okay", command=popup.destroy)
-        button.grid(row=1, column=0)
-        self.grab_release()
