@@ -23,6 +23,7 @@ class SongInfoSearchFrame(HomePageFrame):
 
         self.song_search_entry.delete(0,25)
         self.song_search_entry.insert(0, "Song title")
+        self.filters_dropdown.grid_forget()
 
     def init_middle_grid(self):
         """TODO: fill in
@@ -56,9 +57,6 @@ class SongInfoSearchFrame(HomePageFrame):
 
         self.switch_frame("Song Info")
         f = self.parent.get_frame_id("Song Info")
-
-        # need to hide a button since this screen can be accessed from 2 different paths
-        self.parent.frames[f].ply_from_ply_button.grid_forget()
 
         # pass the data to the scrolledText widget on the next screen
         s = self.parent.song_object_list[len(self.parent.song_object_list) - 1]

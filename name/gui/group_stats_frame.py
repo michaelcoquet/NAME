@@ -17,7 +17,6 @@ class GroupStatsFrame(SongInfoFrame):
     def init_lower_grid(self):
         super().init_lower_grid()
         self.start_over_button.grid_forget()
-        self.ply_from_ply_button.grid_forget()
 
     def init_middle_grid(self):
         super().init_middle_grid()

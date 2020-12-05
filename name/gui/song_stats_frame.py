@@ -34,7 +34,6 @@ class SongStatsFrame(SongInfoFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.ply_from_ply_button.grid_forget()
 
         self.start_over_button["command"] = self.start_over_command
         self.start_over_button.grid(row=0, column=0)
