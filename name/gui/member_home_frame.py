@@ -160,7 +160,7 @@ class MemberHomeFrame(HomePageFrame):
     def get_song_info_command(self):
         """command for the get song info button
         """
-        self.switch_frame("Song Info")
+        self.switch_frame("Song Info Member")
 
         song_list = []
 
@@ -176,7 +176,9 @@ class MemberHomeFrame(HomePageFrame):
                     # found a corresponding song object
                     song_list.append(song)
 
-        self.parent.frames[self.parent.get_frame_id("Song Info")].display_details(song_list)
+        self.parent.frames[self.parent.get_frame_id("Song Info Member")].display_details(song_list)
+
+
 
     def add_similar_songs_button_command(self):
         """ command for the add similar songs button
