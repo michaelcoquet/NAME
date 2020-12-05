@@ -147,6 +147,8 @@ class NameFrame(tk.Frame):
         # delete the cache file
         self.user.logout()
         self.init_guest_menu()
+        # go back to the home frame
+        self.switch_frame("Home Page")
 
     def member_home_command(self):
         """ command for the member home member menu item
