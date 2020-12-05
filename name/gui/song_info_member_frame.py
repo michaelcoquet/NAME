@@ -4,6 +4,8 @@ import tkinter as tk
 import tkinter.scrolledtext as st
 
 from .member_home_frame import MemberHomeFrame
+from name.backend_classes.lyrics import Lyrics
+
 
 class SongInfoMemberFrame(MemberHomeFrame):
     """ TODO: fill in
@@ -27,6 +29,7 @@ class SongInfoMemberFrame(MemberHomeFrame):
         self.filters_dropdown.grid_remove()
         self.remove_button.grid_remove()
         self.remove_all_button.grid_remove()
+        self.save_spotify_button.grid_remove()
 
         self.song_info_scrolledtext.grid()
         self.start_over_button.grid()
@@ -82,7 +85,6 @@ class SongInfoMemberFrame(MemberHomeFrame):
         check_list = type(songs) is list
 
         if check_list:
-            self.latest_
             for song in songs:
                 # display new results
                 self.song_info_scrolledtext.insert("end", str(song) + "\n\n\n")

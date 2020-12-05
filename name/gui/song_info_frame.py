@@ -6,6 +6,7 @@ import tkinter.scrolledtext as st
 from .home_page_frame import HomePageFrame
 from name.backend_classes.lyrics import Lyrics
 
+
 class SongInfoFrame(HomePageFrame):
     """ TODO: fill in
 
