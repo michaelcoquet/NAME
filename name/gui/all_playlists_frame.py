@@ -15,10 +15,6 @@ class AllPlaylistsFrame(MemberHomeFrame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def __init__(self, parent, container):
-        super().__init__(parent, container)
-        self.container = container
-        self.parent = parent
 
         self.playlists = []
 

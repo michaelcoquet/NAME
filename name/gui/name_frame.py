@@ -10,7 +10,6 @@ from tkinter import Menu
 from tkinter import ttk
 
 from name.backend_classes import Query
-from name.backend_classes import SpotifyAPIManager
 
 
 class NameFrame(tk.Frame):
@@ -19,10 +18,12 @@ class NameFrame(tk.Frame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def __init__(self, parent, container):
+    def __init__(self, parent, container, user):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.container = container
+        self.user = user
+
         self.init_upper_grid()
         self.init_middle_grid()
         self.init_lower_grid()
@@ -71,6 +72,10 @@ class NameFrame(tk.Frame):
         self.group_menu.add_command(label="Create Group", command=self.create_group)
         self.group_menu.add_separator()
         self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
+
+        for group in self.user.groups:
+            self.group_menu.add_command(label=group.group_name)
+
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
 
@@ -131,20 +136,16 @@ class NameFrame(tk.Frame):
         """ Button command to link to a spotify account and if succesfully linked switch to the
             member frame (frame_id = 2).
         """
-        self.parent.spotify_manager = SpotifyAPIManager()
-        if self.parent.spotify_manager.link_spotify_account() == True:
-            self.parent.logged_in = 1
+        if self.user.link_spotify_account() == True:
             self.init_member_menu()
         else:
             print("error unsuccessfully linked spotify account")
 
     def log_out(self):
-        """ Command for the logout button, should be able to just reinstantiate Spotify API
-            Manager
+        """ Command for the logout button
         """
         # delete the cache file
-        os.remove(".cache")
-        self.parent.logged_in = 0
+        self.user.logout()
         self.init_guest_menu()
 
     def member_home_command(self):
@@ -157,8 +158,8 @@ class NameFrame(tk.Frame):
         """
         # Return the users spotify ID that they can share with other users to
         # form groups
-        if self.parent.logged_in:
-            message = self.parent.spotify_manager.get_user_id()
+        if self.user.has_account:
+            message = self.user.get_account_id()
             ShareableIdDialog(self.container, title="NAME", text=message)
 
         # TODO: GUI     - Display the returned ID in the following messagebox popup

@@ -17,10 +17,8 @@ class HomePageFrame(NameFrame):
     # pylint: disable=too-many-instance-attributes
     # theres going to be lots of instance attributes for this class
 
-    def __init__(self, parent, container):
-        super().__init__(parent, container)
-        self.parent = parent
-        self.container = container
+    def __init__(self, parent, container, user):
+        super().__init__(parent, container, user)
         self.frame_id = self.parent.get_frame_id("Home Page")
 
         self.parent.song_object_list = []

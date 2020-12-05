@@ -12,10 +12,6 @@ class CreateSimPlaylistFrame(NameFrame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def __init__(self, parent, container):
-        super().__init__(parent, container)
-        self.container = container
-        self.parent = parent
 
     def grid_forget(self):
         super().grid_forget()

@@ -8,7 +8,7 @@ import name.gui as gui
 import tkinter as tk
 from tkinter import Grid
 
-from name.backend_classes import SpotifyAPIManager
+from name.backend_classes.user import User
 
 
 class Name(tk.Tk):
@@ -24,7 +24,6 @@ class Name(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.logged_in = 0
 
         self.title("Nearly Analagous Music Engine")
         self.iconbitmap("name\\resources\\ravencon.ico") # TODO: make suren to change this to be
@@ -41,31 +40,32 @@ class Name(tk.Tk):
 
         # working list of songs (displayed in the song_treeview widgets)
         self.song_object_list = []
-        #instantiate the spotify api manager
-        self.spotify_manager = SpotifyAPIManager()
 
         # instantiate frame array
         self.frames = {}
 
+        # instantiate the user
+        self.user = User()
+
         # instantiate the frames
-        self.frames[0] = gui.CompareSongsFrame(self, container)
-        self.frames[1] = gui.SearchResultsFrame(self, container)
-        self.frames[2] = gui.SongInfoSearchFrame(self, container)
-        self.frames[3] = gui.SongInfoFrame(self, container)
-        self.frames[4] = gui.SongStatsFrame(self, container)
-        self.frames[5] = gui.MemberHomeFrame(self, container)
-        self.frames[6] = gui.PlaylistInfoFrame(self, container)
-        self.frames[7] = gui.PlaylistEditFrame(self, container)
-        self.frames[8] = gui.AllPlaylistsFrame(self, container)
-        self.frames[9] = gui.CreateSimPlaylistFrame(self, container)
-        self.frames[10] = gui.ListeningHabitsFrame(self, container)
-        self.frames[11] = gui.HomePageFrame(self, container)
+        self.frames[0] = gui.CompareSongsFrame(self, container, self.user)
+        self.frames[1] = gui.SearchResultsFrame(self, container, self.user)
+        self.frames[2] = gui.SongInfoSearchFrame(self, container, self.user)
+        self.frames[3] = gui.SongInfoFrame(self, container, self.user)
+        self.frames[4] = gui.SongStatsFrame(self, container, self.user)
+        self.frames[5] = gui.MemberHomeFrame(self, container, self.user)
+        self.frames[6] = gui.PlaylistInfoFrame(self, container, self.user)
+        self.frames[7] = gui.PlaylistEditFrame(self, container, self.user)
+        self.frames[8] = gui.AllPlaylistsFrame(self, container, self.user)
+        self.frames[9] = gui.CreateSimPlaylistFrame(self, container, self.user)
+        self.frames[10] = gui.ListeningHabitsFrame(self, container, self.user)
+        self.frames[11] = gui.HomePageFrame(self, container, self.user)
 
         #instantiate group frames
-        self.frames[12] = gui.EditGroupFrame(self, container)
-        self.frames[13] = gui.GroupStatsFrame(self, container)
-        self.frames[14] = gui.EditGroupPlaylistFrame(self, container)
-        self.frames[15] = gui.GroupHomeFrame(self, container)
+        self.frames[12] = gui.EditGroupFrame(self, container, self.user)
+        self.frames[13] = gui.GroupStatsFrame(self, container, self.user)
+        self.frames[14] = gui.EditGroupPlaylistFrame(self, container, self.user)
+        self.frames[15] = gui.GroupHomeFrame(self, container, self.user)
 
         for i in self.frames:
             self.frames[i].grid_forget()
