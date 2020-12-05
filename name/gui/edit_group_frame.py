@@ -93,7 +93,8 @@ class EditGroupFrame(GroupHomeFrame):
     def cancel_command(self):
         """command for the cancel button
         """
-        return 1
+        # go back to previously active_frame
+        self.parent.switch_to_previous_frame()
 
     def save_group_command(self):
         """command for the create group button
