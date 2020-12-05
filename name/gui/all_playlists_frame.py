@@ -119,11 +119,6 @@ class AllPlaylistsFrame(MemberHomeFrame):
                     self.switch_frame("Song Stats")
                     d = [int(result), item.songs]
                     self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)
-                    # result = search_object.random_search(item.songs)
-                    # # switch to search results frame, and give it the results to be displayed
-                    # self.switch_frame("Search Results")
-                    # self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
-
 
     def latest_playlist_command(self):
         """command for the latest playlist button

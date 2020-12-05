@@ -2,7 +2,7 @@
 """
 import tkinter as tk
 from tkinter import StringVar
-
+from tkinter import ttk
 from .name_frame import NameFrame
 
 
@@ -20,7 +20,6 @@ class GroupHomeFrame(NameFrame):
         super().grid_unmap()
         self.edit_playlist_button.grid_remove()
         self.save_playlist_button.grid_remove()
-        self.song_listbox.grid_remove()
         self.playlist_dropdown.grid_remove()
         self.new_playlist_button.grid_remove()
         self.group_song_stats_button.grid_remove()
@@ -30,7 +29,6 @@ class GroupHomeFrame(NameFrame):
         super().grid_remember()
         self.edit_playlist_button.grid()
         self.save_playlist_button.grid()
-        self.song_listbox.grid()
         self.playlist_dropdown.grid()
         self.new_playlist_button.grid()
         self.group_song_stats_button.grid()
@@ -56,8 +54,20 @@ class GroupHomeFrame(NameFrame):
     def init_middle_grid(self):
         super().init_middle_grid()
 
-        self.song_listbox = tk.Listbox(self.middle_grid)
-        self.song_listbox.grid(row=0, column=0, sticky="nsew")
+        self.song_treeview = ttk.Treeview(self.middle_grid)
+        self.song_treeview["columns"] = ("Title", "Album", "Artist")
+
+        # set up widths of columns
+        self.song_treeview.column("#0", width=1, minwidth=1, stretch="no")
+        self.song_treeview.column("Title", width=300, minwidth=300, stretch="yes")
+        self.song_treeview.column("Album", width=150, minwidth=150, stretch="yes")
+        self.song_treeview.column("Artist", width=150, minwidth=150, stretch="yes")
+
+        #set up headings for the columns
+        self.song_treeview.heading("Title", text="Title", anchor="w")
+        self.song_treeview.heading("Album", text="Album", anchor="w")
+        self.song_treeview.heading("Artist", text="Artist(s)", anchor="w")
+        self.song_treeview.grid(row=0, column=0, sticky="nsew")
 
         container_1 = tk.Frame(self.middle_grid)
         container_1.grid(row=0, column=2, sticky="n")
