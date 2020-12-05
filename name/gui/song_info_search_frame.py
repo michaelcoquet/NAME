@@ -54,7 +54,7 @@ class SongInfoSearchFrame(HomePageFrame):
         #            given in the text song_search_entry widget
 
         # hide this button for the next frame since its not used
-        self.start_single_search(self.song_search_entry.get(), {})
+        self.start_single_search(self.song_search_entry.get())
 
         # TODO: GUI - Update the song_info_scrolledtext in the song_info_frame
 

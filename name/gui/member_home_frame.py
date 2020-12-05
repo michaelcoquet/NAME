@@ -70,11 +70,20 @@ class MemberHomeFrame(HomePageFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
+        container = tk.Frame(self.middle_grid)
+        container.grid(row=0, column=1, sticky="n")
         self.get_song_info_button = tk.Button(
-            self.middle_grid,
+            container,
             text="Get Song Info",
             command=self.get_song_info_command)
-        self.get_song_info_button.grid(row=0, column=1, sticky="n")
+        self.get_song_info_button.grid(row=0, column=0)
+
+        self.find_similar_songs = tk.Button(
+            container,
+            text="Add Similar Songs\nTo the Ones Selected",
+            command=self.add_similar_songs_button_command
+        )
+        self.find_similar_songs.grid(row=1, column=0)
 
     def init_upper_grid(self):
         super().init_upper_grid()
@@ -155,3 +164,25 @@ class MemberHomeFrame(HomePageFrame):
         """command for the get song info button
         """
         self.switch_frame("Song Info")
+
+        song_list = []
+
+        # get the song object(s) that are currently selected
+        for song in self.parent.song_object_list:
+            for selection in self.song_treeview.selection():
+                tmp = [artist.name for artist in song.song_artist]
+                tmp = ", ".join(tmp)
+                if (
+        song.song_name == self.song_treeview.item(selection)["values"][0] and
+        tmp == self.song_treeview.item(selection)["values"][2]
+                ):
+                    # found a corresponding song object
+                    song_list.append(song)
+
+        self.parent.frames[self.parent.get_frame_id("Song Info")].display_details(song_list)
+
+    def add_similar_songs_button_command(self):
+        """ command for the add similar songs button
+        """
+        # TODO: get the selected songs and run a similarity search then add the results back to the
+        # working list

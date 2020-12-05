@@ -20,6 +20,9 @@ class SongInfoFrame(HomePageFrame):
 
     def grid_remember(self):
         super().grid_remember()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
         self.song_treeview.grid_remove()
         self.similar_songs_button.grid_remove()
         self.filters_dropdown.grid_remove()
@@ -64,31 +67,52 @@ class SongInfoFrame(HomePageFrame):
 
         self.start_over_button.grid(row=0, column=0)
 
-    def display_details(self, song):
+    def display_details(self, songs):
         """gets the details of a song from another frame and displays it in the scrolledText
            widget
 
         Args:
             song (song):
         """
-        # delete any details that might have already been in the display
-        self.song_info_scrolledtext.configure(state="normal")
         self.song_info_scrolledtext.delete("1.0", "end")
-        # display new results
-        self.song_info_scrolledtext.insert("end", song.__str__())
-        # make sure the text can't be edited within the app
-        self.song_info_scrolledtext.configure(state="disabled")
-        # display the song lyrics in the other textbox
-        self.song_lyrics_scrolledtext.configure(state="normal")
         self.song_lyrics_scrolledtext.delete("1.0", "end")
-        lyrics_obj = Lyrics(song.song_name, song.song_artist[0].name)
-        if lyrics_obj.get_lyrics() != None:
-            self.song_lyrics_scrolledtext.insert("end", "Lyrics:\n\n" + song.song_name + " - " +
-                                                  song.song_artist[0].name +
-                                                  ":\n\n" + lyrics_obj.get_lyrics())
+
+        check_list = type(songs) is list
+
+        if check_list:
+            for song in songs:
+                # display new results
+                self.song_info_scrolledtext.insert("end", str(song) + "\n\n\n")
+                lyrics_obj = Lyrics(song.song_name, song.song_artist[0].name)
+                if lyrics_obj.get_lyrics() != None:
+                    self.song_lyrics_scrolledtext.insert("end", "Lyrics:\n\n" + song.song_name + " - " +
+                                                        ", ".join(dict(song)["song_artist"]) +
+                                                        ":\n\n" + lyrics_obj.get_lyrics() + "\n\n\n")
+                else:
+                    self.song_lyrics_scrolledtext.insert("end", "Couldn't find lyrics for this song \n")
         else:
-            self.song_lyrics_scrolledtext.insert("end", "Couldn't find lyrics for this song \n")
-        self.song_lyrics_scrolledtext.configure(state="disabled")
+            # display new results
+            self.song_info_scrolledtext.insert("end", str(songs) + "\n\n\n")
+
+            lyrics_obj = Lyrics(songs.song_name, songs.song_artist[0].name)
+            if lyrics_obj.get_lyrics() != None:
+                self.song_lyrics_scrolledtext.insert("end", "Lyrics:\n\n" + songs.song_name + " - " +
+                                                    ", ".join(dict(songs)["song_artist"]) +
+                                                    ":\n\n" + lyrics_obj.get_lyrics() + "\n\n\n")
+            else:
+                self.song_lyrics_scrolledtext.insert("end", "Couldn't find lyrics for this song \n")
+
+    def display_tuple(self, song):
+        """ display data from the tree view instead of song object
+
+        Args:
+            song (tuple): representation of a song object
+        """
+        self.song_info_scrolledtext.delete("1.0", "end")
+        self.song_lyrics_scrolledtext.delete("1.0", "end")
+
+        print(song)
+        self.song_info_scrolledtext.insert("end", song + "\n\n\n")
 
     def start_over_command(self):
         """command for the start over button
@@ -99,22 +123,22 @@ class SongInfoFrame(HomePageFrame):
         """ overrides parent song select dropdown command, dont super it though
         """
         super()
-                # make sure the user has actually made a selection
+        # make sure the user has actually made a selection
         if self.song_selection.get() != self.song_selection_default:
             # get the item that is currently selected in the OptionMenu dropdown
             item = self.song_selection.get()
         artists_string_list = []
 
         # search the original list of song objects returned from the API for the item
-        for song in self.api_search_results:
+        for song_search in self.api_search_results:
             # build string for comparison to find object probably a better way to do this
-            for artist in song.song_artist:
+            for artist in song_search.song_artist:
                 artists_string_list.append(artist.name)
             artists_string = ", ".join(artists_string_list)
 
             artists_string_list.clear()
 
-            comp_str = song.song_name + "  -  " + artists_string
+            comp_str = song_search.song_name + "  -  " + artists_string
 
             if item == comp_str:
                 # close the popup window after the user makes a selection
@@ -123,8 +147,17 @@ class SongInfoFrame(HomePageFrame):
                 # add this song to the list of songs
                 self.song_info_scrolledtext.delete("1.0", "end")
                 self.song_lyrics_scrolledtext.delete("1.0", "end")
+                # print("song_object_list:    " + str(self.parent.song_object_list) + "\n\n\n\n")
+                # for song_from_list in self.parent.song_object_list:
+                #     print("song_search" + str(song_search))
+                #     print("song_from_list" + str(song_from_list))
 
-                self.display_details(song)
+                #     if (
+                #         song_from_list.song_name == song_search.song_name and
+                #         song_from_list.song_artist == song_search.song_artist
+                #     ):
+
+                self.display_details(song_search)
 
                 break
 

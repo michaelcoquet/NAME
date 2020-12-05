@@ -21,14 +21,6 @@ class GroupStatsFrame(SongInfoFrame):
     def init_middle_grid(self):
         super().init_middle_grid()
         self.song_info_scrolledtext.delete(1.0, tk.END)
-        self.song_info_scrolledtext.insert(tk.INSERT,
-        """\
-Lots of group stats
-    - sdf
-    - as
-    - ff
-    - n
-        """) # remove this when we get real results back
 
     def init_upper_grid(self):
         super().init_upper_grid()

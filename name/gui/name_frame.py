@@ -181,7 +181,7 @@ class NameFrame(tk.Frame):
         # TODO: GUI     - Display the returned ID in the following messagebox popup
 
 
-    def start_single_search(self, title, filters):
+    def start_single_search(self, title):
         """ Search the spotify API for the given song
 
         Args:

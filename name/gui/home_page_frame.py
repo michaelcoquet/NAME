@@ -51,6 +51,8 @@ class HomePageFrame(NameFrame):
         self.song_search_entry.grid()
         self.song_search_button.grid()
 
+        self.display_data(self.parent.song_object_list)
+
     def grid_init(self):
         super().grid_init()
         self.song_search_entry.delete(0, "end")
@@ -211,7 +213,7 @@ class HomePageFrame(NameFrame):
         """command for the song search button
         """
         # run the single song search function with will connect with the back end
-        self.start_single_search(self.song_search_entry.get(), self.formatted_filters)
+        self.start_single_search(self.song_search_entry.get())
 
     def create_playlist_command(self):
         """command for the create playlist button, just brings us back to the home page
