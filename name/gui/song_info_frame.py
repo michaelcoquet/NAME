@@ -59,15 +59,20 @@ class SongInfoFrame(HomePageFrame):
             song (song):
         """
         # delete any details that might have already been in the display
+        self.song_info_scrolledtext.configure(state="normal")
         self.song_info_scrolledtext.delete("1.0", "end")
         # display new results
         self.song_info_scrolledtext.insert("end", song.__str__())
+        # make sure the text can't be edited within the app
+        self.song_info_scrolledtext.configure(state="disabled")
         # display the song lyrics in the other textbox
+        self.song_lyrics_scrolledtext.configure(state="normal")
         self.song_lyrics_scrolledtext.delete("1.0", "end")
         lyrics_obj = Lyrics(song.song_name, song.song_artist[0].name)
         self.song_lyrics_scrolledtext.insert("end", "Lyrics:\n\n" + song.song_name + " - " +
                                                   song.song_artist[0].name +
                                                   ":\n\n" + lyrics_obj.get_lyrics())
+        self.song_lyrics_scrolledtext.configure(state="disabled")
 
     def start_over_command(self):
         """command for the start over button

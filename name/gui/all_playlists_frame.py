@@ -117,3 +117,4 @@ class AllPlaylistsFrame(MemberHomeFrame):
         """command for the latest playlist button
         """
         self.switch_frame("Member Home")
+
