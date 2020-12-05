@@ -160,4 +160,8 @@ class EditGroupFrame(GroupHomeFrame):
                     self.invite_id_list.remove(member)
         self.member_listbox.delete(tk.ANCHOR)
 
-
+    def display_group(self, group):
+        """[summary]
+        """
+        for member in group.member_list:
+            print(member)
