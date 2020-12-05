@@ -72,7 +72,7 @@ class GroupHomeFrame(NameFrame):
         self.new_playlist_button = tk.Button(
             container_0,
             text="New Playlist",
-            command=self.new_palylist_command
+            command=self.new_playlist_command
         )
         self.new_playlist_button.grid(row=2, column=0)
 
@@ -100,19 +100,19 @@ class GroupHomeFrame(NameFrame):
     def edit_playlist_command(self):
         """ command for the edit playlist button
         """
-        return 1
+        self.switch_frame("Playlist Edit")
 
     def edit_group_command(self):
         """ comamnd for the edit group button
         """
-        return 1
+        self.switch_frame("Edit Group")
 
     def group_song_stats_command(self):
         """ command for the get group song stats button
         """
         self.switch_frame("Group Stats")
 
-    def new_palylist_command(self):
+    def new_playlist_command(self):
         """ command for the new playlist button command
         """
         self.switch_frame("Edit Group Playlist")
