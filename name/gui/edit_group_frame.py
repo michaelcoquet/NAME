@@ -72,7 +72,6 @@ class EditGroupFrame(GroupHomeFrame):
         self.new_playlist_button.grid_forget()
         self.group_song_stats_button.grid_forget()
         self.edit_group_button.grid_forget()
-        self.list_1_label.grid_forget()
 
         f_container = tk.Frame(self.middle_grid)
         f_container.grid(row=0, column=1, sticky="n")
@@ -88,14 +87,14 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.list_1_label.grid_forget()
         self.member_list_label = tk.Label(self.upper_grid, text="Member List")
         self.member_list_label.grid(row=2,column=0)
 
     def cancel_command(self):
         """command for the cancel button
         """
-        return 1
+        # go back to previously active_frame
+        self.parent.switch_to_previous_frame()
 
     def save_group_command(self):
         """command for the create group button
@@ -161,4 +160,8 @@ class EditGroupFrame(GroupHomeFrame):
                     self.invite_id_list.remove(member)
         self.member_listbox.delete(tk.ANCHOR)
 
-
+    def display_group(self, group):
+        """[summary]
+        """
+        for member in group.member_list:
+            print(member)

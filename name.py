@@ -21,6 +21,7 @@ class Name(tk.Tk):
     """
     max_songs = 6 # need to set a maximum number of songs that can show up in the search
     active_frame = 11 # the frame that is currently shown to the user
+    previous_frame = 11
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -92,7 +93,13 @@ class Name(tk.Tk):
         """
         self.frames[old_id].grid_forget()
         self.frames[new_id].grid_remember()
+        self.previous_frame = old_id
         self.active_frame = new_id
+
+    def switch_to_previous_frame(self):
+        """ TODO: Fill In
+        """
+        self.switch_frame(self.active_frame, self.previous_frame)
 
     def get_frame_id(self, name):
         """ get the frame id based on the given name see GUI FSM diagram in wiki

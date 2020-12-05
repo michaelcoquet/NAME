@@ -74,7 +74,10 @@ class NameFrame(tk.Frame):
         self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
 
         for group in self.user.groups:
-            self.group_menu.add_command(label=group.group_name, command=self.group_menu_command)
+            self.group_menu.add_command(
+                    label=group.group_name,
+                    command=lambda : self.group_menu_command(group)
+                )
 
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
@@ -150,10 +153,11 @@ class NameFrame(tk.Frame):
         # go back to the home frame
         self.switch_frame("Home Page")
 
-    def group_menu_command(self):
+    def group_menu_command(self, group):
         """ Command for clicking a group menu button
         """
         self.switch_frame("Group Home")
+        self.parent.frames[self.parent.get_frame_id("Group Home")].display_group(group)
 
     def member_home_command(self):
         """ command for the member home member menu item
