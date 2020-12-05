@@ -1,6 +1,7 @@
 """The home frame for the app can be either member or guest for this frame
 """
 import tkinter as tk
+from concurrent.futures import ProcessPoolExecutor, wait, as_completed
 from tkinter import ttk
 from tkinter import StringVar
 
@@ -227,11 +228,31 @@ class HomePageFrame(NameFrame):
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         search_object = CheckingSongSimilarity(self.formatted_filters)
 
-        result = search_object.random_search(self.parent.song_object_list)
+        # do the search in a seperate thread
+        pool = ProcessPoolExecutor(max_workers=1)
 
+        futures = [pool.submit(
+            self.threaded_search,
+            search_object,
+            self.parent.song_object_list
+        )]
+
+        wait(futures)
+        for future in futures:
+            print(future.result())
+
+        # self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
         # switch to search results frame, and give it the results to be displayed
         self.switch_frame("Search Results")
-        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
+
+    def threaded_search(self, search_object, song_list):
+        """ runs in a seperate thread to avoid the app hanging up during long searches
+
+        Args:
+            search_object (CheckingSongSimilarity): the search helper class
+            song_list (Song[]): group of songs to find similar songs to
+        """
+        return search_object.random_search(song_list)
 
     def convert_filters_list(self, tk_filters):
         """ convert the original dict of filters into something the backend can use
