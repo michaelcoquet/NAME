@@ -272,11 +272,11 @@ class HomePageFrame(NameFrame):
             comp_str = song.song_name + "  -  " + artists_string
 
             if item == comp_str:
+                # add this song to the list of songs
+                self.parent.song_object_list.append(song)
                 # this is the correct item add it to the treeview
                 self.song_treeview.insert("", "end", values=(song.song_name,
                                           song.album_details.name, artists_string))
-                # add this song to the list of songs
-                self.parent.song_object_list.append(song)
                 break
 
         # close the popup window after the user makes a selection

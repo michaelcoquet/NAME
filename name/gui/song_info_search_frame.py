@@ -18,6 +18,7 @@ class SongInfoSearchFrame(HomePageFrame):
         self.remove_button.grid_remove()
         self.similar_songs_button.grid_remove()
         self.song_treeview.grid_remove()
+        self.filters_dropdown.grid_remove()
 
     def init_upper_grid(self):
         """TODO: fill in
@@ -53,7 +54,7 @@ class SongInfoSearchFrame(HomePageFrame):
         #            given in the text song_search_entry widget
 
         # hide this button for the next frame since its not used
-        self.start_single_search(self.song_search_entry.get(), self.selected_filters)
+        self.start_single_search(self.song_search_entry.get(), {})
 
         # TODO: GUI - Update the song_info_scrolledtext in the song_info_frame
 

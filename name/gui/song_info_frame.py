@@ -18,6 +18,17 @@ class SongInfoFrame(HomePageFrame):
         self.song_info_scrolledtext.grid_remove()
         self.start_over_button.grid_remove()
 
+    def grid_remember(self):
+        super().grid_remember()
+        self.song_treeview.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.remove_button.grid_remove()
+        self.remove_all_button.grid_remove()
+
+        self.song_info_scrolledtext.grid()
+        self.start_over_button.grid()
+
     def init_upper_grid(self):
         super().init_upper_grid()
         self.create_playlist_button["state"] = tk.NORMAL
@@ -82,17 +93,38 @@ class SongInfoFrame(HomePageFrame):
     def start_over_command(self):
         """command for the start over button
         """
-        self.switch_frame("Song Info Search")
+        self.parent.switch_to_previous_frame()
 
     def song_select_dropdown_command(self, item):
         """ overrides parent song select dropdown command, dont super it though
         """
-        super().song_select_dropdown_command(item)
+        super()
+                # make sure the user has actually made a selection
+        if self.song_selection.get() != self.song_selection_default:
+            # get the item that is currently selected in the OptionMenu dropdown
+            item = self.song_selection.get()
+        artists_string_list = []
 
-        self.ply_from_ply_button.grid_remove()
+        # search the original list of song objects returned from the API for the item
+        for song in self.api_search_results:
+            # build string for comparison to find object probably a better way to do this
+            for artist in song.song_artist:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
 
-        # pass the data to the scrolledText widget on the next screen
-        self.display_details(self.song_object_list[0])
+            artists_string_list.clear()
 
-        # clear the list object after
-        self.song_object_list.clear()
+            comp_str = song.song_name + "  -  " + artists_string
+
+            if item == comp_str:
+                # close the popup window after the user makes a selection
+                self.close_single_search_window()
+
+                # add this song to the list of songs
+                self.song_info_scrolledtext.delete("1.0", "end")
+                self.song_lyrics_scrolledtext.delete("1.0", "end")
+
+                self.display_details(song)
+
+                break
+
