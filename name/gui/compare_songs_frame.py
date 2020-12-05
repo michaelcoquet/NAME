@@ -1,6 +1,7 @@
 """ Compare songs frame corresponding to the storyboards page 2
 """
 import tkinter as tk
+from tkinter import ttk
 
 from .home_page_frame import HomePageFrame
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
@@ -39,14 +40,34 @@ class CompareSongsFrame(HomePageFrame):
     def song_stats_cmd(self):
         """ command for song stats btn
         """
-        self.switch_frame("Song Stats")
+        # check to make sure two or more songs have been entered
+        if len(self.parent.song_object_list) < 2:
+            self.only_one_song_popup()
+        else:
+            self.switch_frame("Song Stats")
 
-        # Return similarities of the two or more selected songs
-        self.formatted_filters = self.convert_filters_list(self.parent.song_object_list)
-        sim_scores_obj = CheckingSongSimilarity(self.formatted_filters)
-        sim_score = sim_scores_obj.get_songs_similarity_score(self.parent.song_object_list)
+            # Return similarities of the two or more selected songs
+            self.formatted_filters = self.convert_filters_list(self.parent.song_object_list)
+            sim_scores_obj = CheckingSongSimilarity(self.formatted_filters)
+            sim_score = sim_scores_obj.get_songs_similarity_score(self.parent.song_object_list)
 
-        # Update the srcolledText widget in the song stats frame with the
-        # returned data
-        d = [int(sim_score), self.parent.song_object_list]
-        self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)
+            # Update the srcolledText widget in the song stats frame with the
+            # returned data
+            d = [int(sim_score), self.parent.song_object_list]
+            self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)
+
+    def only_one_song_popup(self):
+        """ In the case that only one song is entered 
+        for the song comparison, display this popup to enter more
+        songs first.
+        """
+        self.grab_set()
+        popup = tk.Toplevel(self)
+        popup.title("Not enough songs")
+
+        label = tk.Label(popup, text="Enter at least two songs to compare their stats!")
+        label.grid(row=0, column=0)
+
+        button = ttk.Button(popup, text="Okay", command=popup.destroy)
+        button.grid(row=1, column=0)
+        self.grab_release()
