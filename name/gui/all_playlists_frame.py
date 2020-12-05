@@ -16,6 +16,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
         tk ([type]): TODO: fill in
     """
 
+    def __init__(self, parent, container, user):
+        super().__init__(parent, container, user)
         self.playlists = []
 
     def grid_forget(self):
@@ -48,8 +50,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
         self.playlist_treeview.grid(row=0, column=0, sticky="nsew")
 
         # get a list of the current users spotify playlists if theyre logged in
-        if self.parent.logged_in:
-            plist = self.parent.spotify_manager.get_member_playlists()
+        if self.user.is_member():
+            plist = self.user.get_playlists()
             self.display_data(plist)
 
     def init_lower_grid(self):

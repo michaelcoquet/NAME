@@ -158,7 +158,7 @@ class NameFrame(tk.Frame):
         """
         # Return the users spotify ID that they can share with other users to
         # form groups
-        if self.user.has_account:
+        if self.user.is_member():
             message = self.user.get_account_id()
             ShareableIdDialog(self.container, title="NAME", text=message)
 
