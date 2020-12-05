@@ -87,7 +87,7 @@ class ListeningHabitsFrame(MemberHomeFrame):
         self.top_songs_scrolledtext.insert("end", "These are your top songs: \n\n")
         for song in songs:
             self.top_songs_scrolledtext.insert("end", song.song_name + "\n")
-            genre_lst = self.parent.spotify_manager.get_song_genres(song)
+            genre_lst = self.parent.user.spotify_manager.get_song_genres(song)
             for genre in genre_lst:
                 if genre not in genres:
                     genres[genre] = 1
