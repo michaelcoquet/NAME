@@ -88,7 +88,17 @@ r_db?retryWrites=true&w=majority"
         Returns:
             playlist_obj (Playlist): playlist object rebuilt from the json
         """
-        return []
+
+        query = { "spotify_id": self.spotify_id }
+
+        doc = self.collection.find_one(query)
+
+        playlist_dict = {"name": "Current Playlist",
+                        "owner": {"id": self.spotify_id},
+                        "id": "temp_id",
+                        "tracks": {"total": 25}}
+
+        return Playlist(playlist_dict, doc["current_playlist"])
 
     def check_if_group_exists(self, group_id, group_name):
         """ check if the given group exists or not
@@ -194,7 +204,16 @@ r_db?retryWrites=true&w=majority"
         return return_group
 
     def get_group_playlists(self, group_id):
-        return []
+        """ return the group's created playlists
+
+        Args:
+            group_id (int64): the desired group
+        """
+        query = { "group_id": group_id }
+
+        doc = self.collection.find_one(query)
+
+        return doc["playlists"]
 
     def find_invites(self):
         """ find group invites for the given member
@@ -253,4 +272,3 @@ r_db?retryWrites=true&w=majority"
 # }
 
 # assert(ps.collection.count_documents(query_obj, limit=1) > 0)
-
