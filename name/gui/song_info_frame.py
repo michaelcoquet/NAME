@@ -74,6 +74,9 @@ class SongInfoFrame(HomePageFrame):
         Args:
             song (song):
         """
+        self.song_info_scrolledtext.configure(state="normal")
+        self.song_lyrics_scrolledtext.configure(state="normal")
+
         self.song_info_scrolledtext.delete("1.0", "end")
         self.song_lyrics_scrolledtext.delete("1.0", "end")
 
@@ -101,6 +104,9 @@ class SongInfoFrame(HomePageFrame):
                                                     ":\n\n" + lyrics_obj.get_lyrics() + "\n\n\n")
             else:
                 self.song_lyrics_scrolledtext.insert("end", "Couldn't find lyrics for this song \n")
+
+        self.song_info_scrolledtext.configure(state="disable")
+        self.song_lyrics_scrolledtext.configure(state="disable")
 
     def display_tuple(self, song):
         """ display data from the tree view instead of song object
