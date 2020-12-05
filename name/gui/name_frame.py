@@ -376,10 +376,12 @@ class ShareableIdDialog(simpledialog.Dialog):
         self.lbl.pack(side=tk.TOP)
 
         self.text = tk.Text(self, width=25, height=2)
+        self.text.configure(state="normal")
         self.text.pack(fill="both", expand=False)
 
         self.text.insert("1.0", self.data)
-
+        # make sure the user can't edit the textbox
+        self.text.configure(state="disable")
         return self.text
 
     def buttonbox(self):
