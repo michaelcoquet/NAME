@@ -11,23 +11,43 @@ class MemberHomeFrame(HomePageFrame):
     Args:
         tk ([type]): TODO: fill in
     """
-    def grid_forget(self):
-        super().grid_forget()
-        self.edit_button.grid_forget()
-        self.save_spotify_button.grid_forget()
-        self.latest_playlist_button.grid_forget()
-        self.all_playlists_button.grid_forget()
-        self.listening_habits_button.grid_forget()
-        self.get_song_info_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.edit_button.grid_remove()
+        self.save_spotify_button.grid_remove()
+        self.latest_playlist_button.grid_remove()
+        self.all_playlists_button.grid_remove()
+        self.listening_habits_button.grid_remove()
+        self.get_song_info_button.grid_remove()
 
     def grid_remember(self):
         super().grid_remember()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.playlist_info_button.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_button.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+
+        self.edit_button.grid()
+        self.save_spotify_button.grid()
+        self.latest_playlist_button.grid()
+        self.all_playlists_button.grid()
+        self.listening_habits_button.grid()
+
+        self.display_data(self.parent.song_object_list)
+
+    def grid_init(self):
+        super().grid_init()
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.remove_all_button.grid_forget()
-        self.remove_button.grid_forget()
-        self.similar_songs_button.grid_forget()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
 
         self.edit_button = tk.Button(
             self.lower_grid,
@@ -50,20 +70,29 @@ class MemberHomeFrame(HomePageFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
+        container = tk.Frame(self.middle_grid)
+        container.grid(row=0, column=1, sticky="n")
         self.get_song_info_button = tk.Button(
-            self.middle_grid,
+            container,
             text="Get Song Info",
             command=self.get_song_info_command)
-        self.get_song_info_button.grid(row=0, column=1, sticky="n")
+        self.get_song_info_button.grid(row=0, column=0)
+
+        self.find_similar_songs_button = tk.Button(
+            container,
+            text="Add Similar Songs\nTo the Ones Selected",
+            command=self.add_similar_songs_button_command
+        )
+        self.find_similar_songs_button.grid(row=1, column=0)
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.create_playlist_button.grid_forget()
-        self.compare_songs_button.grid_forget()
-        self.get_song_info_button.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.filters_dropdown.grid_forget()
-        self.song_search_button.grid_forget()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_button.grid_remove()
 
         self.latest_playlist_button = tk.Button(
             self.upper_grid,
@@ -96,10 +125,7 @@ class MemberHomeFrame(HomePageFrame):
     def save_to_spotify_command(self):
         """command for the save to spotify button
         """
-
-        # TODO: BACKEND add logic to save this latest playlist (the one currently being
-        # displayed) to the users spotify account
-        return 1
+        self.switch_frame("Save Playlist")
 
     def all_playlists_command(self):
         """command for the all palylists button
@@ -134,4 +160,28 @@ class MemberHomeFrame(HomePageFrame):
     def get_song_info_command(self):
         """command for the get song info button
         """
-        self.switch_frame("Song Info")
+        self.switch_frame("Song Info Member")
+
+        song_list = []
+
+        # get the song object(s) that are currently selected
+        for song in self.parent.song_object_list:
+            for selection in self.song_treeview.selection():
+                tmp = [artist.name for artist in song.song_artist]
+                tmp = ", ".join(tmp)
+                if (
+        song.song_name == self.song_treeview.item(selection)["values"][0] and
+        tmp == self.song_treeview.item(selection)["values"][2]
+                ):
+                    # found a corresponding song object
+                    song_list.append(song)
+
+        self.parent.frames[self.parent.get_frame_id("Song Info Member")].display_details(song_list)
+
+
+
+    def add_similar_songs_button_command(self):
+        """ command for the add similar songs button
+        """
+        # TODO: get the selected songs and run a similarity search then add the results back to the
+        # working list

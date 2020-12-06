@@ -21,6 +21,7 @@ class Name(tk.Tk):
     """
     max_songs = 6 # need to set a maximum number of songs that can show up in the search
     active_frame = 11 # the frame that is currently shown to the user
+    previous_frame = 11
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -57,7 +58,7 @@ class Name(tk.Tk):
         self.frames[6] = gui.PlaylistInfoFrame(self, container, self.user)
         self.frames[7] = gui.PlaylistEditFrame(self, container, self.user)
         self.frames[8] = gui.AllPlaylistsFrame(self, container, self.user)
-        self.frames[9] = gui.CreateSimPlaylistFrame(self, container, self.user)
+        self.frames[9] = gui.SavePlaylistFrame(self, container, self.user)
         self.frames[10] = gui.ListeningHabitsFrame(self, container, self.user)
         self.frames[11] = gui.HomePageFrame(self, container, self.user)
 
@@ -66,11 +67,12 @@ class Name(tk.Tk):
         self.frames[13] = gui.GroupStatsFrame(self, container, self.user)
         self.frames[14] = gui.EditGroupPlaylistFrame(self, container, self.user)
         self.frames[15] = gui.GroupHomeFrame(self, container, self.user)
+        self.frames[16] = gui.SongInfoMemberFrame(self, container, self.user)
 
         for i in self.frames:
-            self.frames[i].grid_forget()
+            self.frames[i].grid_unmap()
 
-        self.frames[11].grid_remember()
+        self.frames[11].grid_init()
 
     def update_search_results(self, list):
         """ used to update the listbox in the search results frame
@@ -80,8 +82,7 @@ class Name(tk.Tk):
                            the listbox in the search results frame
         """
         # this is just temporary will likely change when we have a proper list of song objects
-        for item in range(len(list)):
-            self.frames[1].song_listbox.insert(item, list[item])
+        self.frames[1].display_data(list)
 
     def switch_frame(self, old_id, new_id):
         """ TODO: Fill In
@@ -90,9 +91,15 @@ class Name(tk.Tk):
             old_id ([type]): TODO: Fill In
             new_id ([type]): TODO: Fill In
         """
-        self.frames[old_id].grid_forget()
+        self.frames[old_id].grid_unmap()
         self.frames[new_id].grid_remember()
+        self.previous_frame = old_id
         self.active_frame = new_id
+
+    def switch_to_previous_frame(self):
+        """ TODO: Fill In
+        """
+        self.switch_frame(self.active_frame, self.previous_frame)
 
     def get_frame_id(self, name):
         """ get the frame id based on the given name see GUI FSM diagram in wiki
@@ -122,7 +129,7 @@ class Name(tk.Tk):
             return 7
         elif name == "All Playlists":
             return 8
-        elif name == "Create Sim Playlist":
+        elif name == "Save Playlist":
             return 9
         elif name == "Listening Habits":
             return 10
@@ -136,6 +143,8 @@ class Name(tk.Tk):
             return 14
         elif name == "Group Home":
             return 15
+        elif name == "Song Info Member":
+            return 16
         else:
             print("ERROR NO SUCH FRAME")
             exit()

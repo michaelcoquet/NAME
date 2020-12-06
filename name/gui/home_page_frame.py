@@ -1,11 +1,15 @@
 """The home frame for the app can be either member or guest for this frame
 """
 import tkinter as tk
+from concurrent.futures import ProcessPoolExecutor, wait, as_completed
 from tkinter import ttk
 from tkinter import StringVar
+from time import sleep
+import threading
 
 from .name_frame import NameFrame
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
+
 
 class HomePageFrame(NameFrame):
     """ Could possibly be a splash screen but for now this is the home page screen
@@ -25,21 +29,36 @@ class HomePageFrame(NameFrame):
 
         self.formatted_filters = []
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.remove_all_button.grid_forget()
-        self.remove_button.grid_forget()
-        self.similar_songs_button.grid_forget()
-        self.song_treeview.grid_forget()
-        self.create_playlist_button.grid_forget()
-        self.compare_songs_button.grid_forget()
-        self.get_song_info_button.grid_forget()
-        self.filters_dropdown.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.song_treeview.grid_remove()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
 
     def grid_remember(self):
         super().grid_remember()
+        self.remove_all_button.grid()
+        self.remove_button.grid()
+        self.similar_songs_button.grid()
+        self.song_treeview.grid()
+        self.create_playlist_button.grid()
+        self.compare_songs_button.grid()
+        self.get_song_info_button.grid()
+        self.filters_dropdown.grid()
+        self.song_search_entry.grid()
+        self.song_search_button.grid()
+
+        self.display_data(self.parent.song_object_list)
+
+    def grid_init(self):
+        super().grid_init()
         self.song_search_entry.delete(0, "end")
         self.song_search_entry.insert(0, "Find a Song")
         self.display_data(self.parent.song_object_list)
@@ -163,6 +182,8 @@ class HomePageFrame(NameFrame):
         Args:
             song_list (list): list of songs that will appear in the treeview
         """
+        # clear the treeview first to avoid ghosting
+        self.song_treeview.delete(*self.song_treeview.get_children())
         artists_string_list = []
         for song in song_list:
             for artist in song.song_artist:
@@ -196,7 +217,7 @@ class HomePageFrame(NameFrame):
         """command for the song search button
         """
         # run the single song search function with will connect with the back end
-        self.start_single_search(self.song_search_entry.get(), self.formatted_filters)
+        self.start_single_search(self.song_search_entry.get())
 
     def create_playlist_command(self):
         """command for the create playlist button, just brings us back to the home page
@@ -204,17 +225,61 @@ class HomePageFrame(NameFrame):
         self.switch_frame("Home Page")
 
     def similar_songs_command(self):
+        # if no songs have been entered yet, display the error popup
+        if len(self.parent.song_object_list) < 1:
+            message = "You must enter at least one song!"
+            self.enter_more_songs_popup(message)
+        else:
+            get_similar_songs = threading.Thread(target=self.threaded_similar_songs, daemon=True)
+            get_similar_songs.start()
+            self.loading_screen()
+            
+    def loading_screen(self):
+        self.grab_set()
+        popup = tk.Toplevel(self)
+        popup.title("Loading...")
+
+        message = """Finding similar songs! This may take several minutes. Feel free to close this
+        window and try out some of the other features while you wait."""
+
+        label = tk.Label(popup, text=message)
+        label.grid(row=0, column=0)
+
+        button = ttk.Button(popup, text="Close", command=popup.destroy)
+        button.grid(row=1, column=0)
+        self.grab_release()
+
+    def threaded_similar_songs(self):
         """command for the find similar songs button
         """
+        # disable the button while this is running
+        self.similar_songs_button.configure(state="disabled")
         # get the current working list of songs to be searched and pass it to the backend
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         search_object = CheckingSongSimilarity(self.formatted_filters)
 
-        result = search_object.random_search(self.parent.song_object_list)
-
+        results = search_object.random_search(self.parent.song_object_list)
+        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
         # switch to search results frame, and give it the results to be displayed
         self.switch_frame("Search Results")
-        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(result)
+        # enable the button again
+        self.similar_songs_button.configure(state="normal")
+
+    def enter_more_songs_popup(self, text):
+        """ In the case that not enough songs are entered
+        for the task, display this popup
+        text: the specific message to be displayed in the popup
+        """
+        self.grab_set()
+        popup = tk.Toplevel(self)
+        popup.title("Not enough songs")
+
+        label = tk.Label(popup, text=text)
+        label.grid(row=0, column=0)
+
+        button = ttk.Button(popup, text="Okay", command=popup.destroy)
+        button.grid(row=1, column=0)
+        self.grab_release()
 
     def convert_filters_list(self, tk_filters):
         """ convert the original dict of filters into something the backend can use
@@ -259,11 +324,11 @@ class HomePageFrame(NameFrame):
             comp_str = song.song_name + "  -  " + artists_string
 
             if item == comp_str:
+                # add this song to the list of songs
+                self.parent.song_object_list.append(song)
                 # this is the correct item add it to the treeview
                 self.song_treeview.insert("", "end", values=(song.song_name,
                                           song.album_details.name, artists_string))
-                # add this song to the list of songs
-                self.parent.song_object_list.append(song)
                 break
 
         # close the popup window after the user makes a selection
@@ -291,3 +356,13 @@ class HomePageFrame(NameFrame):
             self.song_treeview.delete(item)
 
         self.parent.song_object_list.clear()
+
+
+def threaded_search(search_object, song_list):
+    """ runs in a seperate thread to avoid the app hanging up during long searches
+
+    Args:
+        search_object (CheckingSongSimilarity): the search helper class
+        song_list (Song[]): group of songs to find similar songs to
+    """
+    return search_object.random_search(song_list)

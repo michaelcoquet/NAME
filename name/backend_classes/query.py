@@ -1,3 +1,5 @@
+import operator
+
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 from name.backend_classes.song_similarity import SongSimilarity
 
@@ -65,3 +67,23 @@ class Query:
         song_similarity_calculator = SongSimilarity(songs, self.filter_list)
         result = song_similarity_calculator.compare_all()
         return result
+
+    def get_top_genres(self, songs, limit):
+        """ Gets a list of the top genres for the given songs.
+        songs: a list of song objects
+        limit: the limit for the number of genres to be returned
+        returns: a list of genres (strings)
+        """
+        spotify_api_manager = SpotifyAPIManager()
+        genres = {}
+        for song in songs:
+            genre_lst = spotify_api_manager.get_song_genres(song)
+            for genre in genre_lst:
+                if genre not in genres:
+                    genres[genre] = 1
+                else:
+                    genres[genre] += 1
+        # get top 5 genres, or less if fewer are returned
+        limit = min(5, len(genres.keys()))
+        top_genres = dict(sorted(genres.items(), key=operator.itemgetter(1), reverse=True)[:limit])
+        return top_genres

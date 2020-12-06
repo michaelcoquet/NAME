@@ -6,8 +6,10 @@
 import os
 import pymongo
 import tkinter as tk
+
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 from name.backend_classes.persistent_storage import PersistentStorage
+from name.backend_classes.playlist import Playlist
 
 
 class User:
@@ -30,6 +32,8 @@ class User:
         self.current_playlist = None # load local text file for a guest otherwise will load when
                                      # account is linked
         self.groups = []
+
+        self.playlists = []
 
     def __str__(self):
         """
@@ -63,6 +67,15 @@ class User:
         """ returns true if the user doesn't have a spotify account linked, false if they do
         """
         return self.has_account
+
+    def save_playlist_to_spotify(self, playlist, song_list):
+        """ saves the playlist back to the current users spotify account
+
+        Args:
+            playlist (json): the playlist to be saved
+        """
+        plylst = Playlist(playlist, song_list)
+        return self.spotify_manager.add_member_playlist(plylst)
 
     def link_spotify_account(self):
         """ just wrap the spotify api manager
@@ -108,7 +121,7 @@ class User:
                         elif answer == False:
                             # invite decline
                             print("invite declined")
-                            # now need to remove the user from the invite list
+                            # TODO: now need to remove the user from the invite list
                             # dont add them to the member list
                             # save the invite list back to the original group entry
                     return True
@@ -121,13 +134,13 @@ class User:
     def get_playlists(self):
         """ get this users current playlist
         """
-        return self.spotify_manager.get_member_playlists()
+        self.playlists = self.spotify_manager.get_member_playlists()
+        return self.playlists
 
     def find_group_invites(self):
         """ search for groups that I am a member of but dont yet show up in this objects group
             list, indicating an unaccepted group invite
         """
-
 
     def logout(self):
         """ log out the current user

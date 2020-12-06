@@ -3,25 +3,33 @@
 import tkinter as tk
 from tkinter import Grid
 
-from .create_sim_playlist_frame import CreateSimPlaylistFrame
+from .save_playlist_frame import SavePlaylistFrame
 
 
-class EditGroupPlaylistFrame(CreateSimPlaylistFrame):
+class EditGroupPlaylistFrame(SavePlaylistFrame):
     """ TODO: fill in
 
     Args:
         tk ([type]): TODO: fill in
     """
 
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.save_playlist_button.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.sim_playlist_button.grid_forget()
+        self.new_list_entry.grid_remove()
 
-        self.sim_playlist_button.grid(row=0, column=2, sticky="nsew")
+        self.save_playlist_button.grid_remove()
+
+        self.save_playlist_button.grid(row=0, column=2, sticky="nsew")
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.new_list_entry.grid_forget()
 
         container = tk.Frame(self.middle_grid)
         container.grid(row=0, column=2)
@@ -41,14 +49,8 @@ class EditGroupPlaylistFrame(CreateSimPlaylistFrame):
         l2 = tk.Label(self.middle_grid, text="Select Existing\nFriends Playlist")
         l2.grid(row=0, column=0, sticky="w")
 
-        self.songs_listbox.grid(row=1, column=2, sticky="nse")
-
         self.playlist_listbox = tk.Listbox(self.middle_grid)
         self.playlist_listbox.grid(row=1, column=0, sticky="nsw")
-
-    def init_upper_grid(self):
-        super().init_upper_grid()
-        self.listbox_label.grid_forget()
 
     def sim_playlist_command(self):
         self.open_search_progress()

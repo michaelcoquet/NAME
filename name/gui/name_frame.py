@@ -2,6 +2,7 @@
 """
 import os
 import time
+import threading
 import tkinter as tk
 from tkinter import simpledialog
 from tkinter import StringVar
@@ -41,15 +42,20 @@ class NameFrame(tk.Frame):
 
         self.final_song_selection = []
 
-    def grid_forget(self):
-        self.upper_grid.grid_forget()
-        self.middle_grid.grid_forget()
-        self.lower_grid.grid_forget()
+    def grid_unmap(self):
+        self.upper_grid.grid_remove()
+        self.middle_grid.grid_remove()
+        self.lower_grid.grid_remove()
 
-    def grid_remember(self):
+    def grid_init(self):
         self.init_lower_grid()
         self.init_middle_grid()
         self.init_upper_grid()
+
+    def grid_remember(self):
+        self.upper_grid.grid()
+        self.lower_grid.grid()
+        self.middle_grid.grid()
 
     def init_guest_menu(self):
         """ make the default menu for guest users
@@ -74,7 +80,10 @@ class NameFrame(tk.Frame):
         self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
 
         for group in self.user.groups:
-            self.group_menu.add_command(label=group.group_name, command=self.group_menu_command)
+            self.group_menu.add_command(
+                    label=group.group_name,
+                    command=lambda : self.group_menu_command(group)
+                )
 
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
@@ -134,8 +143,13 @@ class NameFrame(tk.Frame):
 
     def login(self):
         """ Button command to link to a spotify account and if succesfully linked switch to the
-            member frame (frame_id = 2).
+            member frame (frame_id = 2). Puts it in a thread so if they cancel the process
+            online, our whole app doesn't freeze.
         """
+        login = threading.Thread(target=self.login_thread, daemon=True)
+        login.start()
+        
+    def login_thread(self):
         if self.user.link_spotify_account() == True:
             self.init_member_menu()
         else:
@@ -147,11 +161,14 @@ class NameFrame(tk.Frame):
         # delete the cache file
         self.user.logout()
         self.init_guest_menu()
+        # go back to the home frame
+        self.switch_frame("Home Page")
 
-    def group_menu_command(self):
+    def group_menu_command(self, group):
         """ Command for clicking a group menu button
         """
         self.switch_frame("Group Home")
+        self.parent.frames[self.parent.get_frame_id("Group Home")].display_group(group)
 
     def member_home_command(self):
         """ command for the member home member menu item
@@ -170,7 +187,7 @@ class NameFrame(tk.Frame):
         # TODO: GUI     - Display the returned ID in the following messagebox popup
 
 
-    def start_single_search(self, title, filters):
+    def start_single_search(self, title):
         """ Search the spotify API for the given song
 
         Args:
@@ -180,7 +197,10 @@ class NameFrame(tk.Frame):
         # TODO: BACKEND - single song search connection return a list of songs
         # TODO: do this in another thread
         self.api_search_results = self.query_object.search_single_song(title)
-        self.open_song_search_popup(self.api_search_results)
+        if self.api_search_results != []:
+            self.open_song_search_popup(self.api_search_results)
+        else:
+            self.no_songs_found_popup()
 
     def search_similar(self, titles, filters):
         """ Search the spotify API for songs that are similar to the list of titles
@@ -196,6 +216,22 @@ class NameFrame(tk.Frame):
 
 
         return 1
+
+    def no_songs_found_popup(self):
+        """ In the case that spotify can't find any songs for the
+        title the user entered, display this popup window so that
+        the gui doesn't break.
+        """
+        self.grab_set()
+        popup = tk.Toplevel(self)
+        popup.title("No results")
+
+        label = tk.Label(popup, text="Sorry, Spotify couldn't find any songs with that title.")
+        label.grid(row=0, column=0)
+
+        button = ttk.Button(popup, text="Okay", command=popup.destroy)
+        button.grid(row=1, column=0)
+        self.grab_release()
 
     def open_song_search_popup(self, api_results):
         """ open a popup for the user to select the song they actually wanted to add to the list
@@ -252,7 +288,7 @@ class NameFrame(tk.Frame):
         # TODO: try to implement this
         return 1
 
-    def open_search_progress(self):
+    def open_search_progress(self, future):
         """open a new window that updates the user on the progress of similarity playlist
            creation
         """
@@ -268,21 +304,17 @@ class NameFrame(tk.Frame):
         l_1 = tk.Label(self.win, text="Finding Similar Songs!")
         l_1.pack(side=tk.TOP)
 
-        self.l_songs_found = tk.Label(self.win,
-            text="Songs found...   0/" + str(self.parent.max_songs))
-        self.l_songs_found.pack(side=tk.TOP)
-
         self.progress = tk.ttk.Progressbar(self.win, orient=tk.HORIZONTAL, length=200,
-            mode="determinate")
+            mode="indeterminate")
 
         self.progress.pack(pady=10)
 
         cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_progress_window)
         cancel_btn.pack(side=tk.BOTTOM)
 
-        self.progress_update()
+        self.progress_update(future)
 
-    def progress_update(self):
+    def progress_update(self, future):
         """ This is used to update the search progress bar
                   for now just do a little simulation, notice the hang with time.sleep
         """
@@ -290,68 +322,13 @@ class NameFrame(tk.Frame):
         #                 to update the progress bar, could be indeterminate also, but if not
         #                 will need some multithreadin to avoid the app hanging during search,
         #                 possibly fork() would work
-        count = 0
-        self.progress.update()
-        self.progress["maximum"] = 100
-        time.sleep(1)
-
-        self.progress['value'] = 20
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 40
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 50
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 60
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 80
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 100
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
         self.switch_frame("Search Results")
 
-        # TODO : GUI - need to update the search results screen with the results
-        # for testing purposes
-        song_list = [
-                        ["TODO: title1", "TODO: album1", "TODO: artist1"],
-                        ["TODO: title2", "TODO: album2", "TODO: artist2"],
-                        ["TODO: title3", "TODO: album3", "TODO: artist3"],
-                        ["TODO: title4", "TODO: album4", "TODO: artist4"],
-                        ["TODO: title5", "TODO: album5", "TODO: artist5"],
-                        ["TODO: title6", "TODO: album6", "TODO: artist6"],
-                    ]
+        while future.running() != True:
+            time.sleep(2)
+            print("not done yet")
 
-        self.parent.update_search_results(song_list)
-
+        print("done I guess")
         self.close_progress_window()
 
     def close_progress_window(self):
@@ -379,10 +356,12 @@ class ShareableIdDialog(simpledialog.Dialog):
         self.lbl.pack(side=tk.TOP)
 
         self.text = tk.Text(self, width=25, height=2)
+        self.text.configure(state="normal")
         self.text.pack(fill="both", expand=False)
 
         self.text.insert("1.0", self.data)
-
+        # make sure the user can't edit the textbox
+        self.text.configure(state="disable")
         return self.text
 
     def buttonbox(self):

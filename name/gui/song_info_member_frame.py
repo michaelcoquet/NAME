@@ -3,11 +3,11 @@
 import tkinter as tk
 import tkinter.scrolledtext as st
 
-from .home_page_frame import HomePageFrame
+from .member_home_frame import MemberHomeFrame
 from name.backend_classes.lyrics import Lyrics
 
 
-class SongInfoFrame(HomePageFrame):
+class SongInfoMemberFrame(MemberHomeFrame):
     """ TODO: fill in
 
     Args:
@@ -21,11 +21,15 @@ class SongInfoFrame(HomePageFrame):
 
     def grid_remember(self):
         super().grid_remember()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
         self.song_treeview.grid_remove()
         self.similar_songs_button.grid_remove()
         self.filters_dropdown.grid_remove()
         self.remove_button.grid_remove()
         self.remove_all_button.grid_remove()
+        self.save_spotify_button.grid_remove()
 
         self.song_info_scrolledtext.grid()
         self.start_over_button.grid()
@@ -81,7 +85,6 @@ class SongInfoFrame(HomePageFrame):
         check_list = type(songs) is list
 
         if check_list:
-            self.latest_
             for song in songs:
                 # display new results
                 self.song_info_scrolledtext.insert("end", str(song) + "\n\n\n")
@@ -110,7 +113,7 @@ class SongInfoFrame(HomePageFrame):
     def start_over_command(self):
         """command for the start over button
         """
-        self.switch_frame("Song Info Search")
+        self.parent.switch_to_previous_frame()
 
     def song_select_dropdown_command(self, item):
         """ overrides parent song select dropdown command, dont super it though

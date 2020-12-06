@@ -14,6 +14,36 @@ class EditGroupFrame(GroupHomeFrame):
         tk ([type]): TODO: fill in
     """
 
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.cancel_button.grid_remove()
+        self.create_group_button.grid_remove()
+        self.delete_button.grid_remove()
+        self.delete_all_button.grid_remove()
+        self.add_friend_button.grid_remove()
+        self.member_listbox.grid_remove()
+        self.member_list_label.grid_remove()
+        self.group_name_entry.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.add_friend_button.grid_remove()
+        self.save_playlist_button.grid_remove()
+        self.group_song_stats_button.grid_remove()
+        self.edit_group_button.grid_remove()
+        self.l_playlist_select.grid_remove()
+        self.playlist_dropdown.grid_remove()
+        self.new_playlist_button.grid_remove()
+
+        self.cancel_button.grid()
+        self.create_group_button.grid()
+        self.delete_button.grid()
+        self.delete_all_button.grid()
+        self.add_friend_button.grid()
+        self.member_listbox.grid()
+        self.member_list_label.grid()
+        self.group_name_entry.grid()
+
     def __init__(self, parent, container, user):
         super().__init__(parent, container, user)
         self.invite_id_list = []
@@ -21,8 +51,8 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.edit_playlist_button.grid_forget()
-        self.save_playlist_button.grid_forget()
+        self.edit_playlist_button.grid_remove()
+        self.save_playlist_button.grid_remove()
 
         self.cancel_button = tk.Button(
             self.lower_grid,
@@ -67,13 +97,6 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_listbox.grid_forget()
-        self.playlist_dropdown.grid_forget()
-        self.new_playlist_button.grid_forget()
-        self.group_song_stats_button.grid_forget()
-        self.edit_group_button.grid_forget()
-        self.list_1_label.grid_forget()
-
         f_container = tk.Frame(self.middle_grid)
         f_container.grid(row=0, column=1, sticky="n")
 
@@ -88,14 +111,14 @@ class EditGroupFrame(GroupHomeFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.list_1_label.grid_forget()
         self.member_list_label = tk.Label(self.upper_grid, text="Member List")
         self.member_list_label.grid(row=2,column=0)
 
     def cancel_command(self):
         """command for the cancel button
         """
-        return 1
+        # go back to previously active_frame
+        self.parent.switch_to_previous_frame()
 
     def save_group_command(self):
         """command for the create group button
@@ -161,4 +184,18 @@ class EditGroupFrame(GroupHomeFrame):
                     self.invite_id_list.remove(member)
         self.member_listbox.delete(tk.ANCHOR)
 
+    def display_group(self, group):
+        """[summary]
+        """
+        # would like to be able to get these spotify ids back as usernames or something nicer
+        for member in group.member_list:
+            msg = member + "\t\t"
+            if member == self.user.spotify_id:
+                msg = msg + "(Me)"
+            if member == group.owner_id:
+                msg = msg + "(Group Owner)"
+
+            self.member_listbox.insert("end", msg)
+
+        # now load the groups playlists into the dropdown
 

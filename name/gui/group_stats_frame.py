@@ -13,32 +13,23 @@ class GroupStatsFrame(SongInfoFrame):
     """
 
     # def grid_forget():
-    #     super().grid_forget()
+    #     super().grid_remove()
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.start_over_button.grid_forget()
-        self.ply_from_ply_button.grid_forget()
+        self.start_over_button.grid_remove()
 
     def init_middle_grid(self):
         super().init_middle_grid()
         self.song_info_scrolledtext.delete(1.0, tk.END)
-        self.song_info_scrolledtext.insert(tk.INSERT,
-        """\
-Lots of group stats
-    - sdf
-    - as
-    - ff
-    - n
-        """) # remove this when we get real results back
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.create_playlist_button.grid_forget()
-        self.compare_songs_button.grid_forget()
-        self.get_song_info_button.grid_forget()
-        self.filters_dropdown.grid_forget()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
 
         self.playlists_button = tk.Button(
             self.upper_grid,

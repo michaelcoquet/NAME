@@ -12,15 +12,35 @@ class SongStatsFrame(SongInfoFrame):
         tk ([type]): TODO: fill in
     """
 
-    def grid_forget(self):
-        super().grid_forget()
-        self.sim_score_label.grid_forget()
+    def grid_unmap(self):
+        super().grid_unmap()
+        self.sim_score_label.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.create_playlist_button.grid_remove()
+        self.compare_songs_button.grid_remove()
+        self.get_song_info_button.grid_remove()
+        self.remove_all_button.grid_remove()
+        self.remove_button.grid_remove()
+        self.similar_songs_button.grid_remove()
+        self.filters_dropdown.grid_remove()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
+        self.song_treeview.grid_remove()
+
+        self.start_over_button.grid()
+        self.sim_score_label.grid()
+        self.song_info_scrolledtext.grid()
+
+        self.song_info_scrolledtext.delete("1.0", "end")
+
 
     def init_upper_grid(self):
         super().init_upper_grid()
-        self.song_search_entry.grid_forget()
-        self.song_search_button.grid_forget()
-        self.filters_dropdown.grid_forget()
+        self.song_search_entry.grid_remove()
+        self.song_search_button.grid_remove()
+        self.filters_dropdown.grid_remove()
 
         self.create_playlist_button["state"] = tk.NORMAL
         self.compare_songs_button["state"] = tk.DISABLED
@@ -30,19 +50,18 @@ class SongStatsFrame(SongInfoFrame):
 
     def init_middle_grid(self):
         super().init_middle_grid()
-        self.song_lyrics_scrolledtext.grid_forget()
+        self.song_lyrics_scrolledtext.grid_remove()
 
     def init_lower_grid(self):
         super().init_lower_grid()
-        self.ply_from_ply_button.grid_forget()
 
         self.start_over_button["command"] = self.start_over_command
         self.start_over_button.grid(row=0, column=0)
 
     def start_over_command(self):
-        self.switch_frame("Compare Songs")
+        self.parent.switch_to_previous_frame()
 
-    def display(self, tuple):
-        self.sim_score_label["text"] = "These songs are " + str(tuple[0]) + "% similar"
-        for song in tuple[1]:
+    def display(self, t):
+        self.sim_score_label["text"] = "These songs are " + str(t[0]) + "% similar"
+        for song in t[1]:
             self.song_info_scrolledtext.insert("end", str(song) + "\n\n")
