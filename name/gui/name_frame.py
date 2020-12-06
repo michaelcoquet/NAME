@@ -2,6 +2,7 @@
 """
 import os
 import time
+import threading
 import tkinter as tk
 from tkinter import simpledialog
 from tkinter import StringVar
@@ -142,8 +143,13 @@ class NameFrame(tk.Frame):
 
     def login(self):
         """ Button command to link to a spotify account and if succesfully linked switch to the
-            member frame (frame_id = 2).
+            member frame (frame_id = 2). Puts it in a thread so if they cancel the process
+            online, our whole app doesn't freeze.
         """
+        login = threading.Thread(target=self.login_thread, daemon=True)
+        login.start()
+        
+    def login_thread(self):
         if self.user.link_spotify_account() == True:
             self.init_member_menu()
         else:
