@@ -209,6 +209,13 @@ r_db?retryWrites=true&w=majority"
 
 
     def save_group_playlist(self, group_id, group_name, group_playlist):
+        """ method to save a new playlist to the group database
+        Args:
+            group_id: the id of the group
+            group_name: the name of the group
+            group_playlist: the new Playlist to add to the group's database
+        """
+        
         if self.check_if_group_exists(group_id, group_name):
             query = { "group_id": group_id }
 
