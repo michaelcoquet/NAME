@@ -26,15 +26,16 @@ class Song:
     def __repr__(self):
         return self.song_name
 
-    def __iter__(self):
-        artist_string = [artist.name for artist in self.song_artist]
-        song_string = {
+    def convert_to_json(self):
+        artist_list = [artist.convert_to_json() for artist in self.song_artist]
+        song_dict = {
             "song_name": self.song_name,
-            "album_details": dict(self.album_details),
-            "song_artist": artist_string,
-            "song_id": self.song_id
+            "album_details": self.album_details.convert_to_json(),
+            "song_artist": artist_list,
+            "song_id": self.song_id,
+            "song_details": self.audio_features
         }
-        yield from song_string.items()
+        return song_dict
 
 class Artist:
     """
@@ -57,13 +58,13 @@ class Artist:
     def __str__(self):
         return f"{self.artist_id,self.name}"
 
-    def __iter__(self):
-        artist_string = {
+    def convert_to_json(self):
+        artist_dict = {
             "artist": self.artist,
             "artist_id": self.artist_id,
             "name": self.name
         }
-        yield from artist_string.items()
+        return artist_dict
 
 class Album:
     """
@@ -90,12 +91,14 @@ class Album:
                 "Album Id: {} \n"
                 "Total songs: {} ").format(self.name,  self.type,
                                            self.album_id, self.size)
-    def __iter__(self):
-        album_string = {
+    def convert_to_json(self):
+        album_dict = {
             "album_name": self.name,
-            "album_id": self.album_id
+            "album_id": self.album_id,
+            "album_total_tracks": self.size,
+            "album_type": self.type
         }
-        yield from album_string.items()
+        return album_dict
 
 class SongDetails:
     """
