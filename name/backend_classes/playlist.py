@@ -14,17 +14,6 @@ class Playlist:
         self.size = playlist['tracks']['total']
         self.songs = playlist_tracks
 
-    def __iter__(self):
-        playlist_string = {
-                            "playlist_name": self.playlist_name
-                          }
-        song_string = []
-        for song in self.songs:
-            song_string.append(dict(song))
-        song_dict = { "songs": song_string }
-        playlist_dict = playlist_string | song_dict
-        yield from playlist_dict.items()
-
     def add_song(self, song):
         """
         A function that adds song to the playlist,
@@ -72,6 +61,19 @@ class Playlist:
     # Will implement soon
     def get_song_similarity(self):
         return "Not implemented yet"
+
+    def convert_to_json(self):
+        playlist_dict = {
+                            "playlist_name": self.playlist_name,
+                            "playlist_owner": {"id": self.playlist_owner},
+                            "playlist_id": self.playlist_id,
+                            "playlist_size": self.size
+                          }
+        song_list = []
+        for song in self.songs:
+            song_list.append(dict(song))
+        playlist_dict["songs"] = song_list
+        return playlist_dict
 
     def __str__(self):
         return ("Playlist Name: {} \n"

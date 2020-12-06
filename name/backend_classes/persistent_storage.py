@@ -10,6 +10,10 @@ import pymongo
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 from name.backend_classes.playlist import Playlist
 from name.backend_classes.group import Group
+from name.backend_classes.song import Song
+from name.backend_classes.song import Artist
+from name.backend_classes.song import Album
+from name.backend_classes.song import SongDetails
 
 
 class PersistentStorage:
@@ -77,7 +81,7 @@ r_db?retryWrites=true&w=majority"
 
            new_data = { "$set": {
                "spotify_id": self.spotify_id,
-               "current_playlist": dict(playlist),
+               "current_playlist": playlist.convert_to_json(),
            }}
 
            self.collection.update_one(query, new_data)
@@ -203,6 +207,18 @@ r_db?retryWrites=true&w=majority"
 
         return return_group
 
+
+    def save_group_playlist(self, group_id, group_name, group_playlist):
+        if self.check_if_group_exists(group_id, group_name):
+            query = { "group_id": group_id }
+
+            new_data = { "$addToSet": {
+                        "group_id": group_id,
+                        "playlists": group_playlist.convert_to_json()
+                        }}
+
+            self.collection.update_one(query, new_data)
+
     def get_group_playlists(self, group_id):
         """ return the group's created playlists
 
@@ -213,7 +229,7 @@ r_db?retryWrites=true&w=majority"
 
         doc = self.collection.find_one(query)
 
-        return doc["playlists"]
+        return [self.playlist_convert_from_json(playlist) for playlist in doc["playlists"]]
 
     def find_invites(self):
         """ find group invites for the given member
@@ -229,6 +245,69 @@ r_db?retryWrites=true&w=majority"
                                         "group_name": doc["group_name"]})
 
         return list_of_invites
+
+    def playlist_convert_from_json(self, json_playlist):
+        """ method to convert our playlist class from JSON format
+        back to Playlist format
+
+        Args:
+            json_playlist: a playlist in json format
+        """
+        playlist_dict = {}
+        playlist_dict["name"] = json_playlist["playlist_name"]
+        playlist_dict["owner"] = json_playlist["playlist_owner"]
+        playlist_dict["id"] = json_playlist["playlist_id"]
+        playlist_dict["tracks"] = {"size": json_playlist["playlist_size"]}
+
+        playlist_songs = []
+        for song in playlist_dict["songs"]:
+            playlist_songs.append(self.song_convert_from_json(song))
+
+        return Playlist(playlist_dict, playlist_songs)
+
+    def song_convert_from_json(self, json_song):
+        """ method to convert our song class from JSON format
+        back to Song format
+
+        Args:
+            json_song: a song in json format
+        """
+        song_dict = {}
+        song_dict["name"] = json_song["song_name"]
+        song_dict["id"] = json_song["id"]
+        song_dict["artists"] = [self.artist_convert_from_json(artist) 
+                                for artist in json_song["song_artist"]]
+        song_dict["album"] = self.album_convert_from_json(json_song["album_details"])
+
+        return Song(song_dict, json_song["song_details"])
+
+    def artist_convert_from_json(self, json_artist):
+        """ method to convert our artist class from JSON format
+        back to Artist format
+
+        Args:
+            json_artist: an artist in json format
+        """
+        artist_dict = {}
+        artist_dict["id"] = json_artist["artist_id"]
+        artist_dict["name"] = json_artist["name"]
+
+        return Artist(artist_dict)
+
+    def album_convert_from_json(self, json_album):
+        """ method to convert our album class from JSON format
+        back to Album format
+
+        Args:
+            json_album: a album in json format
+        """
+        album_dict = {}
+        album_dict["id"] = json_album["album_id"]
+        album_dict["name"] = json_album["album_name"]
+        album_dict["total_tracks"] = json_album["album_total_tracks"]
+        album_dict["album_type"] = json_album["album_type"]
+
+        return Album(album_dict)
 
 # # testing
 
