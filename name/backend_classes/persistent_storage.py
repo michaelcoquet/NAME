@@ -257,7 +257,7 @@ r_db?retryWrites=true&w=majority"
         playlist_dict["name"] = json_playlist["playlist_name"]
         playlist_dict["owner"] = json_playlist["playlist_owner"]
         playlist_dict["id"] = json_playlist["playlist_id"]
-        playlist_dict["tracks"] = {"size": json_playlist["playlist_size"]}
+        playlist_dict["tracks"] = {"total": json_playlist["playlist_size"]}
 
         playlist_songs = []
         for song in playlist_dict["songs"]:
