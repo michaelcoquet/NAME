@@ -5,6 +5,7 @@ from concurrent.futures import ProcessPoolExecutor, wait, as_completed
 from tkinter import ttk
 from tkinter import StringVar
 from time import sleep
+import threading
 
 from .name_frame import NameFrame
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
@@ -224,30 +225,45 @@ class HomePageFrame(NameFrame):
         self.switch_frame("Home Page")
 
     def similar_songs_command(self):
-        """command for the find similar songs button
-        """
         # if no songs have been entered yet, display the error popup
         if len(self.parent.song_object_list) < 1:
             message = "You must enter at least one song!"
             self.enter_more_songs_popup(message)
         else:
-            # get the current working list of songs to be searched and pass it to the backend
-            self.formatted_filters = self.convert_filters_list(self.selected_filters)
-            search_object = CheckingSongSimilarity(self.formatted_filters)
+            get_similar_songs = threading.Thread(target=self.threaded_similar_songs, daemon=True)
+            get_similar_songs.start()
+            self.loading_screen()
+            
+    def loading_screen(self):
+        self.grab_set()
+        popup = tk.Toplevel(self)
+        popup.title("Loading...")
 
-            # do the search in a seperate thread
-            pool = ProcessPoolExecutor(max_workers=1)
+        message = """Finding similar songs! This may take several minutes. Feel free to close this
+        window and try out some of the other features while you wait."""
 
-            future = pool.submit(
-                threaded_search,
-                search_object,
-                self.parent.song_object_list
-            )
-            future.
-            self.open_search_progress(future)
+        label = tk.Label(popup, text=message)
+        label.grid(row=0, column=0)
 
-            # switch to search results frame, and give it the results to be displayed
-            self.switch_frame("Search Results")
+        button = ttk.Button(popup, text="Close", command=popup.destroy)
+        button.grid(row=1, column=0)
+        self.grab_release()
+
+    def threaded_similar_songs(self):
+        """command for the find similar songs button
+        """
+        # disable the button while this is running
+        self.similar_songs_button.configure(state="disabled")
+        # get the current working list of songs to be searched and pass it to the backend
+        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        search_object = CheckingSongSimilarity(self.formatted_filters)
+
+        results = search_object.random_search(self.parent.song_object_list)
+        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
+        # switch to search results frame, and give it the results to be displayed
+        self.switch_frame("Search Results")
+        # enable the button again
+        self.similar_songs_button.configure(state="normal")
 
     def enter_more_songs_popup(self, text):
         """ In the case that not enough songs are entered
