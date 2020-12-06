@@ -282,7 +282,7 @@ class NameFrame(tk.Frame):
         # TODO: try to implement this
         return 1
 
-    def open_search_progress(self):
+    def open_search_progress(self, future):
         """open a new window that updates the user on the progress of similarity playlist
            creation
         """
@@ -298,21 +298,17 @@ class NameFrame(tk.Frame):
         l_1 = tk.Label(self.win, text="Finding Similar Songs!")
         l_1.pack(side=tk.TOP)
 
-        self.l_songs_found = tk.Label(self.win,
-            text="Songs found...   0/" + str(self.parent.max_songs))
-        self.l_songs_found.pack(side=tk.TOP)
-
         self.progress = tk.ttk.Progressbar(self.win, orient=tk.HORIZONTAL, length=200,
-            mode="determinate")
+            mode="indeterminate")
 
         self.progress.pack(pady=10)
 
         cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_progress_window)
         cancel_btn.pack(side=tk.BOTTOM)
 
-        self.progress_update()
+        self.progress_update(future)
 
-    def progress_update(self):
+    def progress_update(self, future):
         """ This is used to update the search progress bar
                   for now just do a little simulation, notice the hang with time.sleep
         """
@@ -320,68 +316,13 @@ class NameFrame(tk.Frame):
         #                 to update the progress bar, could be indeterminate also, but if not
         #                 will need some multithreadin to avoid the app hanging during search,
         #                 possibly fork() would work
-        count = 0
-        self.progress.update()
-        self.progress["maximum"] = 100
-        time.sleep(1)
-
-        self.progress['value'] = 20
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 40
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 50
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 60
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 80
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
-        self.progress['value'] = 100
-        count = count + 1
-        self.l_songs_found["text"] = "Songs found...   " + str(count) + "/" \
-                                        + str(self.parent.max_songs)
-        self.progress.update()
-        time.sleep(1)
-
         self.switch_frame("Search Results")
 
-        # TODO : GUI - need to update the search results screen with the results
-        # for testing purposes
-        song_list = [
-                        ["TODO: title1", "TODO: album1", "TODO: artist1"],
-                        ["TODO: title2", "TODO: album2", "TODO: artist2"],
-                        ["TODO: title3", "TODO: album3", "TODO: artist3"],
-                        ["TODO: title4", "TODO: album4", "TODO: artist4"],
-                        ["TODO: title5", "TODO: album5", "TODO: artist5"],
-                        ["TODO: title6", "TODO: album6", "TODO: artist6"],
-                    ]
+        while future.running() != True:
+            time.sleep(2)
+            print("not done yet")
 
-        self.parent.update_search_results(song_list)
-
+        print("done I guess")
         self.close_progress_window()
 
     def close_progress_window(self):

@@ -21,9 +21,6 @@ class SongInfoFrame(HomePageFrame):
 
     def grid_remember(self):
         super().grid_remember()
-        # self.create_playlist_button.grid_remove()
-        # self.compare_songs_button.grid_remove()
-        # self.get_song_info_button.grid_remove()
         self.song_treeview.grid_remove()
         self.similar_songs_button.grid_remove()
         self.filters_dropdown.grid_remove()

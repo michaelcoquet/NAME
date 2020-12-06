@@ -82,8 +82,7 @@ class Name(tk.Tk):
                            the listbox in the search results frame
         """
         # this is just temporary will likely change when we have a proper list of song objects
-        for item in range(len(list)):
-            self.frames[1].song_listbox.insert(item, list[item])
+        self.frames[1].display_data(list)
 
     def switch_frame(self, old_id, new_id):
         """ TODO: Fill In

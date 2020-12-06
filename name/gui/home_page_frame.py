@@ -4,9 +4,11 @@ import tkinter as tk
 from concurrent.futures import ProcessPoolExecutor, wait, as_completed
 from tkinter import ttk
 from tkinter import StringVar
+from time import sleep
 
 from .name_frame import NameFrame
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
+
 
 class HomePageFrame(NameFrame):
     """ Could possibly be a splash screen but for now this is the home page screen
@@ -233,20 +235,17 @@ class HomePageFrame(NameFrame):
             self.formatted_filters = self.convert_filters_list(self.selected_filters)
             search_object = CheckingSongSimilarity(self.formatted_filters)
 
-            # # do the search in a seperate thread
-            # pool = ProcessPoolExecutor(max_workers=1)
+            # do the search in a seperate thread
+            pool = ProcessPoolExecutor(max_workers=1)
 
-            # futures = [pool.submit(
-            #     self.threaded_search,
-            #     search_object,
-            #     self.parent.song_object_list
-            # )]
+            future = pool.submit(
+                threaded_search,
+                search_object,
+                self.parent.song_object_list
+            )
+            future.
+            self.open_search_progress(future)
 
-            # wait(futures)
-            # for future in futures:
-            #     print(future.result())
-            results = search_object.random_search(self.parent.song_object_list)
-            self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
             # switch to search results frame, and give it the results to be displayed
             self.switch_frame("Search Results")
 
@@ -265,15 +264,6 @@ class HomePageFrame(NameFrame):
         button = ttk.Button(popup, text="Okay", command=popup.destroy)
         button.grid(row=1, column=0)
         self.grab_release()
-
-    def threaded_search(self, search_object, song_list):
-        """ runs in a seperate thread to avoid the app hanging up during long searches
-
-        Args:
-            search_object (CheckingSongSimilarity): the search helper class
-            song_list (Song[]): group of songs to find similar songs to
-        """
-        return search_object.random_search(song_list)
 
     def convert_filters_list(self, tk_filters):
         """ convert the original dict of filters into something the backend can use
@@ -350,3 +340,13 @@ class HomePageFrame(NameFrame):
             self.song_treeview.delete(item)
 
         self.parent.song_object_list.clear()
+
+
+def threaded_search(search_object, song_list):
+    """ runs in a seperate thread to avoid the app hanging up during long searches
+
+    Args:
+        search_object (CheckingSongSimilarity): the search helper class
+        song_list (Song[]): group of songs to find similar songs to
+    """
+    return search_object.random_search(song_list)
