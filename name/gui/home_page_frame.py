@@ -233,20 +233,20 @@ class HomePageFrame(NameFrame):
             self.formatted_filters = self.convert_filters_list(self.selected_filters)
             search_object = CheckingSongSimilarity(self.formatted_filters)
 
-            # do the search in a seperate thread
-            pool = ProcessPoolExecutor(max_workers=1)
+            # # do the search in a seperate thread
+            # pool = ProcessPoolExecutor(max_workers=1)
 
-            futures = [pool.submit(
-                self.threaded_search,
-                search_object,
-                self.parent.song_object_list
-            )]
+            # futures = [pool.submit(
+            #     self.threaded_search,
+            #     search_object,
+            #     self.parent.song_object_list
+            # )]
 
-            wait(futures)
-            for future in futures:
-                print(future.result())
-
-            # self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
+            # wait(futures)
+            # for future in futures:
+            #     print(future.result())
+            results = search_object.random_search(self.parent.song_object_list)
+            self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
             # switch to search results frame, and give it the results to be displayed
             self.switch_frame("Search Results")
 
