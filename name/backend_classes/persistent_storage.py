@@ -70,21 +70,28 @@ r_db?retryWrites=true&w=majority"
         else:
             return False
 
-    def save_current_playlist(self, playlist):
+    def save_current_playlist(self, playlist_tracks):
         """ puts the active playlist in the input into the users persistent storage
 
         Args:
             playlist (Playlist): list of playlist objects to store
         """
         if self.check_if_user_exists():
-           query = { "spotify_id": self.spotify_id }
+            query = { "spotify_id": self.spotify_id }
 
-           new_data = { "$set": {
+            playlist_dict = {"name": "Current Playlist",
+                        "owner": {"id": self.spotify_id},
+                        "id": "temp_id",
+                        "tracks": {"total": 25}}
+
+            playlist = Playlist(playlist_dict, playlist_tracks)
+
+            new_data = { "$set": {
                "spotify_id": self.spotify_id,
                "current_playlist": playlist.convert_to_json(),
-           }}
+            }}
 
-           self.collection.update_one(query, new_data)
+            self.collection.update_one(query, new_data)
 
     def get_current_playlist(self):
         """ gets the current_playlist entry in the database, then converts to playlist object
@@ -97,12 +104,7 @@ r_db?retryWrites=true&w=majority"
 
         doc = self.collection.find_one(query)
 
-        playlist_dict = {"name": "Current Playlist",
-                        "owner": {"id": self.spotify_id},
-                        "id": "temp_id",
-                        "tracks": {"total": 25}}
-
-        return Playlist(playlist_dict, doc["current_playlist"])
+        return self.playlist_convert_from_json(doc["current_playlist"])
 
     def check_if_group_exists(self, group_id, group_name):
         """ check if the given group exists or not
@@ -208,7 +210,7 @@ r_db?retryWrites=true&w=majority"
         return return_group
 
 
-    def save_group_playlist(self, group_id, group_name, group_playlist):
+    def save_group_playlist(self, group_id, group_name, playlist_tracks, playlist_name):
         """ method to save a new playlist to the group database
         Args:
             group_id: the id of the group
@@ -218,6 +220,14 @@ r_db?retryWrites=true&w=majority"
         
         if self.check_if_group_exists(group_id, group_name):
             query = { "group_id": group_id }
+
+            playlist_dict = {"name": playlist_name,
+                        "owner": {"id": self.spotify_id},
+                        "id": "temp_id",
+                        "tracks": {"total": len(playlist_tracks)}
+                        }
+
+            group_playlist = Playlist(playlist_dict, playlist_tracks)
 
             new_data = { "$addToSet": {
                         "group_id": group_id,
