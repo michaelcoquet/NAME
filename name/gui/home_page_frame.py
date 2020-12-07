@@ -1,7 +1,6 @@
 """The home frame for the app can be either member or guest for this frame
 """
 import tkinter as tk
-from concurrent.futures import ProcessPoolExecutor, wait, as_completed
 from tkinter import ttk
 from tkinter import StringVar
 from time import sleep
@@ -233,7 +232,7 @@ class HomePageFrame(NameFrame):
             get_similar_songs = threading.Thread(target=self.threaded_similar_songs, daemon=True)
             get_similar_songs.start()
             self.loading_screen()
-            
+
     def loading_screen(self):
         self.grab_set()
         popup = tk.Toplevel(self)
@@ -259,9 +258,15 @@ class HomePageFrame(NameFrame):
         search_object = CheckingSongSimilarity(self.formatted_filters)
 
         results = search_object.random_search(self.parent.song_object_list)
+
+        # clear the treeview and working playlist (song_object_list)
+        self.song_treeview.delete(*self.song_treeview.get_children())
+        self.parent.song_object_list.clear()
+        self.parent.song_object_list = results
         self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
         # switch to search results frame, and give it the results to be displayed
         self.switch_frame("Search Results")
+
         # enable the button again
         self.similar_songs_button.configure(state="normal")
 

@@ -17,7 +17,7 @@ class CheckingSongSimilarity:
         returns: a list of 25 songs
         """
         # get a list of the top five genres for the entered songs
-        top_genres = list(self.get_top_genres(songs, 10).keys())
+        top_genres = list(self.get_top_genres(songs, 5).keys())
         new_query = Query(self.features)
         similar_songs = []
         while len(similar_songs) < 25:
@@ -26,8 +26,9 @@ class CheckingSongSimilarity:
             random_letter1 = random.choice(lowercase_letters)
             random_string = random_letter1 + "%"
             # pick a random genre from the top genres list to add to the query
-            random_genre = random.choice(top_genres)
-            random_string += " " + "genre:\"" + random_genre + "\""
+            if top_genres != []:
+                random_genre = random.choice(top_genres)
+                random_string += " " + "genre:\"" + random_genre + "\""
             # max offset for spotify is 2000, but keeping this
             # at 100 is faster
             random_offset = random.randint(0, 2000)
@@ -75,7 +76,7 @@ class CheckingSongSimilarity:
                     genres[genre] = 1
                 else:
                     genres[genre] += 1
-        # get top 5 genres, or less if fewer are returned
-        limit = min(5, len(genres.keys()))
+        # get top limit of genres, or less if fewer are returned
+        limit = min(limit, len(genres.keys()))
         top_genres = dict(sorted(genres.items(), key=operator.itemgetter(1), reverse=True)[:limit])
         return top_genres

@@ -8,7 +8,7 @@ class Song:
         song: A song object containing the data of the song from Spotify
         """
         self.song_name = song['name']
-        self.song_id = song['id']
+        self.id = song['id']
         self.song_artist = [Artist(artist) for artist in song['artists']]
         self.album_details = Album(song['album'])
         self.audio_features = song_details
@@ -32,8 +32,8 @@ class Song:
             "song_name": self.song_name,
             "album_details": self.album_details.convert_to_json(),
             "song_artist": artist_list,
-            "song_id": self.song_id,
-            "song_details": self.audio_features
+            "id": self.id,
+            "song_details": self.audio_features.convert_to_json()
         }
         return song_dict
 
@@ -46,16 +46,15 @@ class Artist:
         """
         artist: An artist object from spotify
         """
-        self.artist_id = artist['id']
+        self.id = artist['id']
         self.name = artist['name']
 
     def __str__(self):
-        return f"{self.artist_id,self.name}"
+        return f"{self.id,self.name}"
 
     def convert_to_json(self):
         artist_dict = {
-            "artist": self.artist,
-            "artist_id": self.artist_id,
+            "id": self.id,
             "name": self.name
         }
         return artist_dict
@@ -69,13 +68,13 @@ class Album:
         """
         album: an album object containing the data of the song's album
         """
-        self.album_id = album['id']
+        self.id = album['id']
         self.name = album['name']
         self.size = album['total_tracks']
         self.type = album['album_type']
 
     def __eq__(self, other):
-        if self.album_id == other.album_id:
+        if self.id == other.id:
             return True
 
         return False
@@ -85,12 +84,12 @@ class Album:
                 "Album Type: {} \n"
                 "Album Id: {} \n"
                 "Total songs: {} ").format(self.name,  self.type,
-                                           self.album_id, self.size)
+                                           self.id, self.size)
     def convert_to_json(self):
         album_dict = {
-            "album_name": self.name,
-            "album_id": self.album_id,
-            "album_total_tracks": self.size,
+            "name": self.name,
+            "id": self.id,
+            "total_tracks": self.size,
             "album_type": self.type
         }
         return album_dict
@@ -117,6 +116,7 @@ class SongDetails:
         self.liveness = details['liveness']
         self.valence = details['valence']
         self.time_signature = details['time_signature']
+        self.json = details
 
     def __str__(self):
         return ("\nDuration: {} \n"
@@ -138,3 +138,6 @@ class SongDetails:
                                               self.acousticness, self.instrumentalness,
                                               self.liveness, self.valence,
                                               self.time_signature)
+
+    def convert_to_json(self):
+        return self.json

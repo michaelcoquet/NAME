@@ -2,6 +2,7 @@
 """
 import tkinter as tk
 from tkinter import ttk
+import threading
 
 from .member_home_frame import MemberHomeFrame
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
@@ -87,9 +88,45 @@ class AllPlaylistsFrame(MemberHomeFrame):
     def list_from_list_command(self):
         """comamnd for the create playlist from this playlist button
         """
+        selected_items = self.playlist_treeview.selection()
 
-        # TODO: BAKCEND - Find songs that are similar to the songs in the selected playlist
-        self.switch_frame("Create Sim Playlist")
+        selected_songs = []
+        self.parent.song_object_list.clear()
+        for item in selected_items:
+            selected_name = self.playlist_treeview.item(item)["values"][0]
+            for playlist in self.playlists:
+                if playlist.playlist_name == selected_name:
+                    #add this playlists songs to the list of songs to pass to the search
+                    selected_songs = selected_songs + playlist.songs
+                    self.parent.song_object_list = self.parent.song_object_list + playlist.songs
+
+        if len(selected_songs) < 1:
+            message = "You must enter at least one song!"
+            self.enter_more_songs_popup(message)
+        else:
+            get_similar_songs = threading.Thread(target=self.threaded_similar_songs, daemon=True)
+            get_similar_songs.start()
+            self.loading_screen()
+
+    def threaded_similar_songs(self):
+        """command for the find similar songs button
+        """
+        # disable the button while this is running
+        self.list_from_list_button.configure(state="disabled")
+        # get the current working list of songs to be searched and pass it to the backend
+        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        search_object = CheckingSongSimilarity(self.formatted_filters)
+
+        results = search_object.random_search(self.parent.song_object_list)
+
+        self.parent.song_object_list.clear()
+        self.parent.song_object_list = results
+        self.parent.frames[self.parent.get_frame_id("Member Home")].display_data(results)
+        # switch to search results frame, and give it the results to be displayed
+        self.switch_frame("Member Home")
+
+        # enable the button again
+        self.list_from_list_button.configure(state="normal")
 
     def display_data(self, api_results):
         """ take the playlist data (list of playlist objects) in and display it in the treeview

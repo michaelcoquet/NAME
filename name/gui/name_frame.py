@@ -148,7 +148,7 @@ class NameFrame(tk.Frame):
         """
         login = threading.Thread(target=self.login_thread, daemon=True)
         login.start()
-        
+
     def login_thread(self):
         if self.user.link_spotify_account() == True:
             self.init_member_menu()
@@ -167,6 +167,7 @@ class NameFrame(tk.Frame):
     def group_menu_command(self, group):
         """ Command for clicking a group menu button
         """
+        self.user.active_group = group
         self.switch_frame("Group Home")
         self.parent.frames[self.parent.get_frame_id("Group Home")].display_group(group)
 

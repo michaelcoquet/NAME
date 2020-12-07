@@ -70,21 +70,28 @@ r_db?retryWrites=true&w=majority"
         else:
             return False
 
-    def save_current_playlist(self, playlist):
+    def save_current_playlist(self, playlist_tracks):
         """ puts the active playlist in the input into the users persistent storage
 
         Args:
             playlist (Playlist): list of playlist objects to store
         """
         if self.check_if_user_exists():
-           query = { "spotify_id": self.spotify_id }
+            query = { "spotify_id": self.spotify_id }
 
-           new_data = { "$set": {
+            playlist_dict = {"name": "Current Playlist",
+                        "owner": {"id": self.spotify_id},
+                        "id": "temp_id",
+                        "tracks": {"total": 25}}
+
+            playlist = Playlist(playlist_dict, playlist_tracks)
+
+            new_data = { "$set": {
                "spotify_id": self.spotify_id,
                "current_playlist": playlist.convert_to_json(),
-           }}
+            }}
 
-           self.collection.update_one(query, new_data)
+            self.collection.update_one(query, new_data)
 
     def get_current_playlist(self):
         """ gets the current_playlist entry in the database, then converts to playlist object
@@ -97,12 +104,7 @@ r_db?retryWrites=true&w=majority"
 
         doc = self.collection.find_one(query)
 
-        playlist_dict = {"name": "Current Playlist",
-                        "owner": {"id": self.spotify_id},
-                        "id": "temp_id",
-                        "tracks": {"total": 25}}
-
-        return Playlist(playlist_dict, doc["current_playlist"])
+        return self.playlist_convert_from_json(doc["current_playlist"])
 
     def check_if_group_exists(self, group_id, group_name):
         """ check if the given group exists or not
@@ -208,23 +210,29 @@ r_db?retryWrites=true&w=majority"
         return return_group
 
 
-    def save_group_playlist(self, group_id, group_name, group_playlist):
+    def save_group_playlist(self, group_id, group_name, playlist_tracks, playlist_name):
         """ method to save a new playlist to the group database
         Args:
             group_id: the id of the group
             group_name: the name of the group
             group_playlist: the new Playlist to add to the group's database
         """
-        
+
         if self.check_if_group_exists(group_id, group_name):
             query = { "group_id": group_id }
 
-            new_data = { "$addToSet": {
-                        "group_id": group_id,
-                        "playlists": group_playlist.convert_to_json()
-                        }}
+            playlist_dict = {"name": playlist_name,
+                        "owner": {"id": self.spotify_id},
+                        "id": "temp_id",
+                        "tracks": {"total": len(playlist_tracks)}
+                        }
 
-            self.collection.update_one(query, new_data)
+            group_playlist = Playlist(playlist_dict, playlist_tracks)
+
+
+            self.collection.update({"group_id": group_id},
+                {"$addToSet": {"playlists": group_playlist.convert_to_json()}})
+
 
     def get_group_playlists(self, group_id):
         """ return the group's created playlists
@@ -267,7 +275,7 @@ r_db?retryWrites=true&w=majority"
         playlist_dict["tracks"] = {"total": json_playlist["playlist_size"]}
 
         playlist_songs = []
-        for song in playlist_dict["songs"]:
+        for song in json_playlist["songs"]:
             playlist_songs.append(self.song_convert_from_json(song))
 
         return Playlist(playlist_dict, playlist_songs)
@@ -282,9 +290,11 @@ r_db?retryWrites=true&w=majority"
         song_dict = {}
         song_dict["name"] = json_song["song_name"]
         song_dict["id"] = json_song["id"]
-        song_dict["artists"] = [self.artist_convert_from_json(artist) 
-                                for artist in json_song["song_artist"]]
-        song_dict["album"] = self.album_convert_from_json(json_song["album_details"])
+        artist_list = []
+        for artist in json_song["song_artist"]:
+            artist_list.append(artist)
+        song_dict["artists"] = artist_list
+        song_dict["album"] = json_song["album_details"]
 
         return Song(song_dict, json_song["song_details"])
 
@@ -296,7 +306,7 @@ r_db?retryWrites=true&w=majority"
             json_artist: an artist in json format
         """
         artist_dict = {}
-        artist_dict["id"] = json_artist["artist_id"]
+        artist_dict["id"] = json_artist["id"]
         artist_dict["name"] = json_artist["name"]
 
         return Artist(artist_dict)
@@ -309,9 +319,9 @@ r_db?retryWrites=true&w=majority"
             json_album: a album in json format
         """
         album_dict = {}
-        album_dict["id"] = json_album["album_id"]
-        album_dict["name"] = json_album["album_name"]
-        album_dict["total_tracks"] = json_album["album_total_tracks"]
+        album_dict["id"] = json_album["id"]
+        album_dict["name"] = json_album["name"]
+        album_dict["total_tracks"] = json_album["total_tracks"]
         album_dict["album_type"] = json_album["album_type"]
 
         return Album(album_dict)

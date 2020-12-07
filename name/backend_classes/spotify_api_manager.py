@@ -88,32 +88,32 @@ class SpotifyAPIManager:
                 search_results["found songs"].append(song)
         return search_results
 
-    def get_album(self, album_id):
+    def get_album(self, id):
         """ Given an album id, search for album info
         and return an Album object.
-        album_id: string value of the album id
+        id: string value of the album id
         returns: an album object.
         """
-        album_data = self.spotify.album(album_id)
+        album_data = self.spotify.album(id)
         album = Album(album_data)
         return album
 
-    def get_artist(self, artist_id):
+    def get_artist(self, id):
         """ Given an artist id, search for artist info
         and return an Artist object.
-        artist_id: string value of the artist id
+        id: string value of the artist id
         returns: an artist object.
         """
-        artist_data = self.spotify.artist(artist_id)
+        artist_data = self.spotify.artist(id)
         artist = Artist(artist_data)
         return artist
 
-    def get_audio_features(self, song_id):
+    def get_audio_features(self, id):
         """ Gets audio features for the given song id
-        song_id: a song id (string)
+        id: a song id (string)
         returns: a SongDetails object
         """
-        features = self.spotify.audio_features(tracks=[song_id])[0]
+        features = self.spotify.audio_features(tracks=[id])[0]
         if features == None:
             return SongDetails(details={"duration_ms": 0,
                                          "key": 0,
@@ -134,7 +134,7 @@ class SpotifyAPIManager:
 
     def create_playlist_object(self, playlist_data):
         """ Given the json object Spotify returns as a playlist,
-        convert it to one of our Playlist objects. 
+        convert it to one of our Playlist objects.
         playlist_data: a json formatted spotify playlist
         """
         songs = self.spotify.playlist_items(playlist_data["id"])["items"]
@@ -176,13 +176,13 @@ class SpotifyAPIManager:
         user_id = self.get_user_id()
         playlist_name = playlist.playlist_name
         description = "A N.A.M.E. similarity playlist"
-        new_playlist = self.spotify.user_playlist_create(user=user_id, name=playlist_name, 
+        new_playlist = self.spotify.user_playlist_create(user=user_id, name=playlist_name,
                                                          description=description)
         new_playlist_id = new_playlist["id"]
         # Get spotify track objects for each song in the given playlist
-        song_ids = [song.song_id for song in playlist.songs]
+        ids = [song.id for song in playlist.songs]
         # Add all the tracks to the new playlist
-        self.spotify.playlist_add_items(new_playlist_id, song_ids)
+        self.spotify.playlist_add_items(new_playlist_id, ids)
         return self.create_playlist_object(new_playlist)
 
     def get_recently_played_songs(self, limit):
@@ -205,7 +205,7 @@ class SpotifyAPIManager:
         return songs
 
     def get_top_songs(self):
-        """ Gets a list of the current member's top tracks. 
+        """ Gets a list of the current member's top tracks.
         The maximum number that can be returned is 20.
         returns: at most a list of 20 song objects
         """
@@ -225,7 +225,7 @@ class SpotifyAPIManager:
 
     def get_top_artists(self):
         """ Gets a list of the current member's top artists.
-        The maximum number that can be returned is 20. 
+        The maximum number that can be returned is 20.
         returns: at most a list of 20 artist objects.
         """
         # Make sure the access token is valid and refresh if needed
@@ -243,7 +243,7 @@ class SpotifyAPIManager:
 
     def get_song_genres(self, song):
         """ Given a song object, find all the genres
-        associated with the song. 
+        associated with the song.
         song: a song object
         returns: a list of genres (strings)
         """
@@ -252,7 +252,7 @@ class SpotifyAPIManager:
         # get a list of genres for each artist
         genres = []
         for artist in artists:
-            artist_info = self.spotify.artist(artist.artist_id)
+            artist_info = self.spotify.artist(artist.id)
             genres.extend(artist_info["genres"])
         return genres
 

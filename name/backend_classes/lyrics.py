@@ -36,6 +36,9 @@ class Lyrics(object):
 
         return self.__song_lyrics
 
+    def get_song_artist(self):
+        return self.__song_artist
+
     def get_num_words(self):
         """Calculates the number of words in the song's lyrics and
         ignores any irrelevant headers

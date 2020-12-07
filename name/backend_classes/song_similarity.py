@@ -237,6 +237,9 @@ class SongSimilarity:
         for song in self.songs:
             loudness_scores.append(song.audio_features.loudness)
 
+        if np.ptp(loudness_scores) == 0:
+            return 1
+
         normalized_scores = ((loudness_scores - np.min(loudness_scores))
                                         /np.ptp(loudness_scores))
 

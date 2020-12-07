@@ -186,7 +186,7 @@ def test_get_user_id_v2():
 def test_search_songs_v1():
     """ Test ID: Spotify15. Tests that the method returns
     a dictonary with an empty list when Spotify found no results.
-    This function contains multiple subtests: 
+    This function contains multiple subtests:
     Test when the list of songs has one element, the user type is guest
     Test when the list has multiple elements, user type is guest
     Test when the list has one element, user type is member
@@ -223,7 +223,7 @@ def test_search_songs_v1():
 def test_search_songs_v2():
     """ Test ID: Spotify16. Tests that the method returns
     a non-empty dictionary when results are expected.
-    This function contains multiple subtests: 
+    This function contains multiple subtests:
     Test when the list of songs has one element, the user type is guest
     Test when the list has multiple elements, user type is guest
     Test when the list has one element, user type is member
@@ -258,7 +258,7 @@ def test_search_songs_v2():
 
 
 def test_get_album_v1():
-    """ Test ID: Spotify05. Tests that the method returns 
+    """ Test ID: Spotify05. Tests that the method returns
     the correct album object when given a valid artist id.
     Ensure this works both before and after an account has been linked
     """
@@ -268,21 +268,21 @@ def test_get_album_v1():
     # First subtest
     spotify_api_manager = SpotifyAPIManager()
     # example album id for Bastille's Wild World album
-    album_id = "1qKjUIVG8KmtYceDBWjfqE"
-    album = spotify_api_manager.get_album(album_id)
+    id = "1qKjUIVG8KmtYceDBWjfqE"
+    album = spotify_api_manager.get_album(id)
     assert album.name == "Wild World (Complete Edition)"
-    assert album.album_id == album_id
+    assert album.id == id
     # Second subtest
     account_link = spotify_api_manager.link_spotify_account()
     assert account_link == True
-    album = spotify_api_manager.get_album(album_id)
+    album = spotify_api_manager.get_album(id)
     assert album.name == "Wild World (Complete Edition)"
-    assert album.album_id == album_id
+    assert album.id == id
 
 
 
 def test_get_artist_v1():
-    """ Test ID: Spotify03. Tests that the method returns 
+    """ Test ID: Spotify03. Tests that the method returns
     the correct artist object when given a valid artist id.
     Ensure this works both when the account is linked or not.
     """
@@ -292,16 +292,16 @@ def test_get_artist_v1():
     # First subtest
     spotify_api_manager = SpotifyAPIManager()
     # Artist id for Bastille
-    artist_id = "7EQ0qTo7fWT7DPxmxtSYEc"
-    artist = spotify_api_manager.get_artist(artist_id)
+    id = "7EQ0qTo7fWT7DPxmxtSYEc"
+    artist = spotify_api_manager.get_artist(id)
     assert artist.name == "Bastille"
-    assert artist.artist_id == artist_id
+    assert artist.id == id
     # Second subtest
     account_link = spotify_api_manager.link_spotify_account()
     assert account_link == True
-    artist = spotify_api_manager.get_artist(artist_id)
+    artist = spotify_api_manager.get_artist(id)
     assert artist.name == "Bastille"
-    assert artist.artist_id == artist_id
+    assert artist.id == id
 
 
 def test_get_member_playlists():
@@ -323,7 +323,7 @@ def test_get_member_playlists():
 
 
 # def test_add_member_playlist():
-#     """ TestID: Spotify13. Tests that a new playlist can 
+#     """ TestID: Spotify13. Tests that a new playlist can
 #     be added to the member's spotify account. Comment
 #     this test out after running once to avoid created a whole
 #     bunch of copies of the same playlist
@@ -380,20 +380,18 @@ def test_refresh_auth_token():
     # try to refresh the token when it definitely won't be expired
     spotify_api_manager.refresh_auth_token()
     assert id == spotify_api_manager.get_user_id()
-    
+
 
 def test_get_top_artists():
     """ Test ID: Spotify21. Tests that the users top artists
     can be returned properly as a list of artist objects.
-    The shared account is actually too new to have any top artists,
-    so for now just check that this returns an empty list
     """
     # wait two seconds to avoid a timeout from the API
     time.sleep(2)
     spotify_api_manager = SpotifyAPIManager()
     spotify_api_manager.link_spotify_account()
     top_artists = spotify_api_manager.get_top_artists()
-    assert top_artists == []
+    assert top_artists != []
 
 
 def test_get_song_genres():
@@ -591,7 +589,7 @@ def test_song_details_v3():
 
 
 def test_song_v1():
-    """ Test IDs: Song01, Album01-02, Artist01-02. Should return the correct 
+    """ Test IDs: Song01, Album01-02, Artist01-02. Should return the correct
     values for each of the attribute from the given data
     """
     # Data of the song
@@ -600,7 +598,7 @@ def test_song_v1():
             "artists": [
                         {"name": "Simple Plan",
                          "id": "2p4FqHnazRucYQHyDCdBrJ"
-                         }   
+                         }
                       ],
             "album": {
                     "album_type": "album",
@@ -621,14 +619,14 @@ def test_song_v1():
     # Create the Song object
     song_obj = Song(song, audio_features)
     # Test for Song class attributes, if it is returning the correct data
-    assert song_obj.song_id == song["id"]
+    assert song_obj.id == song["id"]
     assert song_obj.song_name == song["name"]
     # Subtest for the Artist class
     assert song_obj.song_artist[0].name == song["artists"][0]["name"]
-    assert song_obj.song_artist[0].artist_id == song["artists"][0]["id"]
+    assert song_obj.song_artist[0].id == song["artists"][0]["id"]
     # Subtest for the Album class
     assert song_obj.album_details.name == song["album"]["name"]
-    assert song_obj.album_details.album_id == song["album"]["id"]
+    assert song_obj.album_details.id == song["album"]["id"]
     assert song_obj.album_details.type == song["album"]["album_type"]
     assert song_obj.album_details.size == song["album"]["total_tracks"]
 
@@ -639,7 +637,7 @@ def test_playlist_v1():
     if it is returning the correct values after the object is instantiated
     """
     a_playlist = {"name": "My playlist",
-                  "owner": {"display_name": "test1", 
+                  "owner": {"display_name": "test1",
                             "id": 'qwertyu'},
                   "id": "asdfghjqwer",
                   "tracks": {"total": 1}
@@ -742,7 +740,7 @@ def test_genius_api_manager():
 def test_lyrics():
     """
     Test ID: Lyrics01-08. Tests that the lyrics objects correctly
-    interfaces with the Genius API Manager class and gets the 
+    interfaces with the Genius API Manager class and gets the
     correct lyrics. Tests the getter functions to make sure they
     return the correct info.
     """

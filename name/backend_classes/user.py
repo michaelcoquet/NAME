@@ -96,7 +96,7 @@ class User:
             # object if entry doesnt exist then create a new one
             if self.persistent_storage.check_if_user_exists():
                 # deserialize here
-                self.current_playlist = self.persistent_storage.get_current_playlist()
+                # self.current_playlist = self.persistent_storage.get_current_playlist()
                 self.groups = self.persistent_storage.get_users_groups()
                 # check if they have any group invites already
                 invite_list = self.persistent_storage.find_invites()
