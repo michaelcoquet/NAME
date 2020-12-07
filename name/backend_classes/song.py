@@ -33,7 +33,7 @@ class Song:
             "album_details": self.album_details.convert_to_json(),
             "song_artist": artist_list,
             "song_id": self.song_id,
-            "song_details": self.audio_features
+            "song_details": self.audio_features.convert_to_json()
         }
         return song_dict
 
@@ -121,6 +121,7 @@ class SongDetails:
         self.liveness = details['liveness']
         self.valence = details['valence']
         self.time_signature = details['time_signature']
+        self.json = details
 
     def __str__(self):
         return ("\nDuration: {} \n"
@@ -143,6 +144,8 @@ class SongDetails:
                                               self.liveness, self.valence,
                                               self.time_signature)
 
+    def convert_to_json(self):
+        return self.json
 
 # Testing
 
