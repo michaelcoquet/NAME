@@ -92,9 +92,9 @@ class Album:
                                            self.id, self.size)
     def convert_to_json(self):
         album_dict = {
-            "album_name": self.name,
+            "name": self.name,
             "id": self.id,
-            "album_total_tracks": self.size,
+            "total_tracks": self.size,
             "album_type": self.type
         }
         return album_dict
