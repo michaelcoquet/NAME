@@ -60,7 +60,6 @@ class Artist:
 
     def convert_to_json(self):
         artist_dict = {
-            "artist": self.artist,
             "artist_id": self.artist_id,
             "name": self.name
         }
