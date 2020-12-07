@@ -217,7 +217,7 @@ r_db?retryWrites=true&w=majority"
             group_name: the name of the group
             group_playlist: the new Playlist to add to the group's database
         """
-        
+
         if self.check_if_group_exists(group_id, group_name):
             query = { "group_id": group_id }
 
@@ -230,7 +230,7 @@ r_db?retryWrites=true&w=majority"
             group_playlist = Playlist(playlist_dict, playlist_tracks)
 
 
-            self.collection.update({"group_id": group_id}, 
+            self.collection.update({"group_id": group_id},
                 {"$addToSet": {"playlists": group_playlist.convert_to_json()}})
 
 
@@ -275,7 +275,7 @@ r_db?retryWrites=true&w=majority"
         playlist_dict["tracks"] = {"total": json_playlist["playlist_size"]}
 
         playlist_songs = []
-        for song in playlist_dict["songs"]:
+        for song in json_playlist["songs"]:
             playlist_songs.append(self.song_convert_from_json(song))
 
         return Playlist(playlist_dict, playlist_songs)
@@ -289,10 +289,12 @@ r_db?retryWrites=true&w=majority"
         """
         song_dict = {}
         song_dict["name"] = json_song["song_name"]
-        song_dict["id"] = json_song["id"]
-        song_dict["artists"] = [self.artist_convert_from_json(artist) 
-                                for artist in json_song["song_artist"]]
+        song_dict["song_id"] = json_song["song_id"]
+        song_dict["artists"] = ([self.artist_convert_from_json(artist) for artist in json_song["song_artist"]])
         song_dict["album"] = self.album_convert_from_json(json_song["album_details"])
+
+        print(song_dict["artists"])
+
 
         return Song(song_dict, json_song["song_details"])
 

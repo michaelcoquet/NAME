@@ -7,6 +7,7 @@ from .name_frame import NameFrame
 
 from name.backend_classes.persistent_storage import PersistentStorage
 
+
 class GroupHomeFrame(NameFrame):
     """ TODO: fill in
 
@@ -15,7 +16,6 @@ class GroupHomeFrame(NameFrame):
     """
     def __init__(self, parent, container, user):
         super().__init__(parent, container, user)
-        self.active_group = None
 
     def grid_unmap(self):
         super().grid_unmap()
@@ -36,6 +36,11 @@ class GroupHomeFrame(NameFrame):
         self.edit_group_button.grid()
 
         self.display_data(self.parent.song_object_list)
+
+        ps = PersistentStorage(self.user.spotify_id)
+        playlists = ps.get_group_playlists(self.parent.active_group.group_id)
+
+        print(playlists)
 
     def display_data(self, song_list):
         """display the given song list in the latest playlist treeview
@@ -68,7 +73,7 @@ class GroupHomeFrame(NameFrame):
 
         self.save_playlist_button = tk.Button(
             self.lower_grid,
-            text="Save",
+            text="Save to group",
             command=self.save_playlist_command
         )
         self.save_playlist_button.grid(row=0, column=1, sticky="w")
@@ -140,7 +145,7 @@ class GroupHomeFrame(NameFrame):
         self.new_playlist_button.grid(row=1, column=2)
 
     def display_group(self, group):
-        self.active_group = group
+        self.parent.active_group = group
         self.l_group_name["text"] = group.group_name
 
     def edit_playlist_command(self):
@@ -153,7 +158,7 @@ class GroupHomeFrame(NameFrame):
         """
         self.switch_frame("Edit Group")
         id = self.parent.get_frame_id("Edit Group")
-        self.parent.frames[id].display_group(self.active_group)
+        self.parent.frames[id].display_group(self.parent.active_group)
 
     def group_song_stats_command(self):
         """ command for the get group song stats button
@@ -173,9 +178,4 @@ class GroupHomeFrame(NameFrame):
     def save_playlist_command(self):
         """ command for the save playlist button
         """
-        storage = PersistentStorage(self.user.spotify_id)
-        storage.save_group_playlist(
-            self.active_group.group_id,
-            self.active_group.group_name,
-            self.parent.song_object_list
-        )
+        self.switch_frame("Save Playlist")

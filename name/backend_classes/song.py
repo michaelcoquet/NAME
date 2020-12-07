@@ -8,7 +8,7 @@ class Song:
         song: A song object containing the data of the song from Spotify
         """
         self.song_name = song['name']
-        self.song_id = song['id']
+        self.song_id = song['song_id']
         self.song_artist = [Artist(artist) for artist in song['artists']]
         self.album_details = Album(song['album'])
         self.audio_features = song_details

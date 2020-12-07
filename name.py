@@ -22,6 +22,7 @@ class Name(tk.Tk):
     max_songs = 6 # need to set a maximum number of songs that can show up in the search
     active_frame = 11 # the frame that is currently shown to the user
     previous_frame = 11
+    active_group = 0
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
