@@ -1,8 +1,7 @@
 Before running pytest, ensure the following steps have been completed: 
 
     1. Install python 3.9.0 and add it to PATH
-    2. Install the pytest module via pip install pytest
-    3. Install the spotipy module via pip install spotipy
+    2. Install all other modules as outlined in our main README file (spotipy, lyricsgenius, numpy (must be version 1.19.3), pymongo)
     4. On the command line, navigate to the directory containing unit_test.py
     5. Make sure to log out of any personal Spotify Accounts you may have open
        (becuase spotify will usually keep you logged in)
@@ -11,7 +10,7 @@ Before running pytest, ensure the following steps have been completed:
 
 How to run:
  - must allow pytest to collect user input with the -s option
-  using windows the tests can be ran with: 
+  using windows the tests can be run with: 
     $ python -m pytest -s
 
  - The test app will then redirect you to an authorization page
@@ -23,10 +22,5 @@ How to run:
  - Once requested for a spotify username and password enter:
     username: cmpt370.group5@gmail.com
     password: pennywise_1640
-
- - After login you will be redirected to a callback page with
-    a url of the following format:
-        https://example.com/callback?code=.............
-    this URL must be copy and pasted as input to the test app once requested
 
  - After all of this, all of the unit tests will then run
