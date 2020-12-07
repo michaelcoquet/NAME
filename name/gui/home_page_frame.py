@@ -259,6 +259,8 @@ class HomePageFrame(NameFrame):
 
         results = search_object.random_search(self.parent.song_object_list)
 
+        # clear the treeview and working playlist (song_object_list)
+        self.song_treeview.delete(*self.song_treeview.get_children())
         self.parent.song_object_list.clear()
         self.parent.song_object_list = results
         self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
