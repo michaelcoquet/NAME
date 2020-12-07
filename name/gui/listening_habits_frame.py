@@ -16,9 +16,13 @@ class ListeningHabitsFrame(MemberHomeFrame):
 
     def grid_unmap(self):
         super().grid_unmap()
-        self.latest_playlist_button.grid_remove()
-        self.all_playlists_button.grid_remove()
-        self.listening_habits_button.grid_remove()
+        # self.latest_playlist_button.grid_remove()
+        # self.all_playlists_button.grid_remove()
+        # self.listening_habits_button.grid_remove()
+
+    def grid_remember(self):
+        super().grid_remember()
+        self.save_spotify_button.grid_remove()
 
     def init_lower_grid(self):
         super().init_lower_grid()

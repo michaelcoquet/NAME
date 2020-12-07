@@ -78,13 +78,6 @@ class MemberHomeFrame(HomePageFrame):
             command=self.get_song_info_command)
         self.get_song_info_button.grid(row=0, column=0)
 
-        self.find_similar_songs_button = tk.Button(
-            container,
-            text="Add Similar Songs\nTo the Ones Selected",
-            command=self.add_similar_songs_button_command
-        )
-        self.find_similar_songs_button.grid(row=1, column=0)
-
     def init_upper_grid(self):
         super().init_upper_grid()
         self.create_playlist_button.grid_remove()
