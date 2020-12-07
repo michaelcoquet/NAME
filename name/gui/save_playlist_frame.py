@@ -79,10 +79,10 @@ class SavePlaylistFrame(MemberHomeFrame):
             else:
                 storage = PersistentStorage(self.user.spotify_id)
                 storage.save_group_playlist(
-                    self.parent.active_group.group_id,
-                    self.parent.active_group.group_name,
-                    self.parent.song_object_list,
-                    self.new_list_entry.get()
+                    group_id=self.parent.active_group.group_id,
+                    group_name=self.parent.active_group.group_name,
+                    playlist_tracks=self.parent.song_object_list,
+                    playlist_name=self.new_list_entry.get()
                 )
                 tk.messagebox.showinfo(title="Success", message="The playlist was saved to " +
                         "your group account")

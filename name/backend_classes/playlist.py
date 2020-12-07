@@ -23,19 +23,19 @@ class Playlist:
         self.songs.append(song)
         self.size = self.size + 1
 
-    def remove_song(self, song_id):
+    def remove_song(self, id):
         """
         A function that removes a song from the playlist
         base on its index
-        song_id: the id of the song to be removed from the playlist
+        id: the id of the song to be removed from the playlist
         """
         # A temporary list for the song ids
         temp = []
         for i in self.songs:
-            temp.append(i.song_id)
+            temp.append(i.id)
 
-        if song_id in temp:
-            song_index = temp.index(song_id)
+        if id in temp:
+            song_index = temp.index(id)
             self.songs.pop(song_index)
             self.size = self.size - 1
 

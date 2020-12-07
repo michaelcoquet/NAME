@@ -289,15 +289,12 @@ r_db?retryWrites=true&w=majority"
         """
         song_dict = {}
         song_dict["name"] = json_song["song_name"]
-        song_dict["song_id"] = json_song["song_id"]
+        song_dict["id"] = json_song["id"]
         artist_list = []
         for artist in json_song["song_artist"]:
             artist_list.append(artist)
         song_dict["artists"] = artist_list
         song_dict["album"] = self.album_convert_from_json(json_song["album_details"])
-
-        print(song_dict["artists"])
-
 
         return Song(song_dict, json_song["song_details"])
 
@@ -309,7 +306,7 @@ r_db?retryWrites=true&w=majority"
             json_artist: an artist in json format
         """
         artist_dict = {}
-        artist_dict["id"] = json_artist["artist_id"]
+        artist_dict["id"] = json_artist["id"]
         artist_dict["name"] = json_artist["name"]
 
         return Artist(artist_dict)
@@ -322,7 +319,7 @@ r_db?retryWrites=true&w=majority"
             json_album: a album in json format
         """
         album_dict = {}
-        album_dict["id"] = json_album["album_id"]
+        album_dict["id"] = json_album["id"]
         album_dict["name"] = json_album["album_name"]
         album_dict["total_tracks"] = json_album["album_total_tracks"]
         album_dict["album_type"] = json_album["album_type"]
