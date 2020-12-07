@@ -264,7 +264,7 @@ class HomePageFrame(NameFrame):
 
         self.parent.song_object_list = results
         # switch to search results frame, and give it the results to be displayed
-        self.switch_frame("Search Results")
+        self.parent.switch_frame(self.parent.active_frame, self.parent.active_frame)
         # enable the button again
         self.similar_songs_button.configure(state="normal")
 

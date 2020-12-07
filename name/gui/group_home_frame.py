@@ -5,6 +5,7 @@ from tkinter import StringVar
 from tkinter import ttk
 from .name_frame import NameFrame
 
+from name.backend_classes.persistent_storage import PersistentStorage
 
 class GroupHomeFrame(NameFrame):
     """ TODO: fill in
@@ -33,6 +34,27 @@ class GroupHomeFrame(NameFrame):
         self.new_playlist_button.grid()
         self.group_song_stats_button.grid()
         self.edit_group_button.grid()
+
+        self.display_data(self.parent.song_object_list)
+
+    def display_data(self, song_list):
+        """display the given song list in the latest playlist treeview
+
+        Args:
+            song_list (list): list of songs that will appear in the treeview
+        """
+        # clear the treeview first to avoid ghosting
+        self.song_treeview.delete(*self.song_treeview.get_children())
+        artists_string_list = []
+        for song in song_list:
+            for artist in song.song_artist:
+                artists_string_list.append(artist.name)
+            artists_string = ", ".join(artists_string_list)
+
+            artists_string_list.clear()
+
+            self.song_treeview.insert("", "end", values=(song.song_name,
+                                        song.album_details.name, artists_string))
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -151,4 +173,9 @@ class GroupHomeFrame(NameFrame):
     def save_playlist_command(self):
         """ command for the save playlist button
         """
-        return 1
+        storage = PersistentStorage(self.user.spotify_id)
+        storage.save_group_playlist(
+            self.active_group.group_id,
+            self.active_group.group_name,
+            self.parent.song_object_list
+        )
