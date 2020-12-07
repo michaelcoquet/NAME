@@ -3,9 +3,10 @@
 import tkinter as tk
 from tkinter import StringVar
 from tkinter import ttk
-from .name_frame import NameFrame
 
 from name.backend_classes.persistent_storage import PersistentStorage
+from .home_page_frame import HomePageFrame
+from .name_frame import NameFrame
 
 
 class GroupHomeFrame(NameFrame):
@@ -19,12 +20,6 @@ class GroupHomeFrame(NameFrame):
 
     def grid_unmap(self):
         super().grid_unmap()
-        self.edit_playlist_button.grid_remove()
-        self.save_playlist_button.grid_remove()
-        self.playlist_dropdown.grid_remove()
-        self.new_playlist_button.grid_remove()
-        self.group_song_stats_button.grid_remove()
-        self.edit_group_button.grid_remove()
 
     def grid_remember(self):
         super().grid_remember()
@@ -34,13 +29,24 @@ class GroupHomeFrame(NameFrame):
         self.new_playlist_button.grid()
         self.group_song_stats_button.grid()
         self.edit_group_button.grid()
+        # self.song_treeview.grid()
+
+        # self.remove_all_button.grid_remove()
+        # self.remove_button.grid_remove()
+        # self.create_playlist_button.grid_remove()
+        # self.filters_dropdown.grid_remove()
+        # self.get_song_info_button.grid_remove()
+        # self.song_search_button.grid_remove()
+        # self.similar_songs_button.grid_remove()
+        # self.song_search_entry.grid_remove()
+
 
         self.display_data(self.parent.song_object_list)
 
         ps = PersistentStorage(self.user.spotify_id)
-        playlists = ps.get_group_playlists(self.parent.active_group.group_id)
+        playlists = ps.get_group_playlists(self.user.active_group.group_id)
 
-        print(playlists)
+        self.refresh_playlist_menu(playlists)
 
     def display_data(self, song_list):
         """display the given song list in the latest playlist treeview
@@ -49,7 +55,7 @@ class GroupHomeFrame(NameFrame):
             song_list (list): list of songs that will appear in the treeview
         """
         # clear the treeview first to avoid ghosting
-        self.song_treeview.delete(*self.song_treeview.get_children())
+        self.plist_song_treeview.delete(*self.plist_song_treeview.get_children())
         artists_string_list = []
         for song in song_list:
             for artist in song.song_artist:
@@ -58,7 +64,7 @@ class GroupHomeFrame(NameFrame):
 
             artists_string_list.clear()
 
-            self.song_treeview.insert("", "end", values=(song.song_name,
+            self.plist_song_treeview.insert("", "end", values=(song.song_name,
                                         song.album_details.name, artists_string))
 
     def init_lower_grid(self):
@@ -81,20 +87,20 @@ class GroupHomeFrame(NameFrame):
     def init_middle_grid(self):
         super().init_middle_grid()
 
-        self.song_treeview = ttk.Treeview(self.middle_grid)
-        self.song_treeview["columns"] = ("Title", "Album", "Artist")
+        self.plist_song_treeview = ttk.Treeview(self.middle_grid)
+        self.plist_song_treeview["columns"] = ("Title", "Album", "Artist")
 
         # set up widths of columns
-        self.song_treeview.column("#0", width=1, minwidth=1, stretch="no")
-        self.song_treeview.column("Title", width=300, minwidth=300, stretch="yes")
-        self.song_treeview.column("Album", width=150, minwidth=150, stretch="yes")
-        self.song_treeview.column("Artist", width=150, minwidth=150, stretch="yes")
+        self.plist_song_treeview.column("#0", width=1, minwidth=1, stretch="no")
+        self.plist_song_treeview.column("Title", width=300, minwidth=300, stretch="yes")
+        self.plist_song_treeview.column("Album", width=150, minwidth=150, stretch="yes")
+        self.plist_song_treeview.column("Artist", width=150, minwidth=150, stretch="yes")
 
         #set up headings for the columns
-        self.song_treeview.heading("Title", text="Title", anchor="w")
-        self.song_treeview.heading("Album", text="Album", anchor="w")
-        self.song_treeview.heading("Artist", text="Artist(s)", anchor="w")
-        self.song_treeview.grid(row=0, column=0, sticky="nsew")
+        self.plist_song_treeview.heading("Title", text="Title", anchor="w")
+        self.plist_song_treeview.heading("Album", text="Album", anchor="w")
+        self.plist_song_treeview.heading("Artist", text="Artist(s)", anchor="w")
+        self.plist_song_treeview.grid(row=0, column=0, sticky="nsew")
 
         container_1 = tk.Frame(self.middle_grid)
         container_1.grid(row=0, column=2, sticky="n")
@@ -112,6 +118,34 @@ class GroupHomeFrame(NameFrame):
         )
         self.edit_group_button.grid(row=1, column=0)
 
+    def refresh_playlist_menu(self, playlists):
+        """[summary]
+
+        Args:
+            playlists (Playlist[]): refreshes the menuoptions with a the new playlist list
+        """
+        menu = self.playlist_dropdown["menu"]
+        menu.delete(0, "end")
+        for playlist in playlists:
+            name = playlist.playlist_name
+            menu.add_command(
+                label=name,
+                command=lambda value=name: self.intermediate_playlist_select_command(value)
+            )
+
+        menu.add_command(
+            label="Working Playlist",
+            command=lambda value=name:
+                self.intermediate_playlist_select_command("Working Playlist")
+        )
+
+        self.display_data(self.parent.song_object_list)
+        self.user.active_group.playlists = playlists
+
+    def intermediate_playlist_select_command(self, item):
+        self.playlist_dropdown_command(item)
+        self.playlist_select.set(item)
+
     def init_upper_grid(self):
         super().init_upper_grid()
                 # TODO: add the proper filters to the dropdown list
@@ -125,15 +159,12 @@ class GroupHomeFrame(NameFrame):
         self.l_playlist_select = tk.Label(container_0, text="Playlist Select:")
         self.l_playlist_select.grid(row=1, column=0)
 
-        variable = StringVar(container_0)
-        variable.set("Last Created Playlist") # default value
+        self.playlist_select = StringVar(container_0)
+        self.playlist_select.set("Working Playlist") # default value
         self.playlist_dropdown = tk.OptionMenu(
             container_0,
-            variable,
-            "Last Created Playlist",
-            "playlist 1",
-            "playlist 2",
-            "playlist 3",
+            self.playlist_select,
+            "Working Playlist",
             command=self.playlist_dropdown_command)
         self.playlist_dropdown.grid(row=1, column=1)
 
@@ -145,7 +176,7 @@ class GroupHomeFrame(NameFrame):
         self.new_playlist_button.grid(row=1, column=2)
 
     def display_group(self, group):
-        self.parent.active_group = group
+        self.user.active_group = group
         self.l_group_name["text"] = group.group_name
 
     def edit_playlist_command(self):
@@ -158,7 +189,7 @@ class GroupHomeFrame(NameFrame):
         """
         self.switch_frame("Edit Group")
         id = self.parent.get_frame_id("Edit Group")
-        self.parent.frames[id].display_group(self.parent.active_group)
+        self.parent.frames[id].display_group(self.user.active_group)
 
     def group_song_stats_command(self):
         """ command for the get group song stats button
@@ -168,12 +199,21 @@ class GroupHomeFrame(NameFrame):
     def new_playlist_command(self):
         """ command for the new playlist button command
         """
-        self.switch_frame("Edit Group Playlist")
+        self.parent.song_object_list.clear()
+        self.display_data(self.parent.song_object_list)
+        self.playlist_select.set("Working Playlist")
 
-    def playlist_dropdown_command(self):
+    def playlist_dropdown_command(self, item):
         """ command for the playlist dropdown
         """
-        return 1
+        # check which playlist was selected and load it into the treeview
+        if item == "Working Playlist":
+            self.display_data(self.parent.song_object_list)
+        else:
+            for playlist in self.user.active_group.playlists:
+                if playlist.playlist_name == item:
+                    # found the right playlist diplay the songs
+                    self.display_data(playlist.songs)
 
     def save_playlist_command(self):
         """ command for the save playlist button

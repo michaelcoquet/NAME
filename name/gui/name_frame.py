@@ -167,7 +167,7 @@ class NameFrame(tk.Frame):
     def group_menu_command(self, group):
         """ Command for clicking a group menu button
         """
-        self.parent.active_group = group
+        self.user.active_group = group
         self.switch_frame("Group Home")
         self.parent.frames[self.parent.get_frame_id("Group Home")].display_group(group)
 

@@ -22,7 +22,6 @@ class SavePlaylistFrame(MemberHomeFrame):
     def grid_remember(self):
         super().grid_remember()
         self.get_song_info_button.grid_remove()
-        self.find_similar_songs_button.grid_remove()
         self.latest_playlist_button.grid_remove()
         self.all_playlists_button.grid_remove()
         self.listening_habits_button.grid_remove()
@@ -30,6 +29,7 @@ class SavePlaylistFrame(MemberHomeFrame):
         self.new_list_entry.grid()
         self.cancel_button.grid()
         self.save_playlist_button.grid()
+        self.song_treeview.grid()
 
     def init_lower_grid(self):
         super().init_lower_grid()
@@ -39,7 +39,6 @@ class SavePlaylistFrame(MemberHomeFrame):
             text="Cancel",
             command=self.cancel_command)
         self.cancel_button.grid(row=0, column=0)
-
 
         container = tk.Frame(self.lower_grid)
         container.grid(row=0, column=2)
@@ -79,10 +78,11 @@ class SavePlaylistFrame(MemberHomeFrame):
             else:
                 storage = PersistentStorage(self.user.spotify_id)
                 storage.save_group_playlist(
-                    group_id=self.parent.active_group.group_id,
-                    group_name=self.parent.active_group.group_name,
+                    group_id=self.user.active_group.group_id,
+                    group_name=self.user.active_group.group_name,
                     playlist_tracks=self.parent.song_object_list,
                     playlist_name=self.new_list_entry.get()
                 )
                 tk.messagebox.showinfo(title="Success", message="The playlist was saved to " +
                         "your group account")
+                self.parent.switch_to_previous_frame()
