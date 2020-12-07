@@ -37,23 +37,17 @@ class Song:
         }
         return song_dict
 
+
 class Artist:
     """
     A class that stores the data of each artist of the song
     """
     def __init__(self, artist):
         """
-        artist: A list of artist object
+        artist: An artist object from spotify
         """
-        self.artist = artist
         self.artist_id = artist['id']
         self.name = artist['name']
-
-    # def __eq__(self, other):
-    #     if self.artist_id == other.artist_id:
-    #         return True
-
-        # return False
 
     def __str__(self):
         return f"{self.artist_id,self.name}"
@@ -65,6 +59,7 @@ class Artist:
             "name": self.name
         }
         return artist_dict
+
 
 class Album:
     """
@@ -99,6 +94,7 @@ class Album:
             "album_type": self.type
         }
         return album_dict
+
 
 class SongDetails:
     """
@@ -142,33 +138,3 @@ class SongDetails:
                                               self.acousticness, self.instrumentalness,
                                               self.liveness, self.valence,
                                               self.time_signature)
-
-
-# Testing
-
-# client_id = '0e48c2ec84d3401e9262a2159a277d82'
-# client_secret = 'aa650130a5b544598f4b058bfd264b21'
-# auth_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-# spotify = spotipy.Spotify(auth_manager=auth_manager)
-
-# # a random song
-# song1 = '4oVdhvxZrKQTM9ZsUIZa3S'
-# test_song = spotify.track(song1)
-# a_song = Song(test_song)
-
-# # Test for song name
-# expected = 'December'
-# test1 = a_song.song_name
-# if expected != test1:
-#     print("Test1: Error, did not meet the expected result")
-
-# # Test for song id
-# expected2 = '4oVdhvxZrKQTM9ZsUIZa3S'
-# test2 = a_song.song_id
-# if expected2 != test2:
-#     print("Test2: Error, did not meet the expected result")
-
-# # Test for song artists
-# test3 = a_song.song_artist
-
-# # Test for song
