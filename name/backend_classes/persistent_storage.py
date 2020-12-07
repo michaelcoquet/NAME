@@ -229,12 +229,10 @@ r_db?retryWrites=true&w=majority"
 
             group_playlist = Playlist(playlist_dict, playlist_tracks)
 
-            new_data = { "$addToSet": {
-                        "group_id": group_id,
-                        "playlists": group_playlist.convert_to_json()
-                        }}
 
-            self.collection.update_one(query, new_data)
+            self.collection.update({"group_id": group_id}, 
+                {"$addToSet": {"playlists": group_playlist.convert_to_json()}})
+
 
     def get_group_playlists(self, group_id):
         """ return the group's created playlists
