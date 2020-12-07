@@ -29,7 +29,6 @@ class EditGroupFrame(GroupHomeFrame):
         super().grid_remember()
         self.add_friend_button.grid_remove()
         self.save_playlist_button.grid_remove()
-        self.group_song_stats_button.grid_remove()
         self.edit_group_button.grid_remove()
         self.l_playlist_select.grid_remove()
         self.playlist_dropdown.grid_remove()

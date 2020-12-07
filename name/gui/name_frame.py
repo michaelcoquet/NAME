@@ -82,8 +82,10 @@ class NameFrame(tk.Frame):
         for group in self.user.groups:
             self.group_menu.add_command(
                     label=group.group_name,
-                    command=lambda : self.group_menu_command(group)
+                    command=lambda group=group: self.group_menu_command(group)
                 )
+
+
 
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()
@@ -167,6 +169,7 @@ class NameFrame(tk.Frame):
     def group_menu_command(self, group):
         """ Command for clicking a group menu button
         """
+        print(group.group_id)
         self.user.active_group = group
         self.switch_frame("Group Home")
         self.parent.frames[self.parent.get_frame_id("Group Home")].display_group(group)

@@ -13,7 +13,6 @@ class Playlist:
         self.playlist_id = playlist['id']
         self.size = playlist['tracks']['total']
         self.songs = playlist_tracks
-        self.active_group = 0
 
     def add_song(self, song):
         """

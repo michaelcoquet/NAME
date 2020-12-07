@@ -35,6 +35,8 @@ class User:
 
         self.playlists = []
 
+        self.active_group = None
+
     def __str__(self):
         """
         A string representation of the object

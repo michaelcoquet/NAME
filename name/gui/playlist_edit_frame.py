@@ -74,4 +74,5 @@ class PlaylistEditFrame(HomePageFrame):
         """command for the done button
         """
         # TODO: save changes back tot he listbox on member home frame
-        self.threaded_similar_songs()
+
+        self.similar_songs_command()

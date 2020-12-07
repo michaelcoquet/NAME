@@ -27,7 +27,6 @@ class GroupHomeFrame(NameFrame):
         self.save_playlist_button.grid()
         self.playlist_dropdown.grid()
         self.new_playlist_button.grid()
-        self.group_song_stats_button.grid()
         self.edit_group_button.grid()
         # self.song_treeview.grid()
 
@@ -44,9 +43,9 @@ class GroupHomeFrame(NameFrame):
         self.display_data(self.parent.song_object_list)
 
         ps = PersistentStorage(self.user.spotify_id)
-        playlists = ps.get_group_playlists(self.user.active_group.group_id)
-
-        self.refresh_playlist_menu(playlists)
+        if self.user.active_group != None:
+            playlists = ps.get_group_playlists(self.user.active_group.group_id)
+            self.refresh_playlist_menu(playlists)
 
     def display_data(self, song_list):
         """display the given song list in the latest playlist treeview
@@ -72,7 +71,7 @@ class GroupHomeFrame(NameFrame):
 
         self.edit_playlist_button = tk.Button(
             self.lower_grid,
-            text="Edit",
+            text="Edit Playlist",
             command=self.edit_playlist_command
         )
         self.edit_playlist_button.grid(row=0, column=0, sticky="e")
@@ -105,12 +104,6 @@ class GroupHomeFrame(NameFrame):
         container_1 = tk.Frame(self.middle_grid)
         container_1.grid(row=0, column=2, sticky="n")
 
-        self.group_song_stats_button = tk.Button(
-            container_1,
-            text="Get Group\nSong Stats",
-            command=self.group_song_stats_command)
-        self.group_song_stats_button.grid(row=0, column=0)
-
         self.edit_group_button = tk.Button(
             container_1,
             text="Edit\nGroup",
@@ -133,11 +126,11 @@ class GroupHomeFrame(NameFrame):
                 command=lambda value=name: self.intermediate_playlist_select_command(value)
             )
 
-        menu.add_command(
-            label="Working Playlist",
-            command=lambda value=name:
-                self.intermediate_playlist_select_command("Working Playlist")
-        )
+        # menu.add_command(
+        #     label="Working Playlist",
+        #     command=lambda value=name:
+        #         self.intermediate_playlist_select_command("Working Playlist")
+        # )
 
         self.display_data(self.parent.song_object_list)
         self.user.active_group.playlists = playlists
