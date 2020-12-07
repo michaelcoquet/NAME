@@ -290,7 +290,10 @@ r_db?retryWrites=true&w=majority"
         song_dict = {}
         song_dict["name"] = json_song["song_name"]
         song_dict["song_id"] = json_song["song_id"]
-        song_dict["artists"] = ([self.artist_convert_from_json(artist) for artist in json_song["song_artist"]])
+        artist_list = []
+        for artist in json_song["song_artist"]:
+            artist_list.append(artist)
+        song_dict["artists"] = artist_list
         song_dict["album"] = self.album_convert_from_json(json_song["album_details"])
 
         print(song_dict["artists"])
