@@ -362,11 +362,11 @@ class HomePageFrame(NameFrame):
         self.parent.song_object_list.clear()
 
 
-def threaded_search(search_object, song_list):
-    """ runs in a seperate thread to avoid the app hanging up during long searches
+# def threaded_search(search_object, song_list):
+#     """ runs in a seperate thread to avoid the app hanging up during long searches
 
-    Args:
-        search_object (CheckingSongSimilarity): the search helper class
-        song_list (Song[]): group of songs to find similar songs to
-    """
-    return search_object.random_search(song_list)
+#     Args:
+#         search_object (CheckingSongSimilarity): the search helper class
+#         song_list (Song[]): group of songs to find similar songs to
+#     """
+#     return search_object.random_search(song_list)
