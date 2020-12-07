@@ -2,6 +2,7 @@
 """
 import tkinter as tk
 from tkinter import ttk
+import threading
 
 from .member_home_frame import MemberHomeFrame
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
@@ -87,9 +88,30 @@ class AllPlaylistsFrame(MemberHomeFrame):
     def list_from_list_command(self):
         """comamnd for the create playlist from this playlist button
         """
+        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        search_object = CheckingSongSimilarity(self.formatted_filters)
+
+        selected_items = self.playlist_treeview.selection()
+
+        selected_songs = []
+        self.parent.song_object_list.clear()
+        for item in selected_items:
+            selected_name = self.playlist_treeview.item(item)["values"][0]
+            for playlist in self.playlists:
+                if playlist.playlist_name == selected_name:
+                    #add this playlists songs to the list of songs to pass to the search
+                    selected_songs = selected_songs + playlist.songs
+                    self.parent.song_object_list = self.parent.song_object_list + playlist.songs
+
+        if len(selected_songs) < 1:
+            message = "You must enter at least one song!"
+            self.enter_more_songs_popup(message)
+        else:
+            get_similar_songs = threading.Thread(target=self.threaded_similar_songs, daemon=True)
+            get_similar_songs.start()
+            self.loading_screen()
 
         # TODO: BAKCEND - Find songs that are similar to the songs in the selected playlist
-        self.switch_frame("Create Sim Playlist")
 
     def display_data(self, api_results):
         """ take the playlist data (list of playlist objects) in and display it in the treeview
