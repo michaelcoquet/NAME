@@ -9,3 +9,5 @@ from .query import Query
 from .genius_api_manager import Genius_Api_Manager
 from .lyrics import Lyrics
 from .temporary_storage import TemporaryStorage
+from .user import User
+from .group import Group
