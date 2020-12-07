@@ -14,6 +14,7 @@ from name.backend_classes.song import SongDetails
 from name.backend_classes.playlist import Playlist
 from name.backend_classes import Genius_Api_Manager
 from name.backend_classes import Lyrics
+from name.backend_classes import temporary_storage
 
 # Tests for the User class
 def test_setUserType_v1():
