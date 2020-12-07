@@ -2,7 +2,7 @@ import os
 import time
 import pytest
 
-from name.testing.proof_of_concept import User
+# from name.testing.proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
 from name.backend_classes import SongSimilarity
 from name.backend_classes import SpotifyAPIManager
@@ -15,45 +15,124 @@ from name.backend_classes.playlist import Playlist
 from name.backend_classes import Genius_Api_Manager
 from name.backend_classes import Lyrics
 from name.backend_classes import temporary_storage
+from name.backend_classes import User
+from name.backend_classes import Group
 
 # Tests for the User class
-def test_setUserType_v1():
+# def test_setUserType_v1():
+#     """
+#     Test ID: User01. Normally setUserType would be called from within the Spotify API
+#     after a User has linked/ unlinked their account. For this unit test, we simply check that
+#     the User type is modified correctly.
+#     """
+#     user = User(type="Guest")
+#     user.setUserType(type="Member")
+
+#     assert user.type == "Member"
+
+
+# def test_setUserType_v2():
+#     """
+#     Test ID: User02. Check that the user type is updated correctly from "Member" to "Guest".
+#     """
+#     user = User(type="Member")
+#     user.setUserType(type="Guest")
+
+#     assert user.type == "Guest"
+
+
+# def test_isGuest_v1():
+#     """
+#     Test ID: User03. Check that the method returns True when the User type is Guest.
+#     """
+#     user = User(type="Guest")
+#     assert user.isGuest() == True
+
+
+# def test_isGuest_v2():
+#     """
+#     Test ID: User04. Check that the method returns False when the User type is not Guest.
+#     """
+#     user = User(type="Member")
+
+#     assert user.isGuest() == False
+
+def test_user_v1():
     """
-    Test ID: User01. Normally setUserType would be called from within the Spotify API
-    after a User has linked/ unlinked their account. For this unit test, we simply check that
-    the User type is modified correctly.
+    Test ID: User01, User02 (add more test cases)
+    Test if the methods are correctly returning the right values
     """
-    user = User(type="Guest")
-    user.setUserType(type="Member")
+    a_user = User()
 
-    assert user.type == "Member"
+    # Test the default value for the User, whether the user is
+    # logged in or not
+    assert a_user.is_member() is False
+
+    # Test for user logging into their spotify account
+    result = a_user.link_spotify_account()
+    assert result is True
+
+    # Test for the function get_playlists()
+    a_playlist = a_user.get_playlists()
+    b_playlist = a_user.spotify_manager.get_member_playlists()
+    for items_a, items_b in zip(a_playlist, b_playlist):
+        items_a.playlist_id == items_b.playlist_id
+
+    # Test for getting the spotify id of the member
+    spotify_id = a_user.get_account_id()
+    assert spotify_id == a_user.spotify_manager.get_user_id()
+
+    # Test for member logging out
+    a_user.logout()
+    assert a_user.is_member() is False
 
 
-def test_setUserType_v2():
+def test_group_v1():
     """
-    Test ID: User02. Check that the user type is updated correctly from "Member" to "Guest".
+    Test ID:Group01, Group02, Group05, Group12, Group13. 
+    Check if the methods are returning the correct data
     """
-    user = User(type="Member")
-    user.setUserType(type="Guest")
+    test_group = ["group1", 'owner1', ["user1", "user2"], [6, 8]]
+    
+    # Initialize Group object
+    a_group = Group(test_group[0], test_group[1], test_group[2], test_group[3])
 
-    assert user.type == "Guest"
+    # Test for assigning the group id
+    a_group.assign_id(1)
+    assert a_group.group_id == 1
 
+    # Test for getting the members of the group
+    for members_a, members_b in zip(a_group.member_list, test_group[3]):
+        assert members_a == members_b
 
-def test_isGuest_v1():
-    """
-    Test ID: User03. Check that the method returns True when the User type is Guest.
-    """
-    user = User(type="Guest")
-    assert user.isGuest() == True
+    # Test for updating the playlists of the group
+    # For testing purposes, we're just going to pass strings from a list
+    list_of_playlist = ["Playlist1", "Playlist2", "Playlist3"]
+    a_group.update_playlists(list_of_playlist)
+    updated_playlist = a_group.group_playlists
+    assert updated_playlist == list_of_playlist
+    # Test for inviting a member to the group
+    member_ids = [1, 35, 24, 5]
+    a_group.invite_members(member_ids)
+    for members in member_ids:
+        assert members in a_group.invite_list
 
+    # Test for an invited member accepting the invitation
+    ACCEPTED_MEMBER = 1
+    a_group.accept_invite(ACCEPTED_MEMBER)
+    assert member_ids[0] in a_group.member_list
 
-def test_isGuest_v2():
-    """
-    Test ID: User04. Check that the method returns False when the User type is not Guest.
-    """
-    user = User(type="Member")
+    # Test for an invited member declining the invitation
+    # a_group.decline_invite(35)
+    # assert member_ids[1] not in a_group.invite_list
 
-    assert user.isGuest() == False
+    # Test for adding a new member
+    NEW_MEMBER_ID = 10
+    a_group.add_member(NEW_MEMBER_ID)
+    assert NEW_MEMBER_ID in a_group.member_list
+
+    # Test if the added member is successfully added to member list
+    assert a_group.member_exists(NEW_MEMBER_ID) is True
 
 
 # # Tests for the SongSimilarity class
@@ -449,6 +528,68 @@ def test_song_details_v1():
     assert song_details.time_signature == audio_features["time_signature"]
 
 
+def test_song_details_v2():
+    """
+    A test for checking whether the passed in values are in the right range of the
+    expected values for each audio features
+    """
+    audio_features = {"danceability": 0.527,"energy": 0.834,
+                      "key": 1, "loudness": -5.531,
+                      "mode": 1, "speechiness": 0.0447,
+                      "acousticness": 0.00107, "instrumentalness": 0.000102,
+                      "liveness": 0.0993, "valence": 0.422,
+                      "tempo": 110.065, "duration_ms": 198333,
+                      "time_signature": 4}
+
+    song_details = SongDetails(audio_features)
+
+    # https://open.spotify.com/track/0q5lnUuDhlogtYCOubNQhQ
+    LONGEST_TRACK_DURATION = 15600000 
+    # Test if the given value exceeds the expected value
+    assert song_details.danceability <= 1
+    assert song_details.key <= 12
+    assert song_details.energy <= 1
+    assert song_details.mode <= 1
+    assert song_details.loudness <= 0
+    assert song_details.speechiness <= 1
+    assert song_details.acousticness <= 1
+    assert song_details.instrumentalness <= 1
+    assert song_details.liveness <= 1
+    assert song_details.valence <= 1
+    assert song_details.tempo <= 500
+    assert song_details.duration <= LONGEST_TRACK_DURATION
+    assert song_details.time_signature <= 7
+
+
+def test_song_details_v3():
+    """
+    A test where the given data is not correct. In this case if the given value is a string instead
+    of an int.
+    """
+    audio_features = {"danceability": 0.527,"energy": 0.834,
+                      "key": 1, "loudness": -5.531,
+                      "mode": 1,"speechiness": 0.0447,
+                      "acousticness": 0.00107,"instrumentalness": 0.000102,
+                      "liveness": 0.0993, "valence": 0.422,
+                      "tempo": 110.065, "duration_ms": 198333,
+                      "time_signature": 4}
+
+    song_details = SongDetails(audio_features)
+    assert song_details.danceability != '0.527'
+    assert song_details.key != '1'
+    assert song_details.energy != '0.834'
+    assert song_details.mode != '1'
+    assert song_details.loudness != '-5.531'
+    assert song_details.speechiness != '0.0447'
+    assert song_details.acousticness != '0.00107'
+    assert song_details.instrumentalness != '0.000102'
+    assert song_details.liveness != '0.0993'
+    assert song_details.valence != '0.422'
+    assert song_details.tempo != '110.065'
+    assert song_details.duration != '198333'
+    assert song_details.time_signature != '4'
+
+
 def test_song_v1():
     """ Test IDs: Song01, Album01-02, Artist01-02. Should return the correct 
     values for each of the attribute from the given data
@@ -554,6 +695,24 @@ def test_playlist_v1():
     # Test for getting the list of the audio features of each song
     song_feat = playlist_obj.get_song_features()
     assert song_feat[0] == audio_features
+
+
+def test_playlist_v2():
+    """
+    A test when the given playlist is empty
+    """
+    a_playlist = {"name": "Empty Playlist",
+                    "owner": {"display_name": "test1",
+                            "id": "qwerty"},
+                    "id": "asdaf",
+                    "tracks": {"total": 0}
+                    }
+
+    playlist_obj = Playlist(a_playlist, playlist_tracks=[])
+
+    assert playlist_obj.size == 0
+    assert playlist_obj.songs == []
+
 
 
 def test_genius_api_manager():
