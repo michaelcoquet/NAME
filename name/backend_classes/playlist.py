@@ -71,7 +71,7 @@ class Playlist:
                           }
         song_list = []
         for song in self.songs:
-            song_list.append(dict(song))
+            song_list.append(song.convert_to_json())
         playlist_dict["songs"] = song_list
         return playlist_dict
 
