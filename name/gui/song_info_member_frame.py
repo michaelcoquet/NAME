@@ -91,7 +91,7 @@ class SongInfoMemberFrame(MemberHomeFrame):
                 lyrics_obj = Lyrics(song.song_name, song.song_artist[0].name)
                 if lyrics_obj.get_lyrics() != None:
                     self.song_lyrics_scrolledtext.insert("end", "Lyrics:\n\n" + song.song_name + " - " +
-                                                        ", ".join(dict(song)["song_artist"]) +
+                                                         lyrics_obj.get_song_artist() + 
                                                         ":\n\n" + lyrics_obj.get_lyrics() + "\n\n\n")
                 else:
                     self.song_lyrics_scrolledtext.insert("end", "Couldn't find lyrics for this song \n")
@@ -102,7 +102,7 @@ class SongInfoMemberFrame(MemberHomeFrame):
             lyrics_obj = Lyrics(songs.song_name, songs.song_artist[0].name)
             if lyrics_obj.get_lyrics() != None:
                 self.song_lyrics_scrolledtext.insert("end", "Lyrics:\n\n" + songs.song_name + " - " +
-                                                    ", ".join(dict(songs)["song_artist"]) +
+                                                     lyrics_obj.get_song_artist() + 
                                                     ":\n\n" + lyrics_obj.get_lyrics() + "\n\n\n")
             else:
                 self.song_lyrics_scrolledtext.insert("end", "Couldn't find lyrics for this song \n")
