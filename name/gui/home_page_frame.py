@@ -260,11 +260,11 @@ class HomePageFrame(NameFrame):
         results = search_object.random_search(self.parent.song_object_list)
 
         self.parent.song_object_list.clear()
-        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
-
         self.parent.song_object_list = results
+        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
         # switch to search results frame, and give it the results to be displayed
-        self.parent.switch_frame(self.parent.active_frame, self.parent.active_frame)
+        self.switch_frame("Search Results")
+
         # enable the button again
         self.similar_songs_button.configure(state="normal")
 

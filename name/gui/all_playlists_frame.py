@@ -88,9 +88,6 @@ class AllPlaylistsFrame(MemberHomeFrame):
     def list_from_list_command(self):
         """comamnd for the create playlist from this playlist button
         """
-        self.formatted_filters = self.convert_filters_list(self.selected_filters)
-        search_object = CheckingSongSimilarity(self.formatted_filters)
-
         selected_items = self.playlist_treeview.selection()
 
         selected_songs = []
@@ -111,7 +108,25 @@ class AllPlaylistsFrame(MemberHomeFrame):
             get_similar_songs.start()
             self.loading_screen()
 
-        # TODO: BAKCEND - Find songs that are similar to the songs in the selected playlist
+    def threaded_similar_songs(self):
+        """command for the find similar songs button
+        """
+        # disable the button while this is running
+        self.list_from_list_button.configure(state="disabled")
+        # get the current working list of songs to be searched and pass it to the backend
+        self.formatted_filters = self.convert_filters_list(self.selected_filters)
+        search_object = CheckingSongSimilarity(self.formatted_filters)
+
+        results = search_object.random_search(self.parent.song_object_list)
+
+        self.parent.song_object_list.clear()
+        self.parent.song_object_list = results
+        self.parent.frames[self.parent.get_frame_id("Member Home")].display_data(results)
+        # switch to search results frame, and give it the results to be displayed
+        self.switch_frame("Member Home")
+
+        # enable the button again
+        self.list_from_list_button.configure(state="normal")
 
     def display_data(self, api_results):
         """ take the playlist data (list of playlist objects) in and display it in the treeview
