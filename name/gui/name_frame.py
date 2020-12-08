@@ -73,18 +73,18 @@ class NameFrame(tk.Frame):
         my_account_menu.add_separator()
 
         # make a submenu for groups
-        group_menu = tk.Menu(my_account_menu, tearoff=0)
-        group_menu.add_command(
+        self.group_menu = tk.Menu(my_account_menu, tearoff=0)
+        self.group_menu.add_command(
             label="Create Group",
             command=self.create_group
         )
-        group_menu.add_separator()
-        my_account_menu.add_cascade(label="Groups", menu=group_menu)
+        self.group_menu.add_separator()
+        my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
 
         for group in self.user.groups:
-            group_menu.add_command(
+            self.group_menu.add_command(
                     label=group.group_name,
-                    command=lambda group=group: self.group_menu_command(group)
+                    command=lambda group=group: self.self.group_menu_command(group)
                 )
 
         my_account_menu.add_command(
