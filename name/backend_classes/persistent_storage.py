@@ -19,12 +19,15 @@ from name.backend_classes.song import SongDetails
 
 
 class PersistentStorage:
-    """ class to handle the storage of data in json format (see wiki persistent storage)
+    """ class to handle the storage of data in json format
+        (see wiki persistent storage)
     """
 
     def __init__(self, spotify_id):
-        """ unencrypted_spotify_id : the users unencrypted spotify ID, this class will encrypt
-                                     the id before saving to disk for privacy concerns
+        """ unencrypted_spotify_id : the users unencrypted spotify ID,
+                                     this class will encrypt the id
+                                     before saving to disk for privacy
+                                     concerns
         """
         self.spotify_id = spotify_id
 
@@ -32,8 +35,9 @@ class PersistentStorage:
         self.init_mongodb()
 
     def init_mongodb(self):
-        """ this will check if the json file already exists and open it for reading/writing if
-            it does, and create it if doesn't already exist
+        """ this will check if the json file already exists and
+            open it for reading/writing if it does, and create
+            it if doesn't already exist
         """
         mdb_str = "mongodb+srv://cmpt370group5:pennywise_1640@namecluster.8pmis.mongodb.net/use\
 r_db?retryWrites=true&w=majority"
@@ -47,8 +51,10 @@ r_db?retryWrites=true&w=majority"
         self.collection = self.db.user_collection
 
     def create_new_member(self):
-        """ This will initiate a new user in the database, this will simply create a blank entry
-            with a corresponding spotify id and will need to be loaded with users data in
+        """ This will initiate a new user in the database,
+            this will simply create a blank entry
+            with a corresponding spotify id and will need to be loaded
+            with users data in
             another step
         """
         if self.check_if_user_exists() == False:
@@ -73,7 +79,8 @@ r_db?retryWrites=true&w=majority"
             return False
 
     def save_current_playlist(self, playlist_tracks):
-        """ puts the active playlist in the input into the users persistent storage
+        """ puts the active playlist in the input into the users
+            persistent storage
 
         Args:
             playlist (Playlist): list of playlist objects to store
@@ -96,7 +103,8 @@ r_db?retryWrites=true&w=majority"
             self.collection.update_one(query, new_data)
 
     def get_current_playlist(self):
-        """ gets the current_playlist entry in the database, then converts to playlist object
+        """ Gets the current_playlist entry in the database,
+            then converts to playlist object
 
         Returns:
             playlist_obj (Playlist): playlist object rebuilt from the json
@@ -217,7 +225,8 @@ r_db?retryWrites=true&w=majority"
         Args:
             group_id: the id of the group
             group_name: the name of the group
-            group_playlist: the new Playlist to add to the group's database
+            group_playlist: the new Playlist to add to the
+                            group's database
         """
 
         if self.check_if_group_exists(group_id, group_name):
@@ -327,46 +336,3 @@ r_db?retryWrites=true&w=majority"
         album_dict["album_type"] = json_album["album_type"]
 
         return Album(album_dict)
-
-# # testing
-
-# # need to be logged into the test spotify account: cmpt370.group5@gmail.com account for these
-# # tests to pass
-# sp_manager = SpotifyAPIManager()
-# sp_manager.link_spotify_account()
-
-# sp_id = sp_manager.get_user_id()
-
-# ps = PersistentStorage(sp_id)
-
-#     # test 0: encrypt()
-# unencrypted_text = "encrypt this testing message"
-# encrypted_text = ps.encrypt(unencrypted_text)
-
-# assert(encrypted_text != unencrypted_text)
-
-#     # test 1: decrypt()
-# assert(ps.decrypt(encrypted_text) == unencrypted_text)
-
-#     # test 2: decrypting again after reinitialization
-# ps = PersistentStorage(sp_id)
-# assert(ps.decrypt(encrypted_text) == unencrypted_text)
-
-#     # test 3: create new member
-# ps.create_new_member()
-
-#     # test 4: check if user exists
-# assert(ps.check_if_user_exists())
-
-#     # test 5: save_current_playlist
-# playlists = sp_manager.get_member_playlists()
-
-# ps.save_current_playlist(playlists[2])
-
-# query_obj = {
-#     "encrypted_spotify_id": ps.encrypted_spotify_id,
-#     "current_playlist": dict(playlists[2]),
-#     "groups": []
-# }
-
-# assert(ps.collection.count_documents(query_obj, limit=1) > 0)
