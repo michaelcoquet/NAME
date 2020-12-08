@@ -1,3 +1,10 @@
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
+"""
 class Song:
     """
     A class for Song that stores the collected data

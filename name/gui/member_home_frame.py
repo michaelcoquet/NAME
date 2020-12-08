@@ -1,4 +1,9 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 
@@ -6,10 +11,10 @@ from .home_page_frame import HomePageFrame
 
 
 class MemberHomeFrame(HomePageFrame):
-    """ TODO: fill in
+    """ Main member home page frame that other corresponding member frames inherit
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherits the main home page
     """
     def grid_unmap(self):
         super().grid_unmap()
@@ -111,8 +116,6 @@ class MemberHomeFrame(HomePageFrame):
     def latest_playlist_command(self):
         """command for the latest playlist button
         """
-        # TODO: BACKEND - add logic to fetch the users latest playlist form persistent
-        #       storage and load into the listbox
         return 1
 
     def save_to_spotify_command(self):
@@ -171,10 +174,3 @@ class MemberHomeFrame(HomePageFrame):
 
         self.parent.frames[self.parent.get_frame_id("Song Info Member")].display_details(song_list)
 
-
-
-    def add_similar_songs_button_command(self):
-        """ command for the add similar songs button
-        """
-        # TODO: get the selected songs and run a similarity search then add the results back to the
-        # working list

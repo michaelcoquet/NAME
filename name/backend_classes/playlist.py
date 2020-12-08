@@ -1,3 +1,10 @@
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
+"""
 class Playlist:
     """
     A class containing the details of the playlist from spotify
@@ -13,7 +20,6 @@ class Playlist:
         self.playlist_id = playlist['id']
         self.size = playlist['tracks']['total']
         self.songs = playlist_tracks
-        self.active_group = 0
 
     def add_song(self, song):
         """

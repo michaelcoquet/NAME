@@ -1,10 +1,16 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 from tkinter import StringVar
 
 from .member_home_frame import MemberHomeFrame
 from name.backend_classes.persistent_storage import PersistentStorage
+
 
 class SavePlaylistFrame(MemberHomeFrame):
     """ TODO: fill in
@@ -59,7 +65,7 @@ class SavePlaylistFrame(MemberHomeFrame):
         self.parent.switch_to_previous_frame()
 
     def save_playlist_command(self):
-        """command for the create similar playlist button
+        """command for the save playlist button
         """
         if self.new_list_entry.get() != "New Playlist Name":
             if self.parent.previous_frame == self.parent.get_frame_id("Member Home"):
@@ -73,6 +79,7 @@ class SavePlaylistFrame(MemberHomeFrame):
                 if self.user.save_playlist_to_spotify(json_plylst, self.parent.song_object_list) is not None:
                     tk.messagebox.showinfo(title="Success", message="The playlist was saved to " +
                         "your spotify account")
+                    self.parent.switch_to_previous_frame
                 else:
                     print("error")
             else:
@@ -85,4 +92,4 @@ class SavePlaylistFrame(MemberHomeFrame):
                 )
                 tk.messagebox.showinfo(title="Success", message="The playlist was saved to " +
                         "your group account")
-                self.parent.switch_to_previous_frame()
+                self.parent.switch_frame(self.parent.active_frame, self.parent.active_frame)

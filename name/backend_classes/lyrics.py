@@ -1,7 +1,11 @@
-#import genius_api_manager as genius_manager
-#from genius_api_manager import Genius_Api_Manager as genius_manager
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
+"""
 from . import Genius_Api_Manager
-
 
 
 class Lyrics(object):
@@ -63,7 +67,7 @@ class Lyrics(object):
                 number_verses += 1
 
         return number_verses
-    
+
     def get_num_chorus(self):
         """Calculates the total number of choruses in the song"""
 

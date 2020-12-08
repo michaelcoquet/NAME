@@ -1,4 +1,9 @@
-""" Compare songs frame corresponding to the storyboards page 2
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 from tkinter import ttk
@@ -7,10 +12,10 @@ from .home_page_frame import HomePageFrame
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
 class CompareSongsFrame(HomePageFrame):
-    """ TODO: fill in
+    """ This the frame a user goes to compare lists of 2 or more songs for similairty score
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inheritied from main home page
     """
 
     def grid_unmap(self):

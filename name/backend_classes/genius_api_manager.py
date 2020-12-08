@@ -1,3 +1,10 @@
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
+"""
 import lyricsgenius
 from lyricsgenius import genius
 
@@ -7,7 +14,7 @@ class Genius_Api_Manager(object):
         """Initialization function to authenticate the program's
         connection to the genius API
         """
-        
+
         self.song_name = song_name
         self.song_artist = song_artist
         self.my_genius = lyricsgenius.Genius("F91niKdwkbdKfbtYZzg1IYm4xoze0Y2Pwu1P0q2WgU68ZydN"
@@ -28,7 +35,7 @@ class Genius_Api_Manager(object):
         except:
             return "No lyrics for this song were found"
         return song_lyrics
-    
+
 
 
 # Basic tests below, will make official unit tests

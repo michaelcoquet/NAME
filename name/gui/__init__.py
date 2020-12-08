@@ -11,7 +11,6 @@ from .all_playlists_frame import AllPlaylistsFrame
 from .save_playlist_frame import SavePlaylistFrame
 from .listening_habits_frame import ListeningHabitsFrame
 from .edit_group_frame import EditGroupFrame
-from .group_stats_frame import GroupStatsFrame
 from .edit_group_playlist_frame import EditGroupPlaylistFrame
 from .group_home_frame import GroupHomeFrame
 from .song_info_member_frame import SongInfoMemberFrame

@@ -1,4 +1,9 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 from tkinter import Grid
@@ -7,10 +12,10 @@ from .home_page_frame import HomePageFrame
 
 
 class EditGroupPlaylistFrame(HomePageFrame):
-    """ TODO: fill in
+    """ Used for a member to edit a group playlist
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherited from the main home page
     """
 
     def grid_unmap(self):
