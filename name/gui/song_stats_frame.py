@@ -50,7 +50,7 @@ class SongStatsFrame(SongInfoFrame):
         self.create_playlist_button["state"] = tk.NORMAL
         self.compare_songs_button["state"] = tk.DISABLED
 
-        self.dsim_score_label = tk.Label(self.upper_grid, text="These songs are X% similar")
+        self.sim_score_label = tk.Label(self.upper_grid, text="These songs are X% similar")
         self.sim_score_label.grid(row=2, column=1)
 
     def init_middle_grid(self):
