@@ -26,7 +26,7 @@ class Group:
 
         self.invite_list = invite_list
 
-        self.playlists = []
+        self.group_playlists = []
 
     def __iter__(self):
         member_string = [member for member in self.member_list]
@@ -69,7 +69,7 @@ class Group:
         for member_id in member_ids:
             self.invite_list.append(member_id)
 
-    def accecpt_invite(self, member_id):
+    def accept_invite(self, member_id):
         """ the member with member_id accepted the invitation, take action
 
         Args:

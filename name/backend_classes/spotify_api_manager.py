@@ -121,6 +121,21 @@ class SpotifyAPIManager:
         returns: a SongDetails object
         """
         features = self.spotify.audio_features(tracks=[id])[0]
+        if features == None:
+            return SongDetails(details={"duration_ms": 0,
+                                         "key": 0,
+                                         "tempo": 0,
+                                         "danceability": 0,
+                                         "energy": 0,
+                                         "loudness": 0,
+                                         "mode": 0,
+                                         "speechiness": 0,
+                                         "acousticness": 0,
+                                         "instrumentalness": 0,
+                                         "liveness": 0,
+                                         "valence": 0,
+                                         "time_signature": 0})
+
         song_details = SongDetails(features)
         return song_details
 
