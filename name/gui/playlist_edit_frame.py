@@ -11,10 +11,10 @@ from .home_page_frame import HomePageFrame
 
 
 class PlaylistEditFrame(HomePageFrame):
-    """ TODO: fill in
+    """ Helps the user edit a playlist
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherits main home page
     """
 
     def grid_unmap(self):
@@ -28,9 +28,9 @@ class PlaylistEditFrame(HomePageFrame):
         self.create_playlist_button.grid_remove()
         self.compare_songs_button.grid_remove()
         self.get_song_info_button.grid_remove()
-        self.filters_dropdown.grid_remove()
 
         self.done_button.grid()
+        self.filters_dropdown.grid()
         self.display_data(self.parent.song_object_list)
 
     def init_lower_grid(self):
@@ -61,13 +61,6 @@ class PlaylistEditFrame(HomePageFrame):
         self.filters_dropdown.grid_remove()
         # self.song_search_entry.grid_remove()
         # self.song_search_button.grid_remove()
-
-    def delete_command(self):
-        """command for the delete button
-        """
-
-        # TODO: add logic to delete the selected song from the playlist being edited
-        return 1
 
     def done_command(self):
         """command for the done button

@@ -64,10 +64,9 @@ class Name(tk.Tk):
 
         #instantiate group frames
         self.frames[12] = gui.EditGroupFrame(self, container, self.user)
-        self.frames[13] = gui.GroupStatsFrame(self, container, self.user)
-        self.frames[14] = gui.EditGroupPlaylistFrame(self, container, self.user)
-        self.frames[15] = gui.GroupHomeFrame(self, container, self.user)
-        self.frames[16] = gui.SongInfoMemberFrame(self, container, self.user)
+        self.frames[13] = gui.EditGroupPlaylistFrame(self, container, self.user)
+        self.frames[14] = gui.GroupHomeFrame(self, container, self.user)
+        self.frames[15] = gui.SongInfoMemberFrame(self, container, self.user)
 
         for i in self.frames:
             self.frames[i].grid_unmap()
@@ -137,14 +136,12 @@ class Name(tk.Tk):
             return 11
         elif name == "Edit Group":
             return 12
-        elif name == "Group Stats":
-            return 13
         elif name == "Edit Group Playlist":
-            return 14
+            return 13
         elif name == "Group Home":
-            return 15
+            return 14
         elif name == "Song Info Member":
-            return 16
+            return 15
         else:
             print("ERROR NO SUCH FRAME")
             exit()

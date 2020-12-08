@@ -160,7 +160,6 @@ class HomePageFrame(NameFrame):
             text="Song Title")
         self.song_search_entry.grid(row=2, column=1)
 
-        # TODO: connect with backend song search function
         self.song_search_button = tk.Button(
             self.upper_grid,
             command=self.song_search_command,
@@ -201,8 +200,7 @@ class HomePageFrame(NameFrame):
 
     def filter_command(self):
         """ Filters available for the user to search with
-            TODO: link the users choice of filter with the search function for now just return
-                  anything
+            link the users choice of filter with the search function
         """
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         self.query_object.update_filter_list(self.formatted_filters)

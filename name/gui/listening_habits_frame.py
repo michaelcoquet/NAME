@@ -13,10 +13,10 @@ from .member_home_frame import MemberHomeFrame
 
 
 class ListeningHabitsFrame(MemberHomeFrame):
-    """ TODO: fill in
+    """ Frame to display a spotify accounts listening habits
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherits member home page
     """
 
     def grid_unmap(self):

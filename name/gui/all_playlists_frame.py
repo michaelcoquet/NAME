@@ -16,10 +16,10 @@ from name.backend_classes.playlist import Playlist
 
 
 class AllPlaylistsFrame(MemberHomeFrame):
-    """ TODO: fill in
+    """ This is a member frame to display all the users playlists saved to their spotify
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherited from the main home frame
     """
 
     def __init__(self, parent, container, user):
@@ -145,7 +145,7 @@ class AllPlaylistsFrame(MemberHomeFrame):
     def song_sim_command(self):
         """command for the get playlist song similarity button
         """
-        # TODO: BACKEND - Get the similarity of the songs in the selected playlist
+        # BACKEND - Get the similarity of the songs in the selected playlist
 
         # get the current working list of songs to be searched and pass it to the backend
         self.formatted_filters = self.convert_filters_list(self.selected_filters)

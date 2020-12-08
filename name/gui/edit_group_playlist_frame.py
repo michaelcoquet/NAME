@@ -12,10 +12,10 @@ from .home_page_frame import HomePageFrame
 
 
 class EditGroupPlaylistFrame(HomePageFrame):
-    """ TODO: fill in
+    """ Used for a member to edit a group playlist
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherited from the main home page
     """
 
     def grid_unmap(self):

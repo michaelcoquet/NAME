@@ -13,10 +13,10 @@ from name.backend_classes.group import Group
 
 
 class EditGroupFrame(GroupHomeFrame):
-    """ TODO: fill in
-
+    """ This frame is used for the owner of a group to edit the group members and name of the
+        group
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherited from the main group home page
     """
 
     def grid_unmap(self):

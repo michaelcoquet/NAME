@@ -265,9 +265,6 @@ class NameFrame(tk.Frame):
         # open the popup window on the cursor
         self.popup.geometry('+%d+%d' % (x, y))
 
-        # bind the up/down keys to scroll the list of songs
-        self.parent.bind("<Up>", self.scroll_song_select_up)
-        self.parent.bind("<Down>", self.scroll_song_select_down)
 
     def open_search_progress(self, future):
         """open a new window that updates the user on the progress of similarity playlist

@@ -15,10 +15,10 @@ from .name_frame import NameFrame
 
 
 class GroupHomeFrame(NameFrame):
-    """ TODO: fill in
+    """ The main group home page frame that other frames inherit from
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherits the template frame
     """
     def __init__(self, parent, container, user):
         super().__init__(parent, container, user)
@@ -146,7 +146,7 @@ class GroupHomeFrame(NameFrame):
 
     def init_upper_grid(self):
         super().init_upper_grid()
-                # TODO: add the proper filters to the dropdown list
+
         container_0 = tk.Frame(self.upper_grid)
         container_0.grid(row=1, column=1)
 
