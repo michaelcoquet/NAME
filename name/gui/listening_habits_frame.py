@@ -27,6 +27,7 @@ class ListeningHabitsFrame(MemberHomeFrame):
 
     def grid_remember(self):
         super().grid_remember()
+        self.edit_button.grid_remove()
         self.save_spotify_button.grid_remove()
 
     def init_lower_grid(self):
