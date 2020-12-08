@@ -19,8 +19,8 @@ class User:
     A class to represent a user of the app
     """
     def __init__(self):
-        """
-        song: A song object containing the data of the song from Spotify
+        """ song: A song object containing the data of the song from
+            Spotify
         """
 
         #instantiate the spotify api manager
@@ -40,9 +40,7 @@ class User:
         self.active_group = None
 
     def __str__(self):
-        """
-        A string representation of the object
-        """
+        """ A string representation of the object """
 
     # def __repr__(self):
 
@@ -51,8 +49,8 @@ class User:
 
 
     def create_group(self, group):
-        """ creates a new group to add to the users entry in the database, the current user is
-            the owner
+        """ creates a new group to add to the users entry in the
+            database, the current user is the owner
         """
         self.groups.append(group)
         if self.persistent_storage.create_new_group(group.group_name,
@@ -62,13 +60,14 @@ class User:
             return True
 
     def get_account_id(self):
-        """ return the users spotify id if theyre a member
-        """
+        """ return the users spotify id if theyre a member """
+        
         if self.has_account:
             return self.spotify_id
 
     def is_member(self):
-        """ returns true if the user doesn't have a spotify account linked, false if they do
+        """ returns true if the user doesn't have a spotify account
+            linked, false if they do
         """
         return self.has_account
 
@@ -95,7 +94,8 @@ class User:
             # must instantiate the db here now that we have a spotify id
             self.persistent_storage = PersistentStorage(self.spotify_id)
 
-            # search the database for this user, if entry exists deserialize its entry into this
+            # search the database for this user, if entry exists
+            #  deserialize its entry into this
             # object if entry doesnt exist then create a new one
             if self.persistent_storage.check_if_user_exists():
                 # deserialize here
@@ -134,13 +134,13 @@ class User:
         return self.playlists
 
     def find_group_invites(self):
-        """ search for groups that I am a member of but dont yet show up in this objects group
-            list, indicating an unaccepted group invite
+        """ search for groups that I am a member of but dont yet
+            show up in this objects group list, indicating an unaccepted
+            group invite
         """
 
     def logout(self):
-        """ log out the current user
-        """
+        """ log out the current user """
         if self.has_account:
             self.has_account = False
             self.spotify_manager = None
