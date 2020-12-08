@@ -16,8 +16,8 @@ from name.backend_classes.playlist import Playlist
 
 
 class AllPlaylistsFrame(MemberHomeFrame):
-    """ This is a member frame to display all the users playlists saved to their
-        spotify
+    """ This is a member frame to display all the users playlists saved
+        to their spotify
 
     Args:
         tk (Frame): inherited from the main home frame
@@ -157,8 +157,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
         self.list_from_list_button.configure(state="normal")
 
     def display_data(self, api_results):
-        """ take the playlist data (list of playlist objects) in and display it
-            in the treeview
+        """ take the playlist data (list of playlist objects) in and
+            display it in the treeview
         """
         for playlist in api_results:
             if isinstance(playlist, Playlist):

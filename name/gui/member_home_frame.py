@@ -11,7 +11,8 @@ from .home_page_frame import HomePageFrame
 
 
 class MemberHomeFrame(HomePageFrame):
-    """ Main member home page frame that other corresponding member frames inherit
+    """ Main member home page frame that other corresponding member
+        frames inherit
 
     Args:
         tk (Frame): Inherits the main home page

@@ -6,9 +6,8 @@
              Sean Warren
 """
 class Song:
-    """
-    A class for Song that stores the collected data
-    from Spotify.
+    """ A class for Song that stores the collected data
+        from Spotify.
     """
     def __init__(self, song, song_details):
         """
@@ -21,9 +20,7 @@ class Song:
         self.audio_features = song_details
 
     def __str__(self):
-        """
-        A string representation of the object
-        """
+        """ A string representation of the object """
         return ("Name: {} \n"
                 "Artist: {} \n"
                 "--Details--{}").format(self.song_name,
@@ -46,9 +43,8 @@ class Song:
 
 
 class Artist:
-    """
-    A class that stores the data of each artist of the song
-    """
+    """ A class that stores the data of each artist of the song """
+    
     def __init__(self, artist):
         """
         artist: An artist object from spotify
@@ -68,8 +64,7 @@ class Artist:
 
 
 class Album:
-    """
-    A class that stores the data of an album collected from Spotify
+    """ A class that stores the data of an album collected from Spotify
     """
     def __init__(self, album):
         """
@@ -103,12 +98,10 @@ class Album:
 
 
 class SongDetails:
-    """
-    Class for storing the audio features of the song
-    """
+    """ Class for storing the audio features of the song """
     def __init__(self, details):
-        """
-        details: an object containing the audio features of the song
+        """ details: an object containing the audio features of the
+            song
         """
         self.duration = details['duration_ms']
         self.key = details['key']

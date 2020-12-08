@@ -21,7 +21,7 @@ class SpotifyAPIManager:
 
     def __init__(self):
         """ Instantiation function. Sets up all required attributes
-        for the authorization code flow.
+            for the authorization code flow.
         """
         self.client_id = "0e48c2ec84d3401e9262a2159a277d82"
         self.client_secret = "aa650130a5b544598f4b058bfd264b21"
@@ -36,7 +36,7 @@ class SpotifyAPIManager:
 
     def link_spotify_account(self):
         """ Attempts to log in to Spotify.
-        Returns: True if successful, False otherwise.
+            Returns: True if successful, False otherwise.
         """
         try:
             # reset the auth manager for Authorization
@@ -97,9 +97,9 @@ class SpotifyAPIManager:
 
     def get_album(self, id):
         """ Given an album id, search for album info
-        and return an Album object.
-        id: string value of the album id
-        returns: an album object.
+            and return an Album object.
+            id: string value of the album id
+            returns: an album object.
         """
         album_data = self.spotify.album(id)
         album = Album(album_data)
@@ -107,9 +107,9 @@ class SpotifyAPIManager:
 
     def get_artist(self, id):
         """ Given an artist id, search for artist info
-        and return an Artist object.
-        id: string value of the artist id
-        returns: an artist object.
+            and return an Artist object.
+            id: string value of the artist id
+            returns: an artist object.
         """
         artist_data = self.spotify.artist(id)
         artist = Artist(artist_data)
@@ -117,8 +117,8 @@ class SpotifyAPIManager:
 
     def get_audio_features(self, id):
         """ Gets audio features for the given song id
-        id: a song id (string)
-        returns: a SongDetails object
+            id: a song id (string)
+            returns: a SongDetails object
         """
         features = self.spotify.audio_features(tracks=[id])[0]
         if features == None:
@@ -141,8 +141,8 @@ class SpotifyAPIManager:
 
     def create_playlist_object(self, playlist_data):
         """ Given the json object Spotify returns as a playlist,
-        convert it to one of our Playlist objects.
-        playlist_data: a json formatted spotify playlist
+            convert it to one of our Playlist objects.
+            playlist_data: a json formatted spotify playlist
         """
         songs = self.spotify.playlist_items(playlist_data["id"])["items"]
         songs_list = []
@@ -156,7 +156,7 @@ class SpotifyAPIManager:
 
     def get_member_playlists(self):
         """ Gets a list of all playlists for the current user.
-        returns: a list of playlist objects
+            returns: a list of playlist objects
         """
         # make sure the auth token is valid and refresh if needed
         self.refresh_auth_token()
@@ -171,11 +171,11 @@ class SpotifyAPIManager:
         return playlist_list
 
     def add_member_playlist(self, playlist):
-        """" Saves the given playlist object to the
-        the playlist owner's Spotify account.
-        playlist: a playlist object
-        returns: A copy of the new playlist object that was created
-        (for verification purposes)
+        """ Saves the given playlist object to the
+            the playlist owner's Spotify account.
+            playlist: a playlist object
+            returns: A copy of the new playlist object that was created
+            (for verification purposes)
         """
         # Make sure the access token is valid and refresh if needed
         self.refresh_auth_token()
@@ -194,8 +194,8 @@ class SpotifyAPIManager:
 
     def get_recently_played_songs(self, limit):
         """ Gets a list of the current member's last played tracks
-        limit: the total number of tracks to return
-        returns: a list of up to the limit of song objects
+            limit: the total number of tracks to return
+            returns: a list of up to the limit of song objects
         """
         # Make sure the access token is valid and refresh if needed
         self.refresh_auth_token()
@@ -213,8 +213,8 @@ class SpotifyAPIManager:
 
     def get_top_songs(self):
         """ Gets a list of the current member's top tracks.
-        The maximum number that can be returned is 20.
-        returns: at most a list of 20 song objects
+            The maximum number that can be returned is 20.
+            returns: at most a list of 20 song objects
         """
         # Make sure the access token is valid and refresh if needed
         self.refresh_auth_token()
@@ -232,8 +232,8 @@ class SpotifyAPIManager:
 
     def get_top_artists(self):
         """ Gets a list of the current member's top artists.
-        The maximum number that can be returned is 20.
-        returns: at most a list of 20 artist objects.
+            The maximum number that can be returned is 20.
+            returns: at most a list of 20 artist objects.
         """
         # Make sure the access token is valid and refresh if needed
         self.refresh_auth_token()
@@ -250,9 +250,9 @@ class SpotifyAPIManager:
 
     def get_song_genres(self, song):
         """ Given a song object, find all the genres
-        associated with the song.
-        song: a song object
-        returns: a list of genres (strings)
+            associated with the song.
+            song: a song object
+            returns: a list of genres (strings)
         """
         # to get genres, we need to look at the artist info
         artists = song.song_artist
@@ -265,7 +265,7 @@ class SpotifyAPIManager:
 
     def refresh_auth_token(self):
         """ Checks to see if the member's auth token is
-        expired or not. If it is expired, creates a new auth token.
+            expired or not. If it is expired, creates a new auth token.
         """
         token = self.auth_manager.get_cached_token()
         expired = self.auth_manager.is_token_expired(token)

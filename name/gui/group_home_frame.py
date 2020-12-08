@@ -16,6 +16,7 @@ from .name_frame import NameFrame
 
 class GroupHomeFrame(NameFrame):
     """ The main group home page frame that other frames inherit from
+        NameFrame
 
     Args:
         tk (Frame): Inherits the template frame
@@ -45,7 +46,8 @@ class GroupHomeFrame(NameFrame):
         """display the given song list in the latest playlist treeview
 
         Args:
-            song_list (list): list of songs that will appear in the treeview
+            song_list (list): list of songs that will appear in the
+                              treeview
         """
         # clear the treeview first to avoid ghosting
         self.plist_song_treeview.delete(*self.plist_song_treeview.get_children())
@@ -106,10 +108,11 @@ class GroupHomeFrame(NameFrame):
         self.edit_group_button.grid(row=1, column=0)
 
     def refresh_playlist_menu(self, playlists):
-        """[summary]
+        """ a function which refreshes the playlist menu
 
         Args:
-            playlists (Playlist[]): refreshes the menuoptions with a the new playlist list
+            playlists (Playlist[]): refreshes the menuoptions with a
+            the new playlist list
         """
         menu = self.playlist_dropdown["menu"]
         menu.delete(0, "end")

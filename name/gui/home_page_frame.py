@@ -18,7 +18,8 @@ from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
 
 class HomePageFrame(NameFrame):
-    """ Could possibly be a splash screen but for now this is the home page screen
+    """ Could possibly be a splash screen but for now this is the home
+        page screen
 
     Args:
         tk (Frame): parent frame (root in this case)
@@ -211,7 +212,8 @@ class HomePageFrame(NameFrame):
         """display the given song list in the latest playlist treeview
 
         Args:
-            song_list (list): list of songs that will appear in the treeview
+            song_list (list): list of songs that will appear in the
+                              treeview
         """
         # clear the treeview first to avoid ghosting
         self.song_treeview.delete(*self.song_treeview.get_children())
@@ -260,8 +262,8 @@ class HomePageFrame(NameFrame):
         self.start_single_search(self.song_search_entry.get())
 
     def create_playlist_command(self):
-        """command for the create playlist button, just brings us back to the
-           home page
+        """command for the create playlist button, just brings us back
+            to the home page
         """
         self.switch_frame("Home Page")
 
@@ -295,8 +297,8 @@ Feel free to close this
         self.grab_release()
 
     def threaded_similar_songs(self):
-        """command for the find similar songs button
-        """
+        """command for the find similar songs button """
+        
         # disable the button while this is running
         self.similar_songs_button.configure(state="disabled")
         # get the current working list of songs to be searched and pass it to
@@ -334,15 +336,15 @@ Feel free to close this
         self.grab_release()
 
     def convert_filters_list(self, tk_filters):
-        """ convert the original dict of filters into something the backend
-            can use
+        """ convert the original dict of filters into something the
+            backend can use
 
         Args:
             tk_filters (dict): the dictionary of selected filters
 
         return:
-            formated_filters (list): list of the string names of the selected
-            filters
+            formated_filters (list): list of the string names of
+                                     the selected filters
         """
         formated_filters = []
 
@@ -398,8 +400,8 @@ Feel free to close this
         self.close_single_search_window()
 
     def remove_command(self):
-        """ command for the remove song button, can potentially have multiple
-            songs selected
+        """ command for the remove song button, can potentially have
+            multiple songs selected
         """
         selected_items = self.song_treeview.selection()
         for item in selected_items:

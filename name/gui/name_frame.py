@@ -103,13 +103,12 @@ class NameFrame(tk.Frame):
         self.parent.config(menu=member_menu)
 
     def create_group(self):
-        """ Menu option to create a new group
-        """
+        """ Menu option to create a new group """
         self.switch_frame("Edit Group")
 
     def init_upper_grid(self):
-        """ Initialize the top grid
-        """
+        """ Initialize the top grid """
+        
         self.upper_grid = tk.Frame(self.container)
         self.upper_grid.grid(row=0, column=0, sticky="nw")
 
@@ -120,16 +119,15 @@ class NameFrame(tk.Frame):
         self.app_title_button.grid(row=0, column=1)
 
     def init_lower_grid(self):
-        """ Initialize the lower grid
-        """
+        """ Initialize the lower grid """
+        
         self.lower_grid = tk.Frame(self.container)
         Grid.columnconfigure(self.lower_grid, 1, weight=1)
 
         self.lower_grid.grid(row=2, column=0, sticky="ew")
 
     def init_middle_grid(self):
-        """ Initialize the middle grid
-        """
+        """ Initialize the middle grid """
         self.middle_grid = tk.Frame(self.container)
         Grid.columnconfigure(self.middle_grid, 0, weight=1)
         Grid.rowconfigure(self.middle_grid, 0, weight=1)
@@ -151,10 +149,10 @@ class NameFrame(tk.Frame):
         self.switch_frame("Home Page")
 
     def login(self):
-        """ Button command to link to a spotify account and if succesfully
-            linked switch to the member frame (frame_id = 2). Puts it in a
-            thread so if they cancel the process online, our whole app
-            doesn't freeze.
+        """ Button command to link to a spotify account and if
+            succesfull linked switch to the member frame 
+            (frame_id = 2). Puts it in a thread so if they cancel the
+            process online, our whole app doesn't freeze.
         """
         login = threading.Thread(target=self.login_thread, daemon=True)
         login.start()
@@ -235,8 +233,8 @@ class NameFrame(tk.Frame):
         self.grab_release()
 
     def open_song_search_popup(self, api_results):
-        """ open a popup for the user to select the song they actually wanted to
-            add to the list
+        """ open a popup for the user to select the song they actually
+            wanted to add to the list
         """
         self.grab_set()
         self.popup = tk.Toplevel(self)
