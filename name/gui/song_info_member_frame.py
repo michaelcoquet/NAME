@@ -143,4 +143,3 @@ class SongInfoMemberFrame(MemberHomeFrame):
                 self.display_details(song_search)
 
                 break
-

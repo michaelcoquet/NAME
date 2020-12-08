@@ -75,3 +75,4 @@ class SongInfoSearchFrame(HomePageFrame):
 
         # delete last item in the song_object_list so it doesnt carry over to other pages
         del self.parent.song_object_list[-1]
+

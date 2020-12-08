@@ -11,6 +11,8 @@ from tkinter import StringVar
 from time import sleep
 import threading
 
+
+from name.backend_classes import Query
 from .name_frame import NameFrame
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
@@ -235,8 +237,10 @@ class HomePageFrame(NameFrame):
         """ Filters available for the user to search with
             link the users choice of filter with the search function
         """
+        l = []
+        query_object = Query(l)
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
-        self.query_object.update_filter_list(self.formatted_filters)
+        query_object.update_filter_list(self.formatted_filters)
 
     def compare_songs_command(self):
         """ command when compare songs btn is pushed
