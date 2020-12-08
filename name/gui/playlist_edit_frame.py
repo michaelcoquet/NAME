@@ -65,12 +65,9 @@ class PlaylistEditFrame(HomePageFrame):
     def done_command(self):
         """command for the done button
         """
-        # TODO: save changes back tot he listbox on member home frame
         self.parent.switch_to_previous_frame()
 
     def sim_search_command(self):
         """command for the done button
         """
-        # TODO: save changes back tot he listbox on member home frame
-
         self.similar_songs_command()

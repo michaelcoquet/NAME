@@ -13,10 +13,10 @@ from name.backend_classes.persistent_storage import PersistentStorage
 
 
 class SavePlaylistFrame(MemberHomeFrame):
-    """ TODO: fill in
+    """ Help a user save a playlist to eithe rtheir group or their spotify account
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherits Member home page
     """
 
     def grid_unmap(self):

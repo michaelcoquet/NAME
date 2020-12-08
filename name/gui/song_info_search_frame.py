@@ -11,10 +11,11 @@ from .home_page_frame import HomePageFrame
 
 
 class SongInfoSearchFrame(HomePageFrame):
-    """ TODO: fill in
+    """ This will search for an individual song no lists of songs then pass that to the next
+        frame to be displayed
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherits the main home page frame
     """
 
     def grid_remember(self):
@@ -26,7 +27,7 @@ class SongInfoSearchFrame(HomePageFrame):
         self.filters_dropdown.grid_remove()
 
     def init_upper_grid(self):
-        """TODO: fill in
+        """ inits upper grid
         """
         super().init_upper_grid()
         self.get_song_info_button["state"] = tk.DISABLED
@@ -39,13 +40,13 @@ class SongInfoSearchFrame(HomePageFrame):
         self.filters_dropdown.grid_remove()
 
     def init_middle_grid(self):
-        """TODO: fill in
+        """ inits middle grid
         """
         super().init_middle_grid()
         self.song_treeview.grid_remove()
 
     def init_lower_grid(self):
-        """TODO: fill in
+        """ inits lower grid
         """
         super().init_lower_grid()
         self.remove_all_button.grid_remove()
@@ -55,13 +56,10 @@ class SongInfoSearchFrame(HomePageFrame):
     def song_search_command(self):
         """ command for song search button
         """
-        # TODO: BACKEND - Do a search for the info (artist, album, year, etc.) for the song
+        # Do a search for the info (artist, album, year, etc.) for the song
         #            given in the text song_search_entry widget
 
-        # hide this button for the next frame since its not used
         self.start_single_search(self.song_search_entry.get())
-
-        # TODO: GUI - Update the song_info_scrolledtext in the song_info_frame
 
     def song_select_dropdown_command(self, item):
         """ override inherited function
