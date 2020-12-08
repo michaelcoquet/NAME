@@ -11,7 +11,8 @@ from .song_info_frame import SongInfoFrame
 
 
 class SongStatsFrame(SongInfoFrame):
-    """ Displays song stats, differnt from song info since this will show comparison of songs
+    """ Displays song stats, differnt from song info since this
+        will show comparison of songs
 
     Args:
         tk (Frame): inherits song info frame

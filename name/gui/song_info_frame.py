@@ -13,7 +13,8 @@ from name.backend_classes.lyrics import Lyrics
 
 
 class SongInfoFrame(HomePageFrame):
-    """ Display the info for a song including lyrics and all song features
+    """ Display the info for a song including lyrics and all song
+        features
 
     Args:
         tk (Frame): Inherits main home page frame
@@ -62,8 +63,8 @@ class SongInfoFrame(HomePageFrame):
         self.start_over_button.grid(row=0, column=0)
 
     def display_details(self, songs):
-        """gets the details of a song from another frame and displays it in the scrolledText
-           widget
+        """gets the details of a song from another frame and displays
+            it in the scrolledText widget
 
         Args:
             song (song):
@@ -109,18 +110,22 @@ class SongInfoFrame(HomePageFrame):
         self.switch_frame("Song Info Search")
 
     def song_select_dropdown_command(self, item):
-        """ overrides parent song select dropdown command, dont super it though
+        """ overrides parent song select dropdown command,
+            dont super it though
         """
         super()
         # make sure the user has actually made a selection
         if self.song_selection.get() != self.song_selection_default:
-            # get the item that is currently selected in the OptionMenu dropdown
+            # get the item that is currently selected in the OptionMenu
+            #  dropdown
             item = self.song_selection.get()
         artists_string_list = []
 
-        # search the original list of song objects returned from the API for the item
+        # search the original list of song objects returned from
+        #  the API for the item
         for song_search in self.api_search_results:
-            # build string for comparison to find object probably a better way to do this
+            # build string for comparison to find object probably a better
+            #  way to do this
             for artist in song_search.song_artist:
                 artists_string_list.append(artist.name)
             artists_string = ", ".join(artists_string_list)
