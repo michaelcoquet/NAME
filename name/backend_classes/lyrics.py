@@ -10,15 +10,14 @@ from . import Genius_Api_Manager
 
 class Lyrics(object):
     """A class which obtains a song's lyrics and can return
-    all necessary information.
+        all necessary information.
     """
     def __init__(self, song_name, song_artist):
-        """Initializes the lyrics objects by getting information
-        from the lyrics api manager
-        song_name: name of the song
-        song_artist: artist associated with the song
+        """ Initializes the lyrics objects by getting information
+            from the lyrics api manager
+            song_name: name of the song
+            song_artist: artist associated with the song
         """
-
         # Call the genius_api_manager and get lyrics
         lyrics_object = Genius_Api_Manager(song_name, song_artist)
 
@@ -45,7 +44,7 @@ class Lyrics(object):
 
     def get_num_words(self):
         """Calculates the number of words in the song's lyrics and
-        ignores any irrelevant headers
+            ignores any irrelevant headers
         """
         number_words = 0
 
@@ -86,19 +85,7 @@ class Lyrics(object):
 
     def __analyze_lyrics(self):
         """Analyze the song, I did all the analyzing in the
-        respective get functions instead of here by accident,
-        will refactor later
+            respective get functions instead of here by accident,
+            will refactor later
         """
         return 0
-
-
-# Basic tests, will be formalized into pytest unit tests later
-
-
-
-#test = Lyrics("It's a beautiful day", "Queen")
-#print(test.get_lyrics())
-#print("\n")
-#print("Number of choruses: ", test.get_num_chorus())
-#print("Number of verses: ", test.get_num_verse())
-#print("Number of words: ", test.get_num_words())

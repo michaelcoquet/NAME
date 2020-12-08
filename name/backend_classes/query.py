@@ -15,22 +15,22 @@ class Query:
 
     def __init__(self, filter_list):
         """ Instantiation function.
-        filter_list: A list of filter names to search for
+            filter_list: A list of filter names to search for
         """
         self.filter_list = filter_list
 
     def update_filter_list(self, filter_list):
         """ Updates the filter list.
-        filter_list: updated filter list
+            filter_list: updated filter list
         """
         self.filter_list = filter_list
 
     def search_single_song(self, song, offset=0):
         """ Searches for a single song.
-        song: name or formatted query to search for.
-        offset: offest of the song results to return. Default is
-        0, which returns the first page of results.
-        returns: a list of song objects(from the Song class)
+            song: name or formatted query to search for.
+            offset: offest of the song results to return. Default is
+            0, which returns the first page of results.
+            returns: a list of song objects(from the Song class)
         """
         spotify_api_manager = SpotifyAPIManager()
         search_result = spotify_api_manager.search_songs(song_list=[song], offset=offset)
@@ -38,9 +38,9 @@ class Query:
 
     def get_song_info(self, song):
         """ Get song details for only the specified filters
-        in the filter list.
-        song = song object
-        return: dictionary of song details for the filters
+            in the filter list.
+            song = song object
+            return: dictionary of song details for the filters
         """
         song_details = song.audio_features
         filter_mappings = {
@@ -67,9 +67,9 @@ class Query:
 
     def get_similarity_score(self, songs):
         """ Gets a similarity score for the given songs.
-        Only considers features from the filter list.
-        songs: a list of song objects
-        returns: a similarity score value (float)
+            Only considers features from the filter list.
+            songs: a list of song objects
+            returns: a similarity score value (float)
         """
         song_similarity_calculator = SongSimilarity(songs, self.filter_list)
         result = song_similarity_calculator.compare_all()
@@ -77,9 +77,9 @@ class Query:
 
     def get_top_genres(self, songs, limit):
         """ Gets a list of the top genres for the given songs.
-        songs: a list of song objects
-        limit: the limit for the number of genres to be returned
-        returns: a list of genres (strings)
+            songs: a list of song objects
+            limit: the limit for the number of genres to be returned
+            returns: a list of genres (strings)
         """
         spotify_api_manager = SpotifyAPIManager()
         genres = {}
