@@ -11,10 +11,10 @@ from .song_info_frame import SongInfoFrame
 
 
 class SongStatsFrame(SongInfoFrame):
-    """ TODO: fill in
+    """ Displays song stats, differnt from song info since this will show comparison of songs
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherits song info frame
     """
 
     def grid_unmap(self):

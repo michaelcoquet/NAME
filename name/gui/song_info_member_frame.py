@@ -13,10 +13,10 @@ from name.backend_classes.lyrics import Lyrics
 
 
 class SongInfoMemberFrame(MemberHomeFrame):
-    """ TODO: fill in
-
+    """ Display a page for song info for a member
+        only needed to display buttons from member home instaed of homepage
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherits member home frame
     """
 
     def grid_unmap(self):
@@ -48,27 +48,18 @@ class SongInfoMemberFrame(MemberHomeFrame):
         self.song_search_button.grid_remove()
 
     def init_middle_grid(self):
-        """TODO: fill in
+        """ init middle grid
         """
         super().init_middle_grid()
-        self.filters_dropdown.grid_remove()
-        self.song_search_entry.grid_remove()
-        self.song_search_button.grid_remove()
-        self.song_treeview.grid_remove()
-
         self.song_info_scrolledtext = st.ScrolledText(self.middle_grid)
         self.song_info_scrolledtext.grid(row=0, column=0, sticky="nsew")
         self.song_lyrics_scrolledtext = st.ScrolledText(self.middle_grid)
         self.song_lyrics_scrolledtext.grid(row=0, column=1, sticky="nsew")
 
     def init_lower_grid(self):
-        """TODO: fill in
+        """ init lower grid
         """
         super().init_lower_grid()
-        self.remove_all_button.grid_remove()
-        self.remove_button.grid_remove()
-        self.similar_songs_button.grid_remove()
-
         self.start_over_button = tk.Button(self.lower_grid, text="Start Over",
             command=self.start_over_command)
 
@@ -148,15 +139,6 @@ class SongInfoMemberFrame(MemberHomeFrame):
                 # add this song to the list of songs
                 self.song_info_scrolledtext.delete("1.0", "end")
                 self.song_lyrics_scrolledtext.delete("1.0", "end")
-                # print("song_object_list:    " + str(self.parent.song_object_list) + "\n\n\n\n")
-                # for song_from_list in self.parent.song_object_list:
-                #     print("song_search" + str(song_search))
-                #     print("song_from_list" + str(song_from_list))
-
-                #     if (
-                #         song_from_list.song_name == song_search.song_name and
-                #         song_from_list.song_artist == song_search.song_artist
-                #     ):
 
                 self.display_details(song_search)
 
