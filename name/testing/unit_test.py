@@ -65,8 +65,7 @@ from name.backend_classes import Group
 #     assert user.isGuest() == False
 
 def test_user_v1():
-    """
-    Test ID: User01, User02 (add more test cases)
+    """ Test ID: User01, User02 (add more test cases)
     Test if the methods are correctly returning the right values
     """
     a_user = User()
@@ -95,9 +94,8 @@ def test_user_v1():
 
 
 def test_group_v1():
-    """
-    Test ID:Group01, Group02, Group05, Group12, Group13. 
-    Check if the methods are returning the correct data
+    """ Test ID:Group01, Group02, Group05, Group12, Group13. 
+        Check if the methods are returning the correct data
     """
     test_group = ["group1", 'owner1', ["user1", "user2"], [6, 8]]
     
@@ -155,8 +153,8 @@ def test_group_v1():
 # Tests for the SpotifyAPIManager class
 def test_linkSpotifyAccount():
     """ Test ID: Spotify14. Tests that the method returns
-    True when valid credentials are provided, False if authorization
-    is cancelled.
+        True when valid credentials are provided, False if authorization
+        is cancelled.
     """
     spotify_api_manager = SpotifyAPIManager()
     print("Enter these valid credentials into the popup window:")
@@ -168,7 +166,7 @@ def test_linkSpotifyAccount():
 
 def test_get_user_id_v1():
     """ Test ID: Spotify08. Tests that the method returns
-    None when the user is not logged in to Spotify.
+        None when the user is not logged in to Spotify.
     """
     spotify_api_manager = SpotifyAPIManager()
     result = spotify_api_manager.get_user_id()
@@ -177,7 +175,7 @@ def test_get_user_id_v1():
 
 def test_get_user_id_v2():
     """ Test ID: Spotify07. Should return the current member
-    ID when logged in to Spotify.
+        ID when logged in to Spotify.
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -192,12 +190,13 @@ def test_get_user_id_v2():
 
 def test_search_songs_v1():
     """ Test ID: Spotify15. Tests that the method returns
-    a dictonary with an empty list when Spotify found no results.
-    This function contains multiple subtests:
-    Test when the list of songs has one element, the user type is guest
-    Test when the list has multiple elements, user type is guest
-    Test when the list has one element, user type is member
-    Test when the list has multiple elements, user type is member
+        a dictonary with an empty list when Spotify found no results.
+        This function contains multiple subtests:
+        Test when the list of songs has one element, the user type is
+        guest
+        Test when the list has multiple elements, user type is guest
+        Test when the list has one element, user type is member
+        Test when the list has multiple elements, user type is member
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -229,12 +228,13 @@ def test_search_songs_v1():
 
 def test_search_songs_v2():
     """ Test ID: Spotify16. Tests that the method returns
-    a non-empty dictionary when results are expected.
-    This function contains multiple subtests:
-    Test when the list of songs has one element, the user type is guest
-    Test when the list has multiple elements, user type is guest
-    Test when the list has one element, user type is member
-    Test when the list has multiple elements, user type is member
+        a non-empty dictionary when results are expected.
+        This function contains multiple subtests:
+        Test when the list of songs has one element, the user type is
+        guest
+        Test when the list has multiple elements, user type is guest
+        Test when the list has one element, user type is member
+        Test when the list has multiple elements, user type is member
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -266,8 +266,9 @@ def test_search_songs_v2():
 
 def test_get_album_v1():
     """ Test ID: Spotify05. Tests that the method returns
-    the correct album object when given a valid artist id.
-    Ensure this works both before and after an account has been linked
+        the correct album object when given a valid artist id.
+        Ensure this works both before and after an account has been
+        linked
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -290,8 +291,8 @@ def test_get_album_v1():
 
 def test_get_artist_v1():
     """ Test ID: Spotify03. Tests that the method returns
-    the correct artist object when given a valid artist id.
-    Ensure this works both when the account is linked or not.
+        the correct artist object when given a valid artist id.
+        Ensure this works both when the account is linked or not.
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -313,8 +314,10 @@ def test_get_artist_v1():
 
 def test_get_member_playlists():
     """ Test ID: Spotify11. Tests that the user's spotify
-    playlists are correctly returned as a list of playlist objects.
-    This also indirectly tests the helper function, create_playlist_object.
+        playlists are correctly returned as a list of playlist
+        objects.
+        This also indirectly tests the helper function,
+        create_playlist_object.
     """
     # wait two seconds before running this test so that the API
     # doesn't reject the connection
@@ -348,7 +351,8 @@ def test_get_member_playlists():
 
 def test_get_recently_played_songs():
     """ Test ID: Spotify18. Tests that recently
-    played songs can be returned properly as a list of song objects.
+        played songs can be returned properly as a list of song
+        objects.
     """
     # wait two seconds to avoid a timeout from the API
     time.sleep(2)
@@ -361,7 +365,7 @@ def test_get_recently_played_songs():
 
 def test_get_top_songs():
     """ Test ID: Spotify19. Tests that the users top songs
-    can be returned properly as a list of song objects.
+        can be returned properly as a list of song objects.
     """
     # wait two seconds to avoid a timeout from the API
     time.sleep(2)
@@ -374,9 +378,9 @@ def test_get_top_songs():
 
 def test_refresh_auth_token():
     """ Test ID: Spotify20. Tests that an auth token is
-    properly collected from the cache and refreshed.
-    Note that manual testing had to be done, since the tokens
-    take an hour to expire.
+        properly collected from the cache and refreshed.
+        Note that manual testing had to be done, since the tokens
+        take an hour to expire.
     """
     # wait two seconds to avoid a timeout from the API
     time.sleep(2)
@@ -391,7 +395,7 @@ def test_refresh_auth_token():
 
 def test_get_top_artists():
     """ Test ID: Spotify21. Tests that the users top artists
-    can be returned properly as a list of artist objects.
+        can be returned properly as a list of artist objects.
     """
     # wait two seconds to avoid a timeout from the API
     time.sleep(2)
@@ -403,8 +407,8 @@ def test_get_top_artists():
 
 def test_get_song_genres():
     """ Test ID: Spotify22. Tests that a list of genres
-    are returned correctly for a given song object. Make sure
-    this works whether or not the user is logged in to spotify.
+        are returned correctly for a given song object. Make sure
+        this works whether or not the user is logged in to spotify.
     """
     # subtest 1: not logged in
     spotify_api_manager = SpotifyAPIManager()
@@ -424,7 +428,8 @@ def test_get_song_genres():
 # Tests for the Query class
 def test_update_filter_list():
     """ Test ID: Query03 - Query07.
-    Tests that filters can be added and removed from the filters list correctly.
+        Tests that filters can be added and removed from the
+        filters list correctly.
     """
     filters = []
     query = Query(filters)
@@ -442,7 +447,7 @@ def test_update_filter_list():
 
 def test_search_single_song_v1():
     """ Test ID: Query08. Tests that the query returns song results
-    when a valid song is entered.
+        when a valid song is entered.
     """
     query = Query(["tempo", "key"])
     song = "Hello"
@@ -451,7 +456,7 @@ def test_search_single_song_v1():
 
 def test_search_single_song_v2():
     """ Test ID: Query09. Tests that the query returns an empty
-    list when Spotify can't find the given song.
+        list when Spotify can't find the given song.
     """
     query = Query(["tempo", "key"])
     song = "hfjdkshfjsue"
@@ -460,7 +465,7 @@ def test_search_single_song_v2():
 
 def test_get_song_info():
     """ Test ID: Query 10. Tests that the query returns song
-    info for the filter list when given a valid song object.
+        info for the filter list when given a valid song object.
     """
     # First subtest: only one filter
     query = Query(["tempo"])
@@ -480,8 +485,8 @@ def test_get_song_info():
 
 def test_get_similarity_score():
     """ Test ID: Query 11. Tests that the method returns
-    a valid similarity score list with
-    values between 0 and 1.
+        a valid similarity score list with
+        values between 0 and 1.
     """
     # First subtest: only two songs, and only one filter
     filters = ["tempo"]
@@ -503,8 +508,8 @@ def test_get_similarity_score():
 
 def test_song_details_v1():
     """ Test ID: SongDetails01 - SongDetails013
-    Check if the class is returning the correct values for each
-    of the audio features.
+        Check if the class is returning the correct values for each
+        of the audio features.
     """
     # Data to be passed in
     audio_features = {"danceability": 0.527,"energy": 0.834,
@@ -534,9 +539,9 @@ def test_song_details_v1():
 
 
 def test_song_details_v2():
-    """
-    A test for checking whether the passed in values are in the right range of the
-    expected values for each audio features
+    """ A test for checking whether the passed in values
+        are in the right range of the
+        expected values for each audio features
     """
     audio_features = {"danceability": 0.527,"energy": 0.834,
                       "key": 1, "loudness": -5.531,
@@ -567,9 +572,9 @@ def test_song_details_v2():
 
 
 def test_song_details_v3():
-    """
-    A test where the given data is not correct. In this case if the given value is a string instead
-    of an int.
+    """ A test where the given data is not correct.
+        In this case if the given value is a string instead
+        f an int.
     """
     audio_features = {"danceability": 0.527,"energy": 0.834,
                       "key": 1, "loudness": -5.531,
@@ -596,8 +601,9 @@ def test_song_details_v3():
 
 
 def test_song_v1():
-    """ Test IDs: Song01, Album01-02, Artist01-02. Should return the correct
-    values for each of the attribute from the given data
+    """ Test IDs: Song01, Album01-02, Artist01-02.
+        Should return the correct
+        values for each of the attribute from the given data
     """
     # Data of the song
     song = {"name": 'Perfect',
@@ -639,9 +645,9 @@ def test_song_v1():
 
 
 def test_playlist_v1():
-    """
-    Test ID: Playlist01-012. Test for the Playlist class, Test each method
-    if it is returning the correct values after the object is instantiated
+    """ Test ID: Playlist01-012. Test for the Playlist class,
+        Test each method if it is returning the correct values
+        after the object is instantiated
     """
     a_playlist = {"name": "My playlist",
                   "owner": {"display_name": "test1",
@@ -721,10 +727,10 @@ def test_playlist_v2():
 
 
 def test_genius_api_manager():
-    """
-    Test ID: Genius01-03. Tests that the Genius API returns the correct
-    lyrics for the requested song. Tests that no lyrics are returned if
-    a song is an instrumental.
+    """ Test ID: Genius01-03. Tests that the Genius API returns
+        the correct lyrics for the requested song.
+        Tests that no lyrics are returned if
+        a song is an instrumental.
     """
     genius = Genius_Api_Manager("40:1", "Sabaton")
     test_lyrics = genius.search_for_lyrics()
@@ -745,11 +751,10 @@ def test_genius_api_manager():
 
 
 def test_lyrics():
-    """
-    Test ID: Lyrics01-08. Tests that the lyrics objects correctly
-    interfaces with the Genius API Manager class and gets the
-    correct lyrics. Tests the getter functions to make sure they
-    return the correct info.
+    """ Test ID: Lyrics01-08. Tests that the lyrics objects correctly
+        interfaces with the Genius API Manager class and gets the
+        correct lyrics. Tests the getter functions to make sure they
+        return the correct info.
     """
 
     # Test to see if the lyrics class is successfully working
