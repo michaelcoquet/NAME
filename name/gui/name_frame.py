@@ -29,20 +29,14 @@ class NameFrame(tk.Frame):
         self.parent = parent
         self.container = container
         self.user = user
+        self.popup = None
 
         self.init_upper_grid()
         self.init_middle_grid()
         self.init_lower_grid()
         self.init_guest_menu()
 
-        # needed for the progress bar in search progress pop up window
-
-        l = []
-        self.query_object = Query(l)
-
         self.api_search_results = []
-
-        self.final_song_selection = []
 
     def grid_unmap(self):
         self.upper_grid.grid_remove()
@@ -60,32 +54,32 @@ class NameFrame(tk.Frame):
         self.middle_grid.grid()
 
     def init_guest_menu(self):
-        """ make the default menu for guest users """
-        
-        self.guest_menu = tk.Menu(self.container)
-        self.guest_menu.add_command(label="Login", command=self.login)
-        self.parent.config(menu=self.guest_menu)
+        """ make the default menu for guest users
+        """
+        guest_menu = tk.Menu(self.container)
+        guest_menu.add_command(label="Login", command=self.login)
+        self.parent.config(menu=guest_menu)
 
     def init_member_menu(self):
         """ make the menu for when a user links their spotify account
         """
-        self.member_menu = tk.Menu(self.container)
+        member_menu = tk.Menu(self.container)
 
-        self.my_account_menu = tk.Menu(self.member_menu, tearoff=0)
-        self.my_account_menu.add_command(
+        my_account_menu = tk.Menu(member_menu, tearoff=0)
+        my_account_menu.add_command(
             label="Member Home",
             command=self.member_home_command
         )
-        self.my_account_menu.add_separator()
+        my_account_menu.add_separator()
 
         # make a submenu for groups
-        self.group_menu = tk.Menu(self.my_account_menu, tearoff=0)
+        self.group_menu = tk.Menu(my_account_menu, tearoff=0)
         self.group_menu.add_command(
             label="Create Group",
             command=self.create_group
         )
         self.group_menu.add_separator()
-        self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
+        my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
 
         for group in self.user.groups:
             self.group_menu.add_command(
@@ -93,20 +87,20 @@ class NameFrame(tk.Frame):
                     command=lambda group=group: self.group_menu_command(group)
                 )
 
-        self.my_account_menu.add_command(
+        my_account_menu.add_command(
             label="Get Shareable ID",
             command=self.get_id_command
         )
-        self.my_account_menu.add_separator()
+        my_account_menu.add_separator()
 
-        self.my_account_menu.add_command(label="Log Out", command=self.log_out)
+        my_account_menu.add_command(label="Log Out", command=self.log_out)
 
-        self.member_menu.add_cascade(
+        member_menu.add_cascade(
             label="My Account",
             underline=0,
-            menu=self.my_account_menu
+            menu=my_account_menu
         )
-        self.parent.config(menu=self.member_menu)
+        self.parent.config(menu=member_menu)
 
     def create_group(self):
         """ Menu option to create a new group """
@@ -209,9 +203,11 @@ class NameFrame(tk.Frame):
             title (str): the desired song title
             filters (dict): the selected filters
         """
+        l = []
+        query_object = Query(l)
         # BACKEND - single song search connection return a list of songs
         # do this in another thread
-        self.api_search_results = self.query_object.search_single_song(title)
+        self.api_search_results = query_object.search_single_song(title)
         if self.api_search_results != []:
             self.open_song_search_popup(self.api_search_results)
         else:
@@ -282,13 +278,6 @@ class NameFrame(tk.Frame):
         y = self.winfo_pointery() - (self.popup.winfo_height()/2)
         # open the popup window on the cursor
         self.popup.geometry('+%d+%d' % (x, y))
-
-    def close_progress_window(self):
-        """override window closing event
-        """
-        self.progress.destroy()
-        self.win.destroy()
-        self.grab_release()
 
     def close_single_search_window(self):
         """ closing window event for the single song search box

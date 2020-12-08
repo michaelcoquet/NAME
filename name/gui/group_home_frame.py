@@ -34,17 +34,6 @@ class GroupHomeFrame(NameFrame):
         self.playlist_dropdown.grid()
         self.new_playlist_button.grid()
         self.edit_group_button.grid()
-        # self.song_treeview.grid()
-
-        # self.remove_all_button.grid_remove()
-        # self.remove_button.grid_remove()
-        # self.create_playlist_button.grid_remove()
-        # self.filters_dropdown.grid_remove()
-        # self.get_song_info_button.grid_remove()
-        # self.song_search_button.grid_remove()
-        # self.similar_songs_button.grid_remove()
-        # self.song_search_entry.grid_remove()
-
 
         self.display_data(self.parent.song_object_list)
 

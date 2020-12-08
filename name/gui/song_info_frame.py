@@ -113,7 +113,6 @@ class SongInfoFrame(HomePageFrame):
         """ overrides parent song select dropdown command,
             dont super it though
         """
-        super()
         # make sure the user has actually made a selection
         if self.song_selection.get() != self.song_selection_default:
             # get the item that is currently selected in the OptionMenu
