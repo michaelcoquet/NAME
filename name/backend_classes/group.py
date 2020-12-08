@@ -1,11 +1,14 @@
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
+"""
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
-    Summary:  is a piece of software to compare songs using the Spotify API. NAME will help the
-              user find other similar songs to the ones they are interested in, as well as
-              detailed info about their favorite songs.
-"""
+
 class Group:
     """
     A class to represent a group of freinds

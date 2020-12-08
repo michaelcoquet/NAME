@@ -12,23 +12,21 @@ from name.backend_classes.user import User
 
 
 class Name(tk.Tk):
-    """TODO: fill out docstring -- basically the gui wrapper
-       TODO: set up a finite state machine to flip between frames in a more controlled fashion
-       TODO: move all the code in this class to a seperate gui wrapper class just to keep the
-             main entry point of the app clean
+    """Main entry point for the app basically wraps the GUI
+       set up a finite state machine to flip between frames in a more controlled fashion
     Args:
-        tk ([type]): [description]
+        tk (Tk): a tk application object
     """
     max_songs = 6 # need to set a maximum number of songs that can show up in the search
-    active_frame = 11 # the frame that is currently shown to the user
-    previous_frame = 11
+    active_frame =  9 # the frame that is currently shown to the user
+    previous_frame = 9
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title("Nearly Analagous Music Engine")
-        self.iconbitmap("name\\resources\\ravencon.ico") # TODO: make suren to change this to be
-                                                   # accessable from anywhere
+        self.iconbitmap("name\\resources\\ravencon.ico")
+
         Grid.rowconfigure(self, 0, weight=1)
         Grid.columnconfigure(self, 0, weight=1)
 
@@ -50,46 +48,34 @@ class Name(tk.Tk):
 
         # instantiate the frames
         self.frames[0] = gui.CompareSongsFrame(self, container, self.user)
-        self.frames[1] = gui.SearchResultsFrame(self, container, self.user)
-        self.frames[2] = gui.SongInfoSearchFrame(self, container, self.user)
-        self.frames[3] = gui.SongInfoFrame(self, container, self.user)
-        self.frames[4] = gui.SongStatsFrame(self, container, self.user)
-        self.frames[5] = gui.MemberHomeFrame(self, container, self.user)
-        self.frames[6] = gui.PlaylistInfoFrame(self, container, self.user)
-        self.frames[7] = gui.PlaylistEditFrame(self, container, self.user)
-        self.frames[8] = gui.AllPlaylistsFrame(self, container, self.user)
-        self.frames[9] = gui.SavePlaylistFrame(self, container, self.user)
-        self.frames[10] = gui.ListeningHabitsFrame(self, container, self.user)
-        self.frames[11] = gui.HomePageFrame(self, container, self.user)
+        self.frames[1] = gui.SongInfoSearchFrame(self, container, self.user)
+        self.frames[2] = gui.SongInfoFrame(self, container, self.user)
+        self.frames[3] = gui.SongStatsFrame(self, container, self.user)
+        self.frames[4] = gui.MemberHomeFrame(self, container, self.user)
+        self.frames[5] = gui.PlaylistEditFrame(self, container, self.user)
+        self.frames[6] = gui.AllPlaylistsFrame(self, container, self.user)
+        self.frames[7] = gui.SavePlaylistFrame(self, container, self.user)
+        self.frames[8] = gui.ListeningHabitsFrame(self, container, self.user)
+        self.frames[9] = gui.HomePageFrame(self, container, self.user)
 
         #instantiate group frames
-        self.frames[12] = gui.EditGroupFrame(self, container, self.user)
-        self.frames[13] = gui.GroupStatsFrame(self, container, self.user)
-        self.frames[14] = gui.EditGroupPlaylistFrame(self, container, self.user)
-        self.frames[15] = gui.GroupHomeFrame(self, container, self.user)
-        self.frames[16] = gui.SongInfoMemberFrame(self, container, self.user)
+        self.frames[10] = gui.EditGroupFrame(self, container, self.user)
+        self.frames[11] = gui.EditGroupPlaylistFrame(self, container, self.user)
+        self.frames[12] = gui.GroupHomeFrame(self, container, self.user)
+        self.frames[13] = gui.SongInfoMemberFrame(self, container, self.user)
 
         for i in self.frames:
             self.frames[i].grid_unmap()
 
-        self.frames[11].grid_init()
-
-    def update_search_results(self, list):
-        """ used to update the listbox in the search results frame
-
-        Args:
-            list (song[]): list of songs returned from the API in the search function to update
-                           the listbox in the search results frame
-        """
-        # this is just temporary will likely change when we have a proper list of song objects
-        self.frames[1].display_data(list)
+        self.frames[self.get_frame_id("Home Page")].grid_init()
 
     def switch_frame(self, old_id, new_id):
-        """ TODO: Fill In
+        """ This will switch the state in the finite state machine to the next state based on
+            some event
 
         Args:
-            old_id ([type]): TODO: Fill In
-            new_id ([type]): TODO: Fill In
+            old_id (int): The previously active frame
+            new_id (int): THe frame being switched too
         """
         self.frames[old_id].grid_unmap()
         self.frames[new_id].grid_remember()
@@ -97,7 +83,7 @@ class Name(tk.Tk):
         self.active_frame = new_id
 
     def switch_to_previous_frame(self):
-        """ TODO: Fill In
+        """ switch to the previously active frame
         """
         self.switch_frame(self.active_frame, self.previous_frame)
 
@@ -113,38 +99,32 @@ class Name(tk.Tk):
         """
         if name == "Compare Songs":
             return 0
-        elif name == "Search Results":
-            return 1
         elif name == "Song Info Search":
-            return 2
+            return 1
         elif name == "Song Info":
-            return 3
+            return 2
         elif name == "Song Stats":
-            return 4
+            return 3
         elif name == "Member Home":
-            return 5
-        elif name == "Playlist Info":
-            return 6
+            return 4
         elif name == "Playlist Edit":
-            return 7
+            return 5
         elif name == "All Playlists":
-            return 8
+            return 6
         elif name == "Save Playlist":
-            return 9
+            return 7
         elif name == "Listening Habits":
-            return 10
+            return 8
         elif name == "Home Page":
-            return 11
+            return 9
         elif name == "Edit Group":
-            return 12
-        elif name == "Group Stats":
-            return 13
+            return 10
         elif name == "Edit Group Playlist":
-            return 14
+            return 11
         elif name == "Group Home":
-            return 15
+            return 12
         elif name == "Song Info Member":
-            return 16
+            return 13
         else:
             print("ERROR NO SUCH FRAME")
             exit()

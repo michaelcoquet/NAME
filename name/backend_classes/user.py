@@ -1,7 +1,9 @@
 """CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
-    Summary:  is a piece of software to compare songs using the Spotify API. NAME will help the
-              user find other similar songs to the ones they are interested in, as well as
-              detailed info about their favorite songs.
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import os
 import pymongo
@@ -34,6 +36,8 @@ class User:
         self.groups = []
 
         self.playlists = []
+
+        self.active_group = None
 
     def __str__(self):
         """
@@ -83,7 +87,6 @@ class User:
         Returns:
             bool : True if successful, false otherwise
         """
-        # TODO: do this in a seperate thread to avoid crashing if the login fails
         self.spotify_manager = SpotifyAPIManager()
         if self.spotify_manager.link_spotify_account() == True:
             self.has_account = True
@@ -112,18 +115,11 @@ class User:
 
                         if answer == True:
                             # invite accepted
-                            print("invite accepted")
                             invite_group = self.persistent_storage.get_group(invite["group_id"])
                             self.groups.append(invite_group) # add to the group object list
                             invite_group.accecpt_invite(self.spotify_id)
                             # save the data back to the database
                             self.persistent_storage.update_group(invite_group)
-                        elif answer == False:
-                            # invite decline
-                            print("invite declined")
-                            # TODO: now need to remove the user from the invite list
-                            # dont add them to the member list
-                            # save the invite list back to the original group entry
                     return True
             else:
                 self.persistent_storage.create_new_member()

@@ -1,4 +1,9 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 
@@ -6,10 +11,10 @@ from .song_info_frame import SongInfoFrame
 
 
 class SongStatsFrame(SongInfoFrame):
-    """ TODO: fill in
+    """ Displays song stats, differnt from song info since this will show comparison of songs
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherits song info frame
     """
 
     def grid_unmap(self):

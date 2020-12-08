@@ -1,4 +1,9 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 from tkinter import ttk
@@ -8,10 +13,10 @@ from name.backend_classes.group import Group
 
 
 class EditGroupFrame(GroupHomeFrame):
-    """ TODO: fill in
-
+    """ This frame is used for the owner of a group to edit the group members and name of the
+        group
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherited from the main group home page
     """
 
     def grid_unmap(self):
@@ -29,7 +34,6 @@ class EditGroupFrame(GroupHomeFrame):
         super().grid_remember()
         self.add_friend_button.grid_remove()
         self.save_playlist_button.grid_remove()
-        self.group_song_stats_button.grid_remove()
         self.edit_group_button.grid_remove()
         self.l_playlist_select.grid_remove()
         self.playlist_dropdown.grid_remove()
@@ -187,6 +191,7 @@ class EditGroupFrame(GroupHomeFrame):
     def display_group(self, group):
         """[summary]
         """
+        self.member_listbox.delete(0, "end")
         # would like to be able to get these spotify ids back as usernames or something nicer
         for member in group.member_list:
             msg = member + "\t\t"

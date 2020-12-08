@@ -1,3 +1,10 @@
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
+"""
 import numpy as np
 # from name.backend_classes.song import Song
 # from name.backend_classes.song import SongDetails
@@ -6,7 +13,7 @@ import numpy as np
 class SongSimilarity:
 
     def __init__(self, songs, features):
-        """ Instantiation function. 
+        """ Instantiation function.
         songs: a list of songs for which similarity must be calculated
         features: a list of features for which similarity should be
         calculated (e.g. tempo) feature_mappings: a dictionary that
@@ -58,7 +65,7 @@ class SongSimilarity:
         for feature in features:
             weight += weights[feature]
             scores += feature_mappings[feature]() * weights[feature]
-        
+
         similarity = scores / weight
 
         return similarity
@@ -80,9 +87,9 @@ class SongSimilarity:
         normalized_values = ((duration_values - np.min(duration_values))
                                     /np.ptp(duration_values))
 
-        # if it is two items, we return 1 - the difference 
+        # if it is two items, we return 1 - the difference
         if len(normalized_values) <= 2:
-             
+
             return 1-np.max(normalized_values)-np.min(normalized_values)
 
         # otherwise the 1 - the standard deviation
@@ -112,7 +119,7 @@ class SongSimilarity:
                                         3 : 10,
                                         10 : 5,
                                         5 : 0}
-            
+
             if original_key == goal_key:
                 return 0
 
@@ -158,7 +165,7 @@ class SongSimilarity:
         if np.ptp(keys_distance) == 0:
             return 1
 
-        # normalize the values, and return the difference or 
+        # normalize the values, and return the difference or
         # the standard deviation
         normalized_values = ((keys_distance - np.min(keys_distance))
                                     /np.ptp(keys_distance))
@@ -169,7 +176,7 @@ class SongSimilarity:
         return 1-np.std(normalized_values)
 
     def calculate_tempo_similarity(self):
-        """ Calculates the similarity score for the tempo feature. """ 
+        """ Calculates the similarity score for the tempo feature. """
         tempo_values = []
         for song in self.songs:
             tempo_values.append(song.audio_features.tempo)
@@ -182,13 +189,13 @@ class SongSimilarity:
 
 
         if len(normalized_values) <= 2:
-             
+
             return 1-np.max(normalized_values)-np.min(normalized_values)
 
         return 1-np.std(normalized_values)
-        
+
     def calculate_danceability_similarity(self):
-        """ Calculates the similarity score for the danceability feature. """ 
+        """ Calculates the similarity score for the danceability feature. """
         # each scaling factor is based on the distribution of scores across
         # all songs in spotify. The tighter the distribution, the higher the
         # scaling factor
@@ -199,11 +206,11 @@ class SongSimilarity:
 
         if len(danceability_scores) <= 2:
 
-            if ((max(danceability_scores)-min(danceability_scores)) * 
+            if ((max(danceability_scores)-min(danceability_scores)) *
                                     danceability_scaling_factor) > 1:
                 return 0
 
-            danceability_similarity = (1-((max(danceability_scores)-min(danceability_scores)) 
+            danceability_similarity = (1-((max(danceability_scores)-min(danceability_scores))
                                                             * danceability_scaling_factor))
 
             return danceability_similarity
@@ -212,18 +219,18 @@ class SongSimilarity:
 
     def calculate_energy_similarity(self):
         """ Calculates the similarity score for the energy feature. """
-        energy_scaling_factor = 2 
+        energy_scaling_factor = 2
         energy_scores = []
         for song in self.songs:
             energy_scores.append(song.audio_features.energy)
 
         if len(energy_scores) <= 2:
 
-            if ((max(energy_scores)-min(energy_scores)) * 
+            if ((max(energy_scores)-min(energy_scores)) *
                             energy_scaling_factor) > 1:
                 return 0
 
-            energy_similarity = (1-(max(energy_scores)-min(energy_scores) * 
+            energy_similarity = (1-(max(energy_scores)-min(energy_scores) *
                                                     energy_scaling_factor))
 
             return energy_similarity
@@ -232,7 +239,7 @@ class SongSimilarity:
 
     def calculate_loudness_similarity(self):
         """ Calculates the similarity score for the loudness feature. """
-        loudness_scaling_factor = 4 
+        loudness_scaling_factor = 4
         loudness_scores = []
         for song in self.songs:
             loudness_scores.append(song.audio_features.loudness)
@@ -245,11 +252,11 @@ class SongSimilarity:
 
         if len(normalized_scores) <= 2:
 
-            if (abs(max(normalized_scores)-min(normalized_scores)) * 
+            if (abs(max(normalized_scores)-min(normalized_scores)) *
                                     loudness_scaling_factor) > 1:
                 return 0
 
-            loudness_similarity = (1-abs(max(normalized_scores)-min(normalized_scores)) * 
+            loudness_similarity = (1-abs(max(normalized_scores)-min(normalized_scores)) *
                                                             loudness_scaling_factor)
 
             return loudness_similarity
@@ -257,7 +264,7 @@ class SongSimilarity:
         return 1-np.std(normalized_scores)
 
     def calculate_mode_similarity(self):
-        """ Calculates the similarity score for the mode feature. """ 
+        """ Calculates the similarity score for the mode feature. """
         mode_scores = []
         for song in self.songs:
             mode_scores.append(song.audio_features.mode)
@@ -272,16 +279,16 @@ class SongSimilarity:
             speechiness_scores.append(song.audio_features.speechiness)
 
         if len(speechiness_scores) <= 2:
-        
+
             if ((max(speechiness_scores)-min(speechiness_scores)) *
                                     speechiness_scaling_factor) > 1:
                 return 0
-            
-            speechiness_similarity = (1-(max(speechiness_scores)-min(speechiness_scores) *  
+
+            speechiness_similarity = (1-(max(speechiness_scores)-min(speechiness_scores) *
                                                             speechiness_scaling_factor))
 
             return speechiness_similarity
-        
+
         return 1-np.std(speechiness_scores)
 
     def calculate_acousticness_similarity(self):
@@ -293,15 +300,15 @@ class SongSimilarity:
 
         if len(acousticness_scores) <= 2:
 
-            if ((max(acousticness_scores)-min(acousticness_scores)) * 
+            if ((max(acousticness_scores)-min(acousticness_scores)) *
                                     acousticness_scaling_factor) > 1:
                 return 0
 
-            acousticness_similarity = (1-(max(acousticness_scores)-min(acousticness_scores) * 
+            acousticness_similarity = (1-(max(acousticness_scores)-min(acousticness_scores) *
                                         acousticness_scaling_factor))
 
             return acousticness_similarity
-        
+
         return 1-np.std(acousticness_scores)
 
     def calculate_instrumentalness_similarity(self):
@@ -313,7 +320,7 @@ class SongSimilarity:
 
         if len(instrumentalness_scores) <= 2:
 
-            if ((max(instrumentalness_scores)-min(instrumentalness_scores)) * 
+            if ((max(instrumentalness_scores)-min(instrumentalness_scores)) *
                                         instrumentalness_scaling_factor) > 1:
                 return 0
 
@@ -321,25 +328,25 @@ class SongSimilarity:
                         min(instrumentalness_scores)) * instrumentalness_scaling_factor))
 
             return instrumentalness_similarity
-        
+
         return 1-np.std(instrumentalness_scores)
 
     def calculate_liveness_similarity(self):
         """ Calculates the similarity score for the liveness feature. """
-        liveness_scaling_factor = 4 
+        liveness_scaling_factor = 4
         liveness_scores = []
         for song in self.songs:
             liveness_scores.append(song.audio_features.liveness)
-        
+
         if len(liveness_scores) <= 2:
 
-            if ((max(liveness_scores)-min(liveness_scores)) * 
+            if ((max(liveness_scores)-min(liveness_scores)) *
                                 liveness_scaling_factor) > 1:
                 return 0
 
-            liveness_similarity = (1-(max(liveness_scores)-min(liveness_scores) 
+            liveness_similarity = (1-(max(liveness_scores)-min(liveness_scores)
                                                     * liveness_scaling_factor))
-            
+
             return liveness_similarity
 
         return 1-np.std(liveness_scores)
@@ -353,15 +360,15 @@ class SongSimilarity:
 
         if len(valence_scores) <= 2:
 
-            valence_similarity = (1-(max(valence_scores)-min(valence_scores) 
+            valence_similarity = (1-(max(valence_scores)-min(valence_scores)
                                                 * valence_scaling_factor))
-                                        
+
             return valence_similarity
-        
+
         return 1-np.std(valence_scores)
 
     def calculate_time_signature_similarity(self):
-        """ Calculates the similarity score for the time_signature feature. """ 
+        """ Calculates the similarity score for the time_signature feature. """
         time_signatures = []
         for song in self.songs:
             time_signatures.append(song.audio_features.time_signature)

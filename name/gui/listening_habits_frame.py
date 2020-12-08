@@ -1,4 +1,9 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 import tkinter.scrolledtext as st
@@ -8,10 +13,10 @@ from .member_home_frame import MemberHomeFrame
 
 
 class ListeningHabitsFrame(MemberHomeFrame):
-    """ TODO: fill in
+    """ Frame to display a spotify accounts listening habits
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): Inherits member home page
     """
 
     def grid_unmap(self):

@@ -1,4 +1,9 @@
-"""The home frame for the app can be either member or guest for this frame
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 from tkinter import ttk
@@ -155,7 +160,6 @@ class HomePageFrame(NameFrame):
             text="Song Title")
         self.song_search_entry.grid(row=2, column=1)
 
-        # TODO: connect with backend song search function
         self.song_search_button = tk.Button(
             self.upper_grid,
             command=self.song_search_command,
@@ -196,8 +200,7 @@ class HomePageFrame(NameFrame):
 
     def filter_command(self):
         """ Filters available for the user to search with
-            TODO: link the users choice of filter with the search function for now just return
-                  anything
+            link the users choice of filter with the search function
         """
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         self.query_object.update_filter_list(self.formatted_filters)
@@ -263,9 +266,8 @@ class HomePageFrame(NameFrame):
         self.song_treeview.delete(*self.song_treeview.get_children())
         self.parent.song_object_list.clear()
         self.parent.song_object_list = results
-        self.parent.frames[self.parent.get_frame_id("Search Results")].display_data(results)
         # switch to search results frame, and give it the results to be displayed
-        self.switch_frame("Search Results")
+        self.parent.switch_to_previous_frame()
 
         # enable the button again
         self.similar_songs_button.configure(state="normal")
@@ -363,11 +365,11 @@ class HomePageFrame(NameFrame):
         self.parent.song_object_list.clear()
 
 
-def threaded_search(search_object, song_list):
-    """ runs in a seperate thread to avoid the app hanging up during long searches
+# def threaded_search(search_object, song_list):
+#     """ runs in a seperate thread to avoid the app hanging up during long searches
 
-    Args:
-        search_object (CheckingSongSimilarity): the search helper class
-        song_list (Song[]): group of songs to find similar songs to
-    """
-    return search_object.random_search(song_list)
+#     Args:
+#         search_object (CheckingSongSimilarity): the search helper class
+#         song_list (Song[]): group of songs to find similar songs to
+#     """
+#     return search_object.random_search(song_list)

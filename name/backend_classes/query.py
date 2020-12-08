@@ -1,3 +1,10 @@
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
+"""
 import operator
 
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
