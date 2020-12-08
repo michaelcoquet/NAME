@@ -88,8 +88,7 @@ class Name(tk.Tk):
         self.active_frame = new_id
 
     def switch_to_previous_frame(self):
-        """ switch to the previously active frame
-        """
+        """ switch to the previously active frame """
         self.switch_frame(self.active_frame, self.previous_frame)
 
     def get_frame_id(self, name):
@@ -135,8 +134,7 @@ class Name(tk.Tk):
             exit()
 
 def main():
-    """ main entry point
-    """
+    """ main entry point """
     app = Name()
     app.mainloop()
     if os.path.exists(".cache"):

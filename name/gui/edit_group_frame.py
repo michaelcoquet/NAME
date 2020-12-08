@@ -119,14 +119,13 @@ class EditGroupFrame(GroupHomeFrame):
         self.member_list_label.grid(row=2,column=0)
 
     def cancel_command(self):
-        """command for the cancel button
-        """
+        """command for the cancel button """
+        
         # go back to previously active_frame
         self.parent.switch_to_previous_frame()
 
     def save_group_command(self):
-        """command for the create group button
-        """
+        """command for the create group button """
         self.init_member_menu()
         group_name = self.group_name_entry.get()
         self.group_menu.add_command(label=group_name)
@@ -139,8 +138,7 @@ class EditGroupFrame(GroupHomeFrame):
             tk.messagebox.showerror(title="Error", message="This group already exists")
 
     def add_friend_command(self):
-        """command for the add friend button
-        """
+        """command for the add friend button """
         friend_id = self.friend_id_entry.get()
         if friend_id != "":
             if len(self.invite_id_list) == 0:
@@ -157,8 +155,7 @@ class EditGroupFrame(GroupHomeFrame):
                                     message="Please enter your friends spotify id")
 
     def member_exists(self, friend_id):
-        """ check if the member already exists in the list
-        """
+        """ check if the member already exists in the list """
         for friend in self.invite_id_list:
             if friend == friend_id:
                 return True
@@ -166,7 +163,8 @@ class EditGroupFrame(GroupHomeFrame):
         return False
 
     def add_member_to_lists(self):
-        """ add the given friend to the listbox and the internal member list
+        """ add the given friend to the listbox and the internal
+            member list
         """
         # add the friends id to the group member id list
         self.invite_id_list.append(self.friend_id_entry.get())

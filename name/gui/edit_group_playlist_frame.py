@@ -48,6 +48,5 @@ class EditGroupPlaylistFrame(HomePageFrame):
         super().init_middle_grid()
 
     def done_command(self):
-        """command for the done button
-        """
+        """command for the done button """
         self.parent.switch_to_previous_frame()

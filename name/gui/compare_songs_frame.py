@@ -12,7 +12,8 @@ from .home_page_frame import HomePageFrame
 from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
 class CompareSongsFrame(HomePageFrame):
-    """ This the frame a user goes to compare lists of 2 or more songs for similairty score
+    """ This the frame a user goes to compare lists of 2 or more songs
+        for similairty score
 
     Args:
         tk (Frame): inheritied from main home page

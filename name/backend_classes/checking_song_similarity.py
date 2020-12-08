@@ -13,15 +13,18 @@ from name.backend_classes.song_similarity import SongSimilarity
 from name.backend_classes.spotify_api_manager import SpotifyAPIManager
 
 class CheckingSongSimilarity:
+    """ A helper class which handles several aspects of checking
+        song similarity
+    """
 
     def __init__(self, features):
         self.features = features
 
     def random_search(self, songs):
         """ A function to search for 25 similar songs
-        to a song the user searches for
-        songs: the song the user is searching for
-        returns: a list of 25 songs
+            to a song the user searches for
+            songs: the song the user is searching for
+            returns: a list of 25 songs
         """
         # get a list of the top five genres for the entered songs
         top_genres = list(self.get_top_genres(songs, 5).keys())
@@ -70,9 +73,9 @@ class CheckingSongSimilarity:
 
     def get_top_genres(self, songs, limit):
         """ Gets a list of the top genres for the given songs.
-        songs: a list of song objects
-        limit: the limit for the number of genres to be returned
-        returns: a list of genres (strings)
+            songs: a list of song objects
+            limit: the limit for the number of genres to be returned
+            returns: a list of genres (strings)
         """
         spotify_api_manager = SpotifyAPIManager()
         genres = {}

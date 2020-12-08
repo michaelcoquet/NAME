@@ -13,7 +13,8 @@ from name.backend_classes.persistent_storage import PersistentStorage
 
 
 class SavePlaylistFrame(MemberHomeFrame):
-    """ Help a user save a playlist to eithe rtheir group or their spotify account
+    """ Help a user save a playlist to either their group or their
+        spotify account
 
     Args:
         tk (Frame): inherits Member home page

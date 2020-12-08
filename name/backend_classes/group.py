@@ -10,9 +10,8 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 
 class Group:
-    """
-    A class to represent a group of freinds
-    """
+    """ A class to represent a group of freinds """
+    
     def __init__(self, group_name, owner_id, invite_list, member_list):
         """ initialize all fields
 
@@ -52,8 +51,10 @@ class Group:
         return 1
 
     def update_playlists(self, playlists):
-        """ give a list of playlist objects to replace group_playlists with
-            helpful for making new group objects or loading them from storage
+        """ give a list of playlist objects to replace group_playlists
+            with helpful for making new group objects or loading them
+            from storage
+            
 
         Args:
             playlists (Playlist[]): new list of group playlists
@@ -70,10 +71,12 @@ class Group:
             self.invite_list.append(member_id)
 
     def accept_invite(self, member_id):
-        """ the member with member_id accepted the invitation, take action
+        """ the member with member_id accepted the invitation,
+            take action
 
         Args:
-            member_id (int64): member_id who accepted the invitation to this group
+            member_id (int64): member_id who accepted the invitation to
+                               this group
         """
         # remove the member from the invite list
         for id in self.invite_list:
@@ -86,7 +89,8 @@ class Group:
         """ the member with emmber_id declined the invitation, take action
 
         Args:
-            member_id (int64): member_id who declined the invitation to this group
+            member_id (int64): member_id who declined the invitation to
+                               this group
         """
         # remove the member from the invite list, but dont add them to the member list
         return 1

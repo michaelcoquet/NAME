@@ -6,14 +6,13 @@
              Sean Warren
 """
 class Playlist:
-    """
-    A class containing the details of the playlist from spotify
-    """
+    """ A class containing the details of the playlist from spotify """
+    
     def __init__(self, playlist, playlist_tracks):
-        """
-        Instantiation function
-        playlist: a playlist object from spotify
-        playlist_tracks: a list of song objects containing the playlist tracks
+        """ Instantiation function
+            playlist: a playlist object from spotify
+            playlist_tracks: a list of song objects containing the
+            playlist tracks
         """
         self.playlist_name = playlist['name']
         self.playlist_owner = playlist['owner']['id']
@@ -22,19 +21,17 @@ class Playlist:
         self.songs = playlist_tracks
 
     def add_song(self, song):
-        """
-        A function that adds song to the playlist,
-        appends a song to the list of songs
-        song: a song object to be added to the list
+        """ A function that adds song to the playlist,
+            appends a song to the list of songs
+            song: a song object to be added to the list
         """
         self.songs.append(song)
         self.size = self.size + 1
 
     def remove_song(self, id):
-        """
-        A function that removes a song from the playlist
-        base on its index
-        id: the id of the song to be removed from the playlist
+        """ A function that removes a song from the playlist
+            base on its index
+            id: the id of the song to be removed from the playlist
         """
         # A temporary list for the song ids
         temp = []
@@ -47,9 +44,8 @@ class Playlist:
             self.size = self.size - 1
 
     def get_song_features(self):
-        """
-        A function that returns the audio features
-        of each song inside the playlist
+        """ A function that returns the audio features
+            of each song inside the playlist
         """
         song_features = []
         # Get each song features of the song
@@ -59,9 +55,8 @@ class Playlist:
         return song_features
 
     def update_playlist_name(self, new_name):
-        """
-        A function that updates the name of the current playlist
-        new_name : the new name of the playlist
+        """ A function that updates the name of the current playlist
+            new_name : the new name of the playlist 
         """
         self.playlist_name = new_name
 
