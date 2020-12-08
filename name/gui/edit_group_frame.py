@@ -191,6 +191,7 @@ class EditGroupFrame(GroupHomeFrame):
     def display_group(self, group):
         """[summary]
         """
+        self.member_listbox.delete(0, "end")
         # would like to be able to get these spotify ids back as usernames or something nicer
         for member in group.member_list:
             msg = member + "\t\t"

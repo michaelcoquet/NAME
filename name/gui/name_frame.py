@@ -36,9 +36,6 @@ class NameFrame(tk.Frame):
         self.init_guest_menu()
 
         # needed for the progress bar in search progress pop up window
-        self.win = None
-        self.progress = None
-        self.l_songs_found = None
 
         l = []
         self.query_object = Query(l)
@@ -89,8 +86,6 @@ class NameFrame(tk.Frame):
                     label=group.group_name,
                     command=lambda group=group: self.group_menu_command(group)
                 )
-
-
 
         self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
         self.my_account_menu.add_separator()

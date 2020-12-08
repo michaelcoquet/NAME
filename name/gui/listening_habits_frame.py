@@ -38,7 +38,6 @@ class ListeningHabitsFrame(MemberHomeFrame):
     def init_middle_grid(self):
         super().init_middle_grid()
         self.song_treeview.grid_remove()
-        self.edit_button.grid_remove()
 
         self.top_songs_scrolledtext = st.ScrolledText(self.middle_grid, width=40)
         self.top_songs_scrolledtext.grid(row=0, column=0, sticky="nsew")
