@@ -85,9 +85,10 @@ class ListeningHabitsFrame(MemberHomeFrame):
         self.switch_frame("Member Home")
 
     def display_top_songs(self, songs):
-        """ Displays each of the top songs in the top song scrolldown section.
-        Also displays a list of top genres.
-        songs: a list of song objects
+        """ Displays each of the top songs in the top song scrolldown
+            section.
+            Also displays a list of top genres.
+            songs: a list of song objects
         """
         # delete any details that might have already been in the display
         self.top_songs_scrolledtext.configure(state="normal")
@@ -116,8 +117,8 @@ class ListeningHabitsFrame(MemberHomeFrame):
 
     def display_recent_songs(self, songs):
         """ Displays the the member's recent songs
-        that they have played on spotify.
-        songs: a list of song objects (the recent songs)
+            that they have played on spotify.
+            songs: a list of song objects (the recent songs)
         """
         # delete any details that might have already been in the display
         self.recent_songs_scrolledtext.configure(state="normal")
@@ -131,7 +132,7 @@ class ListeningHabitsFrame(MemberHomeFrame):
 
     def display_top_artists(self, artists):
         """ Display's the member's top artists.
-        artists: a list of artist objects
+            artists: a list of artist objects
         """
         # delete any details that might have already been in the display
         self.top_artists_scrolledtext.configure(state="normal")
