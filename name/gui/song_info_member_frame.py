@@ -14,7 +14,8 @@ from name.backend_classes.lyrics import Lyrics
 
 class SongInfoMemberFrame(MemberHomeFrame):
     """ Display a page for song info for a member
-        only needed to display buttons from member home instaed of homepage
+        only needed to display buttons from member home instaed of
+        homepage
     Args:
         tk (Frame): inherits member home frame
     """
@@ -66,8 +67,8 @@ class SongInfoMemberFrame(MemberHomeFrame):
         self.start_over_button.grid(row=0, column=0)
 
     def display_details(self, songs):
-        """gets the details of a song from another frame and displays it in the scrolledText
-           widget
+        """gets the details of a song from another frame and displays
+           it in the scrolledText widget
 
         Args:
             song (song):

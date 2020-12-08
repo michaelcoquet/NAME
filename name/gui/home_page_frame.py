@@ -396,8 +396,8 @@ Feel free to close this
         self.close_single_search_window()
 
     def remove_command(self):
-        """ command for the remove song button, can potentially have multiple
-            songs selected
+        """ command for the remove song button, can potentially have
+            multiple songs selected
         """
         selected_items = self.song_treeview.selection()
         for item in selected_items:

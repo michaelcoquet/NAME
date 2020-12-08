@@ -11,8 +11,8 @@ from .home_page_frame import HomePageFrame
 
 
 class SongInfoSearchFrame(HomePageFrame):
-    """ This will search for an individual song no lists of songs then pass that to the next
-        frame to be displayed
+    """ This will search for an individual song no lists of songs then
+        pass that to the next frame to be displayed
 
     Args:
         tk (Frame): Inherits the main home page frame
@@ -73,5 +73,6 @@ class SongInfoSearchFrame(HomePageFrame):
         s = self.parent.song_object_list[len(self.parent.song_object_list) - 1]
         self.parent.frames[f].display_details(s)
 
-        # delete last item in the song_object_list so it doesnt carry over to other pages
+        # delete last item in the song_object_list so it doesnt carry over to
+        #  other pages
         del self.parent.song_object_list[-1]
