@@ -84,7 +84,7 @@ class NameFrame(tk.Frame):
         for group in self.user.groups:
             self.group_menu.add_command(
                     label=group.group_name,
-                    command=lambda group=group: self.self.group_menu_command(group)
+                    command=lambda group=group: self.group_menu_command(group)
                 )
 
         my_account_menu.add_command(
