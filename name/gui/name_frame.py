@@ -1,4 +1,9 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import os
 import time
@@ -14,10 +19,10 @@ from name.backend_classes import Query
 
 
 class NameFrame(tk.Frame):
-    """ TODO: fill in
+    """ This is the main template for all of the frames in the app
 
     Args:
-        tk ([type]): TODO: fill in
+        tk (Frame): inherits from tk.Frame
     """
     def __init__(self, parent, container, user):
         tk.Frame.__init__(self, parent)
@@ -97,14 +102,11 @@ class NameFrame(tk.Frame):
 
     def create_group(self):
         """ Menu option to create a new group
-            TODO: backend connection required here to create a new group, for now just assume
-                  the user sucessfully created a new group and add a new menu option as in the
-                  storyboards
         """
         self.switch_frame("Edit Group")
 
     def init_upper_grid(self):
-        """ TODO: fill in
+        """ Initialize the top grid
         """
         self.upper_grid = tk.Frame(self.container)
         self.upper_grid.grid(row=0, column=0, sticky="nw")
@@ -116,7 +118,7 @@ class NameFrame(tk.Frame):
         self.app_title_button.grid(row=0, column=1)
 
     def init_lower_grid(self):
-        """ TODO: fill in
+        """ Initialize the lower grid
         """
         self.lower_grid = tk.Frame(self.container)
         Grid.columnconfigure(self.lower_grid, 1, weight=1)
@@ -124,7 +126,7 @@ class NameFrame(tk.Frame):
         self.lower_grid.grid(row=2, column=0, sticky="ew")
 
     def init_middle_grid(self):
-        """ TODO: fill in
+        """ Initialize the middle grid
         """
         self.middle_grid = tk.Frame(self.container)
         Grid.columnconfigure(self.middle_grid, 0, weight=1)
@@ -186,10 +188,8 @@ class NameFrame(tk.Frame):
         # form groups
         if self.user.is_member():
             message = self.user.get_account_id()
+            # Display the returned ID in the following messagebox popup
             ShareableIdDialog(self.container, title="NAME", text=message)
-
-        # TODO: GUI     - Display the returned ID in the following messagebox popup
-
 
     def start_single_search(self, title):
         """ Search the spotify API for the given song
@@ -198,28 +198,13 @@ class NameFrame(tk.Frame):
             title (str): the desired song title
             filters (dict): the selected filters
         """
-        # TODO: BACKEND - single song search connection return a list of songs
-        # TODO: do this in another thread
+        # BACKEND - single song search connection return a list of songs
+        # do this in another thread
         self.api_search_results = self.query_object.search_single_song(title)
         if self.api_search_results != []:
             self.open_song_search_popup(self.api_search_results)
         else:
             self.no_songs_found_popup()
-
-    def search_similar(self, titles, filters):
-        """ Search the spotify API for songs that are similar to the list of titles
-
-        Args:
-            titles  (str[]): list of song titles that the user would like to find similar songs
-                             to
-            filters (str[]): list of all the filters selected by the user
-
-        Returns:
-            song[]: return a list of songs that match (or partial match) the title
-        """
-
-
-        return 1
 
     def no_songs_found_popup(self):
         """ In the case that spotify can't find any songs for the
@@ -284,14 +269,6 @@ class NameFrame(tk.Frame):
         self.parent.bind("<Up>", self.scroll_song_select_up)
         self.parent.bind("<Down>", self.scroll_song_select_down)
 
-    def scroll_song_select_up(self, event):
-        # TODO: try to implement this
-        return 1
-
-    def scroll_song_select_down(self, event):
-        # TODO: try to implement this
-        return 1
-
     def open_search_progress(self, future):
         """open a new window that updates the user on the progress of similarity playlist
            creation
@@ -322,8 +299,8 @@ class NameFrame(tk.Frame):
         """ This is used to update the search progress bar
                   for now just do a little simulation, notice the hang with time.sleep
         """
-        # TODO: BACKEND - This will have to be updated by the search function(s) in the backend
-        #                 to update the progress bar, could be indeterminate also, but if not
+        # BACKEND - This will have to be updated by the search function(s) in the backend
+        #                  could be indeterminate also, but if not
         #                 will need some multithreadin to avoid the app hanging during search,
         #                 possibly fork() would work
         self.switch_frame("Search Results")

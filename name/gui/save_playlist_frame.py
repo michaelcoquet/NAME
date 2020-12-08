@@ -1,4 +1,9 @@
-""" TODO: fill in
+"""CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import tkinter as tk
 from tkinter import StringVar
@@ -74,7 +79,7 @@ class SavePlaylistFrame(MemberHomeFrame):
                 if self.user.save_playlist_to_spotify(json_plylst, self.parent.song_object_list) is not None:
                     tk.messagebox.showinfo(title="Success", message="The playlist was saved to " +
                         "your spotify account")
-                    self.parent.switch_frame(self.parent.active_frame, self.parent.active_frame)
+                    self.parent.switch_to_previous_frame
                 else:
                     print("error")
             else:

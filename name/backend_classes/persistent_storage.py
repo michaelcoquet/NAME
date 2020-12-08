@@ -1,7 +1,9 @@
 """CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
-    Summary:  is a piece of software to compare songs using the Spotify API. NAME will help the
-              user find other similar songs to the ones they are interested in, as well as
-              detailed info about their favorite songs.
+    Credits: Michael Coquet
+             Elizabeth Reid
+             Ben Camplin
+             Laurence Craig Garcia
+             Sean Warren
 """
 import os
 import base64
