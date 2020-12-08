@@ -16,7 +16,8 @@ from name.backend_classes.playlist import Playlist
 
 
 class AllPlaylistsFrame(MemberHomeFrame):
-    """ This is a member frame to display all the users playlists saved to their spotify
+    """ This is a member frame to display all the users playlists saved to their
+        spotify
 
     Args:
         tk (Frame): inherited from the main home frame
@@ -56,15 +57,31 @@ class AllPlaylistsFrame(MemberHomeFrame):
         super().init_middle_grid()
         self.get_song_info_button.grid_remove()
 
-        # we dont have a song_treeview here so we need to make a playlist treeview
+        # we dont have a song_treeview here so we need to make a playlist
+        # treeview
         self.song_treeview.grid_remove()
         self.playlist_treeview = ttk.Treeview(self.middle_grid)
         self.playlist_treeview["columns"] = ("Name", "Size", "Owner")
 
         self.playlist_treeview.column("#0", width=1, minwidth=1, stretch="no")
-        self.playlist_treeview.column("Name", width=150, minwidth=150, stretch="yes")
-        self.playlist_treeview.column("Size", width=90, minwidth=90, stretch="yes")
-        self.playlist_treeview.column("Owner", width=80, minwidth=80, stretch="yes")
+        self.playlist_treeview.column(
+            "Name",
+            width=150,
+            minwidth=150,
+            stretch="yes"
+        )
+        self.playlist_treeview.column(
+            "Size",
+            width=90,
+            minwidth=90,
+            stretch="yes"
+        )
+        self.playlist_treeview.column(
+            "Owner",
+            width=80,
+            minwidth=80,
+            stretch="yes"
+        )
 
         self.playlist_treeview.heading("Name", text="Name", anchor="w")
         self.playlist_treeview.heading("Size", text="Size", anchor="w")
@@ -101,7 +118,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
             selected_name = self.playlist_treeview.item(item)["values"][0]
             for playlist in self.playlists:
                 if playlist.playlist_name == selected_name:
-                    #add this playlists songs to the list of songs to pass to the search
+                    # add this playlists songs to the list of songs to pass to
+                    # the search
                     selected_songs = selected_songs + playlist.songs
                     self.parent.song_object_list = self.parent.song_object_list + playlist.songs
 
@@ -109,7 +127,10 @@ class AllPlaylistsFrame(MemberHomeFrame):
             message = "You must enter at least one song!"
             self.enter_more_songs_popup(message)
         else:
-            get_similar_songs = threading.Thread(target=self.threaded_similar_songs, daemon=True)
+            get_similar_songs = threading.Thread(
+                target=self.threaded_similar_songs,
+                daemon=True
+            )
             get_similar_songs.start()
             self.loading_screen()
 
@@ -118,7 +139,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
         """
         # disable the button while this is running
         self.list_from_list_button.configure(state="disabled")
-        # get the current working list of songs to be searched and pass it to the backend
+        # get the current working list of songs to be searched and pass it to
+        # the backend
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         search_object = CheckingSongSimilarity(self.formatted_filters)
 
@@ -127,19 +149,27 @@ class AllPlaylistsFrame(MemberHomeFrame):
         self.parent.song_object_list.clear()
         self.parent.song_object_list = results
         self.parent.frames[self.parent.get_frame_id("Member Home")].display_data(results)
-        # switch to search results frame, and give it the results to be displayed
+        # switch to search results frame, and give it the results to be
+        # displayed
         self.switch_frame("Member Home")
 
         # enable the button again
         self.list_from_list_button.configure(state="normal")
 
     def display_data(self, api_results):
-        """ take the playlist data (list of playlist objects) in and display it in the treeview
+        """ take the playlist data (list of playlist objects) in and display it
+            in the treeview
         """
         for playlist in api_results:
             if isinstance(playlist, Playlist):
-                self.playlist_treeview.insert("", "end", values=(playlist.playlist_name,
-                                playlist.size, playlist.playlist_owner))
+                self.playlist_treeview.insert(
+                    "",
+                    "end",
+                    values=(
+                        playlist.playlist_name,
+                        playlist.size, playlist.playlist_owner
+                    )
+                )
                 self.playlists.append(playlist)
 
     def song_sim_command(self):
@@ -147,7 +177,8 @@ class AllPlaylistsFrame(MemberHomeFrame):
         """
         # BACKEND - Get the similarity of the songs in the selected playlist
 
-        # get the current working list of songs to be searched and pass it to the backend
+        # get the current working list of songs to be searched and pass it to
+        # the backend
         self.formatted_filters = self.convert_filters_list(self.selected_filters)
         search_object = CheckingSongSimilarity(self.formatted_filters)
 
@@ -160,10 +191,11 @@ class AllPlaylistsFrame(MemberHomeFrame):
                     result = search_object.get_songs_similarity_score(item.songs)
                     self.switch_frame("Song Stats")
                     d = [int(result), item.songs]
-                    self.parent.frames[self.parent.get_frame_id("Song Stats")].display(d)
+                    self.parent.frames[
+                        self.parent.get_frame_id("Song Stats")
+                    ].display(d)
 
     def latest_playlist_command(self):
         """command for the latest playlist button
         """
         self.switch_frame("Member Home")
-

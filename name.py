@@ -1,7 +1,8 @@
 """CMPT 370 Group 5 Project: NAME (Nearly Analogous Music Engine)
-    Summary:  is a piece of software to compare songs using the Spotify API. NAME will help the
-              user find other similar songs to the ones they are interested in, as well as
-              detailed info about their favorite songs.
+    Summary:  is a piece of software to compare songs using the Spotify API.
+              NAME will help the user find other similar songs to the ones they
+              are interested in, as well as detailed info about their favorite
+              songs.
 """
 import os
 import name.gui as gui
@@ -13,11 +14,15 @@ from name.backend_classes.user import User
 
 class Name(tk.Tk):
     """Main entry point for the app basically wraps the GUI
-       set up a finite state machine to flip between frames in a more controlled fashion
+       set up a finite state machine to flip between frames in a more controlled
+       fashion
     Args:
         tk (Tk): a tk application object
     """
-    max_songs = 6 # need to set a maximum number of songs that can show up in the search
+
+
+    max_songs = 6 # need to set a maximum number of songs that can show up in
+                  # the search
     active_frame =  9 # the frame that is currently shown to the user
     previous_frame = 9
 

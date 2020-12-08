@@ -72,12 +72,18 @@ class NameFrame(tk.Frame):
         self.member_menu = tk.Menu(self.container)
 
         self.my_account_menu = tk.Menu(self.member_menu, tearoff=0)
-        self.my_account_menu.add_command(label="Member Home", command=self.member_home_command)
+        self.my_account_menu.add_command(
+            label="Member Home",
+            command=self.member_home_command
+        )
         self.my_account_menu.add_separator()
 
         # make a submenu for groups
         self.group_menu = tk.Menu(self.my_account_menu, tearoff=0)
-        self.group_menu.add_command(label="Create Group", command=self.create_group)
+        self.group_menu.add_command(
+            label="Create Group",
+            command=self.create_group
+        )
         self.group_menu.add_separator()
         self.my_account_menu.add_cascade(label="Groups", menu=self.group_menu)
 
@@ -87,12 +93,19 @@ class NameFrame(tk.Frame):
                     command=lambda group=group: self.group_menu_command(group)
                 )
 
-        self.my_account_menu.add_command(label="Get Shareable ID", command=self.get_id_command)
+        self.my_account_menu.add_command(
+            label="Get Shareable ID",
+            command=self.get_id_command
+        )
         self.my_account_menu.add_separator()
 
         self.my_account_menu.add_command(label="Log Out", command=self.log_out)
 
-        self.member_menu.add_cascade(label="My Account", underline=0, menu=self.my_account_menu)
+        self.member_menu.add_cascade(
+            label="My Account",
+            underline=0,
+            menu=self.my_account_menu
+        )
         self.parent.config(menu=self.member_menu)
 
     def create_group(self):
@@ -135,21 +148,25 @@ class NameFrame(tk.Frame):
         Args:
             name (string): pass the name of the desired frame to switch to
         """
-        self.parent.switch_frame(self.parent.active_frame, self.parent.get_frame_id(name))
+        self.parent.switch_frame(
+            self.parent.active_frame,
+            self.parent.get_frame_id(name)
+        )
 
     def app_title_command(self):
         self.switch_frame("Home Page")
 
     def login(self):
-        """ Button command to link to a spotify account and if succesfully linked switch to the
-            member frame (frame_id = 2). Puts it in a thread so if they cancel the process
-            online, our whole app doesn't freeze.
+        """ Button command to link to a spotify account and if succesfully
+            linked switch to the member frame (frame_id = 2). Puts it in a
+            thread so if they cancel the process online, our whole app
+            doesn't freeze.
         """
         login = threading.Thread(target=self.login_thread, daemon=True)
         login.start()
 
     def login_thread(self):
-        if self.user.link_spotify_account() == True:
+        if self.user.link_spotify_account() is True:
             self.init_member_menu()
         else:
             print("error unsuccessfully linked spotify account")
@@ -168,7 +185,9 @@ class NameFrame(tk.Frame):
         """
         self.user.active_group = group
         self.switch_frame("Group Home")
-        self.parent.frames[self.parent.get_frame_id("Group Home")].display_group(group)
+        self.parent.frames[
+            self.parent.get_frame_id("Group Home")
+        ].display_group(group)
 
     def member_home_command(self):
         """ command for the member home member menu item
@@ -209,7 +228,10 @@ class NameFrame(tk.Frame):
         popup = tk.Toplevel(self)
         popup.title("No results")
 
-        label = tk.Label(popup, text="Sorry, Spotify couldn't find any songs with that title.")
+        label = tk.Label(
+            popup,
+            text="Sorry, Spotify couldn't find any songs with that title."
+        )
         label.grid(row=0, column=0)
 
         button = ttk.Button(popup, text="Okay", command=popup.destroy)
@@ -217,19 +239,23 @@ class NameFrame(tk.Frame):
         self.grab_release()
 
     def open_song_search_popup(self, api_results):
-        """ open a popup for the user to select the song they actually wanted to add to the list
+        """ open a popup for the user to select the song they actually wanted to
+            add to the list
         """
         self.grab_set()
         self.popup = tk.Toplevel(self)
         # remove windows borders and stuff with splash screen option
         self.popup.overrideredirect(1)
         self.popup.attributes("-topmost", 1)
-        self.popup.protocol("WM_DELETE_WINDOW", self.close_single_search_window)
+        self.popup.protocol(
+            "WM_DELETE_WINDOW",
+            self.close_single_search_window
+        )
         self.popup.title("Pick a Song")
 
         self.song_selection = StringVar(self.popup)
         self.song_selection_default = "Which song were you looking for?"
-        self.song_selection.set(self.song_selection_default) # default value
+        self.song_selection.set(self.song_selection_default)  # default value
 
         songs = [song_result for song_result in api_results]
         formated_songs = []
@@ -280,7 +306,10 @@ class ShareableIdDialog(simpledialog.Dialog):
         simpledialog.Dialog.__init__(self, parent, title=title)
 
     def body(self, parent):
-        self.lbl = tk.Label(self, text="Your Spotify ID (share with your friends): ")
+        self.lbl = tk.Label(
+            self,
+            text="Your Spotify ID (share with your friends): "
+        )
         self.lbl.pack(side=tk.TOP)
 
         self.text = tk.Text(self, width=25, height=2)
@@ -293,7 +322,11 @@ class ShareableIdDialog(simpledialog.Dialog):
         return self.text
 
     def buttonbox(self):
-        self.copy = tk.Button(self, text="Copy to Clipboard", command=self.copy_command)
+        self.copy = tk.Button(
+            self,
+            text="Copy to Clipboard",
+            command=self.copy_command
+        )
         self.copy.pack(side=tk.LEFT)
 
         self.close_button = tk.Button(self, text="Close", command=self.destroy)
