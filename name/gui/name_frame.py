@@ -171,7 +171,6 @@ class NameFrame(tk.Frame):
     def group_menu_command(self, group):
         """ Command for clicking a group menu button
         """
-        print(group.group_id)
         self.user.active_group = group
         self.switch_frame("Group Home")
         self.parent.frames[self.parent.get_frame_id("Group Home")].display_group(group)
@@ -264,50 +263,6 @@ class NameFrame(tk.Frame):
         y = self.winfo_pointery() - (self.popup.winfo_height()/2)
         # open the popup window on the cursor
         self.popup.geometry('+%d+%d' % (x, y))
-
-
-    def open_search_progress(self, future):
-        """open a new window that updates the user on the progress of similarity playlist
-           creation
-        """
-        self.grab_set()
-        # Toplevel object which will
-        # be treated as a new window
-        self.win = tk.Toplevel(self)
-        self.win.protocol("WM_DELETE_WINDOW", self.close_progress_window)
-        # sets the title of the
-        # Toplevel widget
-        self.win.title("Searching")
-
-        l_1 = tk.Label(self.win, text="Finding Similar Songs!")
-        l_1.pack(side=tk.TOP)
-
-        self.progress = tk.ttk.Progressbar(self.win, orient=tk.HORIZONTAL, length=200,
-            mode="indeterminate")
-
-        self.progress.pack(pady=10)
-
-        cancel_btn = tk.Button(self.win, text="Cancel", command=self.close_progress_window)
-        cancel_btn.pack(side=tk.BOTTOM)
-
-        self.progress_update(future)
-
-    def progress_update(self, future):
-        """ This is used to update the search progress bar
-                  for now just do a little simulation, notice the hang with time.sleep
-        """
-        # BACKEND - This will have to be updated by the search function(s) in the backend
-        #                  could be indeterminate also, but if not
-        #                 will need some multithreadin to avoid the app hanging during search,
-        #                 possibly fork() would work
-        self.switch_frame("Search Results")
-
-        while future.running() != True:
-            time.sleep(2)
-            print("not done yet")
-
-        print("done I guess")
-        self.close_progress_window()
 
     def close_progress_window(self):
         """override window closing event
