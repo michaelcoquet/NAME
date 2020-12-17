@@ -10,9 +10,9 @@ from tkinter import ttk
 import threading
 
 from .member_home_frame import MemberHomeFrame
-from name.backend_classes.spotify_api_manager import SpotifyAPIManager
-from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
-from name.backend_classes.playlist import Playlist
+from bin.backend_classes.spotify_api_manager import SpotifyAPIManager
+from bin.backend_classes.checking_song_similarity import CheckingSongSimilarity
+from bin.backend_classes.playlist import Playlist
 
 
 class AllPlaylistsFrame(MemberHomeFrame):

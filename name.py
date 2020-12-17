@@ -5,11 +5,11 @@
               songs.
 """
 import os
-import name.gui as gui
+import bin.gui as gui
 import tkinter as tk
 from tkinter import Grid
 
-from name.backend_classes.user import User
+from bin.backend_classes.user import User
 
 
 class Name(tk.Tk):
@@ -30,7 +30,6 @@ class Name(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title("Nearly Analagous Music Engine")
-        self.iconbitmap("name\\resources\\ravencon.ico")
 
         Grid.rowconfigure(self, 0, weight=1)
         Grid.columnconfigure(self, 0, weight=1)

@@ -9,13 +9,13 @@ import os
 import base64
 import json
 import pymongo
-from name.backend_classes.spotify_api_manager import SpotifyAPIManager
-from name.backend_classes.playlist import Playlist
-from name.backend_classes.group import Group
-from name.backend_classes.song import Song
-from name.backend_classes.song import Artist
-from name.backend_classes.song import Album
-from name.backend_classes.song import SongDetails
+from bin.backend_classes.spotify_api_manager import SpotifyAPIManager
+from bin.backend_classes.playlist import Playlist
+from bin.backend_classes.group import Group
+from bin.backend_classes.song import Song
+from bin.backend_classes.song import Artist
+from bin.backend_classes.song import Album
+from bin.backend_classes.song import SongDetails
 
 
 class PersistentStorage:

@@ -1,5 +1,5 @@
 
-from name.backend_classes.playlist import Playlist
+from bin.backend_classes.playlist import Playlist
 
 class TemporaryStorage:
     """ A class which will handle the temporary storage of a created

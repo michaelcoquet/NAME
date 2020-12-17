@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import StringVar
 from tkinter import ttk
 
-from name.backend_classes.persistent_storage import PersistentStorage
+from bin.backend_classes.persistent_storage import PersistentStorage
 from .home_page_frame import HomePageFrame
 from .name_frame import NameFrame
 

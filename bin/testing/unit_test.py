@@ -9,21 +9,21 @@ import os
 import time
 import pytest
 
-# from name.testing.proof_of_concept import User
+# from bin.testing.proof_of_concept import User
 # as we work on our app going forward, import classes from the appropriate folder(s)
-from name.backend_classes import SongSimilarity
-from name.backend_classes import SpotifyAPIManager
-from name.backend_classes import Query
-from name.backend_classes.song import Artist
-from name.backend_classes.song import Album
-from name.backend_classes.song import Song
-from name.backend_classes.song import SongDetails
-from name.backend_classes.playlist import Playlist
-from name.backend_classes import Genius_Api_Manager
-from name.backend_classes import Lyrics
-from name.backend_classes import temporary_storage
-from name.backend_classes import User
-from name.backend_classes import Group
+from bin.backend_classes import SongSimilarity
+from bin.backend_classes import SpotifyAPIManager
+from bin.backend_classes import Query
+from bin.backend_classes.song import Artist
+from bin.backend_classes.song import Album
+from bin.backend_classes.song import Song
+from bin.backend_classes.song import SongDetails
+from bin.backend_classes.playlist import Playlist
+from bin.backend_classes import Genius_Api_Manager
+from bin.backend_classes import Lyrics
+from bin.backend_classes import temporary_storage
+from bin.backend_classes import User
+from bin.backend_classes import Group
 
 # Tests for the User class
 # def test_setUserType_v1():

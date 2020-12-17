@@ -8,9 +8,9 @@
 import string
 import random
 import operator
-from name.backend_classes.query import Query
-from name.backend_classes.song_similarity import SongSimilarity
-from name.backend_classes.spotify_api_manager import SpotifyAPIManager
+from bin.backend_classes.query import Query
+from bin.backend_classes.song_similarity import SongSimilarity
+from bin.backend_classes.spotify_api_manager import SpotifyAPIManager
 
 class CheckingSongSimilarity:
     """ A helper class which handles several aspects of checking

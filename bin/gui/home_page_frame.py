@@ -12,9 +12,9 @@ from time import sleep
 import threading
 
 
-from name.backend_classes import Query
+from bin.backend_classes import Query
 from .name_frame import NameFrame
-from name.backend_classes.checking_song_similarity import CheckingSongSimilarity
+from bin.backend_classes.checking_song_similarity import CheckingSongSimilarity
 
 
 class HomePageFrame(NameFrame):

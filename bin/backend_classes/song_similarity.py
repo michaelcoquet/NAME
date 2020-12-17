@@ -6,8 +6,8 @@
              Sean Warren
 """
 import numpy as np
-# from name.backend_classes.song import Song
-# from name.backend_classes.song import SongDetails
+# from bin.backend_classes.song import Song
+# from bin.backend_classes.song import SongDetails
 
 
 class SongSimilarity:

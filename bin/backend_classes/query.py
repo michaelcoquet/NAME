@@ -7,8 +7,8 @@
 """
 import operator
 
-from name.backend_classes.spotify_api_manager import SpotifyAPIManager
-from name.backend_classes.song_similarity import SongSimilarity
+from bin.backend_classes.spotify_api_manager import SpotifyAPIManager
+from bin.backend_classes.song_similarity import SongSimilarity
 
 
 class Query:

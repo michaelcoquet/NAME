@@ -9,9 +9,9 @@ import os
 import pymongo
 import tkinter as tk
 
-from name.backend_classes.spotify_api_manager import SpotifyAPIManager
-from name.backend_classes.persistent_storage import PersistentStorage
-from name.backend_classes.playlist import Playlist
+from bin.backend_classes.spotify_api_manager import SpotifyAPIManager
+from bin.backend_classes.persistent_storage import PersistentStorage
+from bin.backend_classes.playlist import Playlist
 
 
 class User:

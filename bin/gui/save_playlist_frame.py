@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import StringVar
 
 from .member_home_frame import MemberHomeFrame
-from name.backend_classes.persistent_storage import PersistentStorage
+from bin.backend_classes.persistent_storage import PersistentStorage
 
 
 class SavePlaylistFrame(MemberHomeFrame):

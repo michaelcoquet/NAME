@@ -9,7 +9,7 @@ import tkinter as tk
 import tkinter.scrolledtext as st
 
 from .home_page_frame import HomePageFrame
-from name.backend_classes.lyrics import Lyrics
+from bin.backend_classes.lyrics import Lyrics
 
 
 class SongInfoFrame(HomePageFrame):

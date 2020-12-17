@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from .group_home_frame import GroupHomeFrame
-from name.backend_classes.group import Group
+from bin.backend_classes.group import Group
 
 
 class EditGroupFrame(GroupHomeFrame):

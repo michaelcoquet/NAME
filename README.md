@@ -23,9 +23,9 @@ To build and run our program, follow these steps:
 
 Note: it is particularly important that the installed version of numpy is 1.19.3, as there are incompatibilites between other versions of numpy and Python 3.9.0. To ensure compatability, make sure that the other packages also match the above versions.
 
-All other modules used in our project should come as part of the Python 3.9.0 distribution, but could also be installed with pip if needed. If this is this case, you will be prompted with a message that the module does not exist when running our program for the first time: simply pip install the missing module and re-run the name.py file. 
+All other modules used in our project should come as part of the Python 3.9.0 distribution, but could also be installed with pip if needed. If this is this case, you will be prompted with a message that the module does not exist when running our program for the first time: simply pip install the missing module and re-run the bin.py file. 
 
-3. Dowload our project from the master branch (it will download as a compressed file). Extract the folders from the compressed file: within the extracted folder, there should be a group5-master folder which will contain our project files (in particular, it should contain the name.py file). To run the project, navigate to this folder location on the command line and type python name.py.
+3. Dowload our project from the master branch (it will download as a compressed file). Extract the folders from the compressed file: within the extracted folder, there should be a group5-master folder which will contain our project files (in particular, it should contain the bin.py file). To run the project, navigate to this folder location on the command line and type python bin.py.
 
 4. At this point, the GUI should appear and you can use our app. Do not close the command line while using the app. 
 

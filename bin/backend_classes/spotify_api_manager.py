@@ -10,11 +10,11 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 
-from name.backend_classes.song import Artist
-from name.backend_classes.song import Album
-from name.backend_classes.song import Song
-from name.backend_classes.song import SongDetails
-from name.backend_classes.playlist import Playlist
+from bin.backend_classes.song import Artist
+from bin.backend_classes.song import Album
+from bin.backend_classes.song import Song
+from bin.backend_classes.song import SongDetails
+from bin.backend_classes.playlist import Playlist
 
 
 class SpotifyAPIManager:

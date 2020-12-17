@@ -15,7 +15,7 @@ from tkinter import Grid
 from tkinter import Menu
 from tkinter import ttk
 
-from name.backend_classes import Query
+from bin.backend_classes import Query
 
 
 class NameFrame(tk.Frame):
