@@ -1,7 +1,2 @@
-__pycache__/
-.cache
-.pytest_cache
-.vscode
-name_workspace.code-workspace
-*.json
-.vs/
+.vscode/
+env
