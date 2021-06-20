@@ -1,5 +1,7 @@
 .vscode/
 env
-db.sqlite3
 cert.key
 cert.crt
+account/__pycache__/
+account/migrations/__pycache__/
+NAME/__pycache__/
