@@ -231,6 +231,10 @@ ul.messages li a.close {
     color: #fff;
 }
 
+.social li.spotify {
+    background: #1DB954;
+}
+
 .social li.facebook {
     background: #3b5399;
 }
