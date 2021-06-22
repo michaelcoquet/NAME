@@ -5,3 +5,4 @@ cert.crt
 account/__pycache__/
 account/migrations/__pycache__/
 NAME/__pycache__/
+.env.dev
