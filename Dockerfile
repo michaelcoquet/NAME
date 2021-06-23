@@ -1,8 +1,6 @@
 # pull official base image
-FROM python:3.9.5-slim-buster
+FROM alpine:latest
 
-# set work directory
-WORKDIR ./
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -10,14 +8,13 @@ ENV PYTHONUNBUFFERED 1
 
 # install psycopg2 dependencies
 RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev
+    && apk add postgresql-dev gcc python3 python3-dev alpine-sdk libffi-dev musl-dev py3-pip py3-cryptography py3-pillow
 
 # install dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt .
-RUN pip install -r requirements.txt
-
+COPY requirements.txt .
+RUN pip install --requirement ./requirements.txt
+COPY .env.dev .
 # copy project
 COPY . .
 
-ENTRYPOINT ["bash","entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
