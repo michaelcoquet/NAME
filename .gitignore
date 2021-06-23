@@ -1,7 +1,8 @@
-__pycache__/
-.cache
-.pytest_cache
-.vscode
-name_workspace.code-workspace
-*.json
-.vs/
+.vscode/
+env
+cert.key
+cert.crt
+account/__pycache__/
+account/migrations/__pycache__/
+NAME/__pycache__/
+.env.dev

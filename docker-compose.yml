@@ -1,0 +1,33 @@
+version: '3.8'
+ 
+services:
+  web:
+    build: ./
+    command: python3 manage.py runserver_plus --cert-file cert.crt 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    env_file:
+      - .env.dev
+    depends_on:
+      - postgres
+    entrypoint: ["./entrypoint.sh"]
+  postgres:
+    image: postgres:13.1
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    env_file:
+      - .env.dev
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - APP_DB_USER=${APP_DB_USER}
+      - APP_DB_PASS=${APP_DB_PASS}
+      - APP_DB_NAME=${APP_DB_NAME}
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
