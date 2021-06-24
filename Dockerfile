@@ -13,7 +13,6 @@ RUN apk update \
 # install dependencies
 COPY requirements.txt .
 RUN pip install --requirement ./requirements.txt
-COPY .env.dev .
 # copy project
 COPY . .
 
