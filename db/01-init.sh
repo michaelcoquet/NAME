@@ -18,3 +18,4 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
 	CREATE INDEX idx_event_aggregate_id ON event (aggregate_id);
   COMMIT;
 EOSQL
+fi

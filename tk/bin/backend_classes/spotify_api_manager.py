@@ -23,8 +23,8 @@ class SpotifyAPIManager:
         """ Instantiation function. Sets up all required attributes
             for the authorization code flow.
         """
-        self.client_id = "0e48c2ec84d3401e9262a2159a277d82"
-        self.client_secret = "aa650130a5b544598f4b058bfd264b21"
+        self.client_id = "x"
+        self.client_secret = "x"
         self.redirect_uri = "http://127.0.0.1:8080/callback/q"
         self.scopes = '''user-read-recently-played user-top-read playlist-modify-public
                         playlist-modify-private playlist-read-private'''
