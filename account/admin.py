@@ -1,7 +1,27 @@
 from django.contrib import admin
-from .models import Profile
+from .models import Profile, Track, Album, Genre, Artist, Playlist
 
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ["user", "date_of_birth", "photo"]
+
+@admin.register(Track)
+class TrackAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "disc_number", "track_number", "duration"]
+
+@admin.register(Album)
+class AlbumAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "genres", "release_date", "total_tracks", "tracks"]
+
+@admin.register(Genre)
+class GenreAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+
+@admin.register(Artist)
+class ArtistAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "albums", "tracks", "genres", "popularity", "images"]
+
+@admin.register(Playlist)
+class PlaylistAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "owner", "public", "description", "collaborative", "followers", "images" ]
