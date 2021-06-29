@@ -1,9 +1,27 @@
 from django.db import models
 from django.conf import settings
-from django.db.models.deletion import CASCADE
+from django.contrib.auth import get_user_model
+
+
+class Contact(models.Model):
+    user_from = models.ForeignKey(
+        "auth.User", related_name="rel_from_set", on_delete=models.CASCADE
+    )
+    user_to = models.ForeignKey(
+        "auth.User", related_name="rel_to_set", on_delete=models.CASCADE
+    )
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ("-created",)
+
+    def __str__(self):
+        return f"{self.user_from} follows {self.user_to}"
+
 
 class Image(models.Model):
     photo = models.ImageField(blank=True)
+
 
 class Profile(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
@@ -12,9 +30,11 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField(blank=True, null=True)
     photo = models.ForeignKey(Image, on_delete=models.CASCADE)
-    
+    spotify_connected = models.BooleanField(null=True)
+
     def __str__(self):
         return f"Profile for user {self.user.username}"
+
 
 class Feature(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
@@ -29,19 +49,22 @@ class Feature(models.Model):
     liveness = models.DecimalField(max_digits=4, decimal_places=3)
     valence = models.DecimalField(max_digits=4, decimal_places=3)
     tempo = models.DecimalField(max_digits=6, decimal_places=3)
-    
+
+
 class Track(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
     name = models.CharField(max_length=62, null=True)
-    # artists = 
-    # album = 
+    # artists =
+    # album =
     disc_number = models.IntegerField()
     track_number = models.IntegerField()
     duration = models.IntegerField()
     feature = models.OneToOneField(Feature, on_delete=models.CASCADE)
-    
+
+
 class Genre(models.Model):
     name = models.CharField(max_length=32, null=True)
+
 
 class Album(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
@@ -51,6 +74,7 @@ class Album(models.Model):
     total_tracks = models.IntegerField()
     tracks = models.ForeignKey(Track, on_delete=models.CASCADE, null=True)
 
+
 class Artist(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
     name = models.CharField(max_length=62, null=True)
@@ -59,6 +83,7 @@ class Artist(models.Model):
     genres = models.ForeignKey(Genre, on_delete=models.CASCADE, null=True)
     popularity = models.IntegerField()
     images = models.ForeignKey(Image, on_delete=models.CASCADE)
+
 
 class Playlist(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
@@ -70,3 +95,12 @@ class Playlist(models.Model):
     followers = None
     images = models.ForeignKey(Image, on_delete=models.CASCADE)
     tracks = models.ManyToManyField(Track)
+
+
+user_model = get_user_model()
+user_model.add_to_class(
+    "following",
+    models.ManyToManyField(
+        "self", through=Contact, related_name="followers", symmetrical=False
+    ),
+)
