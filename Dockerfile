@@ -12,8 +12,12 @@ RUN apk update \
 
 # install dependencies
 COPY requirements.txt .
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install Pillow
 RUN pip install --requirement ./requirements.txt
 # copy project
 COPY . .
+
+EXPOSE 3000
 
 ENTRYPOINT ["entrypoint.sh"]

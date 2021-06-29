@@ -2,8 +2,10 @@
 env
 cert.key
 cert.crt
+pycache
 account/__pycache__/
 account/migrations/__pycache__/
+account/management/__pycache__/
 NAME/__pycache__/
 .env.dev
 db/data
