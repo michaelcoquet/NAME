@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "social_django",
     "django_extensions",
+    "easy_thumbnails",
 ]
 
 MIDDLEWARE = [
@@ -161,3 +162,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("SOCIAL_AUTH_GOOGLE_OAUTH2_SEC
 # twitter
 SOCIAL_AUTH_TWITTER_KEY = os.environ.get("SOCIAL_AUTH_TWITTER_KEY")
 SOCIAL_AUTH_TWITTER_SECRET = os.environ.get("SOCIAL_AUTH_TWITTER_SECRET")
+
+#
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+REDIS_DB = 0

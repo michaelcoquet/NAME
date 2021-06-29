@@ -5,3 +5,5 @@ werkzeug==0.16.0
 pyOpenSSL==19.0.0
 python-social-auth[django]
 ptvsd==4.3.2
+easy-thumbnails==2.7.1
+redis==3.5.3
