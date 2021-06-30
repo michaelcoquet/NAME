@@ -58,7 +58,18 @@ def dashboard(request):
         else:
             print("??????")
     except Profile.DoesNotExist:
-        print("TODO: Make a new profile for this user")
+        if request.session._session["social_auth_last_login_backend"] == "spotify":
+            Profile.objects.create(
+                display_name=request.user.first_name,
+                user=request.user,
+                spotify_connected=True,
+            )
+        else:
+            Profile.objects.create(
+                display_name=request.user.first_name,
+                user=request.user,
+                spotify_connected=False,
+            )
     else:
         print("profile exists")
     return render(request, "account/dashboard.html", {"section": "dashboard"})

@@ -24,12 +24,12 @@ class Image(models.Model):
 
 
 class Profile(models.Model):
-    id = models.CharField(primary_key=True, max_length=62)
+    # id = models.CharField(primary_key=True, max_length=62)
     display_name = models.CharField(max_length=32, default="User")
     followers = None
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField(blank=True, null=True)
-    photo = models.ForeignKey(Image, on_delete=models.CASCADE)
+    photo = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
     spotify_connected = models.BooleanField(null=True)
 
     def __str__(self):
@@ -97,10 +97,10 @@ class Playlist(models.Model):
     tracks = models.ManyToManyField(Track)
 
 
-user_model = get_user_model()
-user_model.add_to_class(
-    "following",
-    models.ManyToManyField(
-        "self", through=Contact, related_name="followers", symmetrical=False
-    ),
-)
+# user_model = get_user_model()
+# user_model.add_to_class(
+#     "following",
+#     models.ManyToManyField(
+#         "self", through=Contact, related_name="followers", symmetrical=False
+#     ),
+# )

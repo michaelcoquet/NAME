@@ -9,7 +9,7 @@
     <div class="indicator">
         <div class="child dboard-sync">
             <img src="/static/img/spotify_logo.png" class="logo">
-            {% if spotify_connected %}
+            {% if request.user.profile.spotify_connected %}
                 <div class="spotify-status connected"></div>
             </div>
                 <a href="">Sync with Spotify</a>
