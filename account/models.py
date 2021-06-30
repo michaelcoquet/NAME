@@ -29,7 +29,7 @@ class Profile(models.Model):
     followers = None
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date_of_birth = models.DateField(blank=True, null=True)
-    photo = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
+    photo = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, blank=True)
     spotify_connected = models.BooleanField(null=True)
 
     def __str__(self):
