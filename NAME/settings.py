@@ -150,6 +150,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # Spotify
 SOCIAL_AUTH_SPOTIFY_KEY = os.environ.get("SOCIAL_AUTH_SPOTIFY_KEY")
 SOCIAL_AUTH_SPOTIFY_SECRET = os.environ.get("SOCIAL_AUTH_SPOTIFY_SECRET")
+SOCIAL_AUTH_SPOTIFY_SCOPE = ["user-read-email"]
 
 # facebook
 SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get("SOCIAL_AUTH_FACEBOOK_KEY")
