@@ -54,9 +54,19 @@ def register(request):
 def dashboard(request):
     try:
         if request.user.profile != None:
-            print("profile exists")
+            try:
+                if request.session._session["spotify_state"] != None:
+                    request.user.profile.spotify_connected = True
+                    Profile.objects.filter(user=request.user).update(
+                        spotify_connected=True
+                    )
+                    print("Spotify Account Succesfully Associated")
+                else:
+                    print("ERROR: unknown this should not be reachable")
+            except:
+                print("HELLNO")
         else:
-            print("??????")
+            print("ERROR: unknown this should not be reachable")
     except Profile.DoesNotExist:
         if request.session._session["social_auth_last_login_backend"] == "spotify":
             Profile.objects.create(
@@ -68,10 +78,9 @@ def dashboard(request):
             Profile.objects.create(
                 display_name=request.user.first_name,
                 user=request.user,
-                spotify_connected=False,
             )
-    else:
-        print("profile exists")
+    # else:
+    #     print("ERROR: profile exists, but got some other error")
     return render(request, "account/dashboard.html", {"section": "dashboard"})
 
 
