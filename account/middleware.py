@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.contrib.auth import logout
 from social_core.exceptions import AuthAlreadyAssociated
 from social_django.middleware import SocialAuthExceptionMiddleware
 
@@ -15,6 +14,5 @@ class AuthAlreadyAssociatedMiddleware(SocialAuthExceptionMiddleware):
                 # ask them if they would like to log out and
                 # log back into the other account, or stay
                 # logged into this account
-                return render(
-                    request, "account/already_exists.html", {"err_flag": True}
-                )
+                response = render(request, "account/already_exists.html")
+                return response

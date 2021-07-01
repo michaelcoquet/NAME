@@ -16,12 +16,8 @@
     <div class="modal-footer">
       <p>Would you like to log into the other account? (you will be logged out of this account)</p>
       <div class="yes-no-btns">
-        <div class="btn-cell">
-            <a href="">Yes</a>
-        </div>
-        <div class="btn-cell">
-            <a href="">No</a>
-        </div>
+        <a href="{% url "change_account" %}" class="btn-cell">Yes</a>
+        <a href="{% url "no_change" %}" class="btn-cell">No</a>
       </div>
   </div>
 

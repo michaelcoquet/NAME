@@ -11,9 +11,9 @@ def dashboard(request):
             try:
                 if request.session._session["spotify_state"] != None:
                     request.user.profile.spotify_connected = True
-                    # Profile.objects.filter(user=request.user).update(
-                    #     spotify_connected=True
-                    # )
+                    Profile.objects.filter(user=request.user).update(
+                        spotify_connected=True
+                    )
                     print("Spotify Account Succesfully Associated")
                 else:
                     print("ERROR: unknown this should not be reachable")
