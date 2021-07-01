@@ -28,6 +28,8 @@ urlpatterns = [
     #     name='password_reset_complete'),
     path("users/follow/", views.user_follow, name="user_follow"),
     # path("", views.dashboard, name="dashboard"),
+    path("change_account/", views.change_account, name="change_account"),
+    path("no_change/", views.no_change, name="no_change"),
     path("register/", views.register, name="register"),
     path("", include("django.contrib.auth.urls")),
     path("edit/", views.edit, name="edit"),

@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
@@ -71,6 +71,17 @@ def edit(request):
         "account/edit.html",
         {"user_form": user_form, "profile_form": profile_form},
     )
+
+
+@login_required
+def change_account(request):
+    logout(request)
+    return redirect("/social-auth/login/spotify/")
+
+
+@login_required
+def no_change(request):
+    return render(request, "account/dashboard.html", {"section": "dashboard"})
 
 
 @login_required

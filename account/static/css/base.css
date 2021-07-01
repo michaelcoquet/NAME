@@ -501,15 +501,11 @@ img.user-detail {
     padding: 2px 16px;
     background-color: #5cb85c;
     color: white;
-    align-items: center;
-    text-align: center;
-    vertical-align: center;
-    justify-items: center;
 }
 
 .yes-no-btns {
     display: flex;
-    margin-top: -10px;
+    margin-top: -9px;
     margin-bottom: 10px;
 }
 
@@ -518,19 +514,7 @@ img.user-detail {
     margin: 5px;
     margin-left: 40px;
     margin-right: 40px;
-    align-items: center;
     text-align: center;
-    vertical-align: center;
-    justify-items: center;
     background-color: white;
     font-size: 20px;
 }
-
-/* .btn {
-    height: 100%;
-    width: auto;
-    background-color: red;
-    vertical-align: middle;
-    justify-content: center;
-    vertical-align: middle;
-} */
