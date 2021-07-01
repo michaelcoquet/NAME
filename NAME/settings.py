@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ["mysite.com", "localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     "account.apps.AccountConfig",
+    "dashboard.apps.DashboardConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -51,7 +52,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # "social_django.middleware.SocialAuthExceptionMiddleware",
-    # "account.middleware.AuthAlreadyAssociatedMiddleware",
+    "account.middleware.AuthAlreadyAssociatedMiddleware",
 ]
 
 ROOT_URLCONF = "NAME.urls"
