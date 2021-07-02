@@ -7,3 +7,4 @@ python-social-auth[django]
 ptvsd==4.3.2
 easy-thumbnails==2.7.1
 redis==3.5.3
+# spotipy==2.18.0

@@ -1,6 +1,8 @@
-from django.shortcuts import render
+import sys
+from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from social_django.models import UserSocialAuth
 from account.models import Profile
 
 
@@ -8,17 +10,21 @@ from account.models import Profile
 def dashboard(request):
     try:
         if request.user.profile != None:
+            user = get_object_or_404(User, id=request.user.id)
             try:
-                if request.session._session["spotify_state"] != None:
-                    request.user.profile.spotify_connected = True
-                    Profile.objects.filter(user=request.user).update(
-                        spotify_connected=True
-                    )
-                    print("Spotify Account Succesfully Associated")
-                else:
-                    print("ERROR: unknown this should not be reachable")
+                social = user.social_auth.get(provider="spotify")
+                # user has active spotify account
+                request.user.profile.spotify_connected = True
+                Profile.objects.filter(user=request.user).update(spotify_connected=True)
+
+                # Scrape Spotify API user data for the given user
+                # to populate data for the dashboards analytics
+
+            except UserSocialAuth.DoesNotExist:
+                print("Error: user doesnt have a Spotify account linked yet")
             except:
-                print("No Spotify account associated continue as a guest")
+                print("Unexpected error:", sys.exc_info()[0])
+
         else:
             print("ERROR: unknown this should not be reachable")
     except Profile.DoesNotExist:
@@ -35,4 +41,4 @@ def dashboard(request):
             )
     # else:
     #     print("ERROR: profile exists, but got some other error")
-    return render(request, "account/dashboard.html", {"section": "dashboard"})
+    return render(request, "dashboard/dashboard.html", {"section": "dashboard"})

@@ -81,7 +81,7 @@ def change_account(request):
 
 @login_required
 def no_change(request):
-    return render(request, "account/dashboard.html", {"section": "dashboard"})
+    return render(request, "dashboard/dashboard.html", {"section": "dashboard"})
 
 
 @login_required
