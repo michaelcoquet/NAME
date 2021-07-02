@@ -7,17 +7,19 @@
     </div>
 
     <div class="indicator">
-        <div class="child dboard-sync">
-            <img src="/static/img/spotify_logo.png" class="logo">
-            {% if request.user.profile.spotify_connected %}
+        {% if request.user.profile.spotify_connected %}
+            <div class="child dboard-sync">
+                <img src="/static/img/spotify_logo.png" class="logo">
                 <div class="spotify-status connected"></div>
             </div>
-                <a href="">Sync with Spotify</a>
-            {% else %}
+            <a href="">Sync with Spotify</a>
+        {% else %}
+            <div class="child dboard-sync dboard-notconnected">
+                <img src="/static/img/spotify_logo.png" class="logo">
                 <div class="spotify-status notconnected"></div>
-            </div>    
-                <a href="{% url "social:begin" "spotify" %}">Connect with Spotify</a>
-            {% endif %}
+            </div>
+            <a href="{% url "social:begin" "spotify" %}">Connect with Spotify</a>
+        {% endif %}
     </div>
 </div>
 <p>TODO: After first login scrape user data from spotify and display charts/graphs with

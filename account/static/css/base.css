@@ -375,8 +375,12 @@ img.user-detail {
 .dboard-sync {
     flex: 1;
     padding-top: 10px;
-    padding-right: 37px;
+    padding-right: 28px;
     text-align: right;
+}
+
+.dboard-notconnected {
+    padding-right: 37px;
 }
 
 .logo {
@@ -403,7 +407,7 @@ img.user-detail {
 }
 
 .indicator {
-    margin-right: 10px;
+    margin-right: 1px;
 }
 
 /* Popup dialog */
