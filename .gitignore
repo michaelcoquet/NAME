@@ -6,6 +6,9 @@ pycache
 account/__pycache__/
 account/migrations/__pycache__/
 account/management/__pycache__/
+dashboard/__pycache__/
+spotify/__pycache__/
+common/__pycache__/
 NAME/__pycache__/
 .env.dev
 db/data
