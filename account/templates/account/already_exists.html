@@ -1,0 +1,43 @@
+{% extends "dashboard/dashboard.html" %}
+{% block title %}User Error{% endblock %}
+{% block errors %}
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      {% comment %} <span class="close">&times;</span> {% endcomment %}
+      <h2>WARNING!</h2>
+    </div>
+    <div class="modal-body">
+      <p>The account you tried to log into is already in use. You can either log out of this account and log into the other one or stay logged into this account.</p>
+    </div>
+    <div class="modal-footer">
+      <p>Would you like to log into the other account? (you will be logged out of this account)</p>
+      <div class="yes-no-btns">
+        <a href="{% url "change_account" %}" class="btn-cell">Yes</a>
+        <a href="{% url "no_change" %}" class="btn-cell">No</a>
+      </div>
+  </div>
+
+</div>
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("err_flag");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+modal.style.display = "block";
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+</script>
+{% endblock %}

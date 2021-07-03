@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="parent dboard-header">
+    <div class="child dboard-title">
+    <h1>Dashboard</h1>
+    </div>
+
+    <div class="indicator">
+        {% if request.user.profile.spotify_connected %}
+            <div class="child dboard-sync">
+                <img src="/static/img/spotify_logo.png" class="logo">
+                <div class="spotify-status connected"></div>
+            </div>
+            <a href="">Sync with Spotify</a>
+        {% else %}
+            <div class="child dboard-sync dboard-notconnected">
+                <img src="/static/img/spotify_logo.png" class="logo">
+                <div class="spotify-status notconnected"></div>
+            </div>
+            <a href="{% url "social:begin" "spotify" %}">Connect with Spotify</a>
+        {% endif %}
+    </div>
+</div>
+<p>TODO: After first login scrape user data from spotify and display charts/graphs with
+         analytics of users listening habits</p>
+<p><a href="{% url "edit" %}">edit your profile</a> or <a
+        href="{% url "password_change" %}">change your password</a>.</p>
+{% endblock %}
