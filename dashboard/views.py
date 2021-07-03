@@ -3,7 +3,9 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from social_django.models import UserSocialAuth
+
 from account.models import Profile
+from spotify.views import get_followers, get_token
 
 
 @login_required
@@ -18,8 +20,9 @@ def dashboard(request):
                 Profile.objects.filter(user=request.user).update(spotify_connected=True)
 
                 # Scrape Spotify API user data for the given user
-                # to populate data for the dashboards analytics
-
+                # to populate data for the dashboard
+                # TODO: call scraper here
+                print(get_followers(social))
             except UserSocialAuth.DoesNotExist:
                 print("Error: user doesnt have a Spotify account linked yet")
             except:
@@ -39,6 +42,6 @@ def dashboard(request):
                 display_name=request.user.first_name,
                 user=request.user,
             )
-    # else:
-    #     print("ERROR: profile exists, but got some other error")
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
     return render(request, "dashboard/dashboard.html", {"section": "dashboard"})
