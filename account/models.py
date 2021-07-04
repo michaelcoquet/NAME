@@ -42,7 +42,7 @@ class Profile(models.Model):
 class Playlist(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
     name = models.CharField(max_length=62, null=True)
-    owner = models.CharField(max_length=62, null=True)
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
     public = models.BooleanField()
     description = models.CharField(max_length=128, null=True)
     collaborative = models.BooleanField()
