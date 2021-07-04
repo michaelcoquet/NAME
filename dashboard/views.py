@@ -14,6 +14,7 @@ from spotify.functions import (
     get_top_tracks,
     get_recently_played_tracks,
     get_playlists,
+    print_tracks,
 )
 
 
@@ -37,7 +38,7 @@ def dashboard(request):
                 for artist in current_track["item"]["artists"]:
                     artists.append(artist["name"])
                 print(
-                    '\tCurrently Playing Track: "{}" by '.format(
+                    '\tCurrently Playing Track: "{}" --- '.format(
                         current_track["item"]["name"]
                     ),
                     end="",
@@ -47,16 +48,43 @@ def dashboard(request):
                 print(
                     "\t# of Followers: {}\n\n".format(user_data["followers"]["total"])
                 )
-                print("\tSaved Albums: {}".format(get_saved_albums(social)))
-                print("\tSaved Tracks: {}\n".format(get_saved_tracks(social)))
-                print("\tTop Artists: {}".format(get_top_artists(social)))
-                print("\tTop Tracks: {}\n".format(get_top_tracks(social)))
-                print(
-                    "\tRecently Played Tracks: {}\n".format(
-                        get_recently_played_tracks(social)
-                    )
-                )
-                print("\tPlaylists: {}\n\n".format(get_playlists(social)))
+                albums = get_saved_albums(social)
+                albums_list = []
+                for item in albums["items"]:
+                    albums_list.append("\t\t" + item["album"]["name"])
+                print("\tSaved Albums: ")
+                print(*albums_list, sep="\n")
+
+                tracks = get_saved_tracks(social)
+                track_list = []
+                artists = []
+                for item in tracks["items"]:
+                    for artist in item["track"]["artists"]:
+                        artists.append(artist["name"])
+                    track_str = '\t\t"{}"'.format(item["track"]["name"])
+                    track_str = track_str + " --- " + ", ".join(artists)
+                    artists = []
+                    track_list.append(track_str)
+
+                print("\tSaved Tracks:")
+                print(*track_list, sep="\n")
+
+                top_artists = get_top_artists(social)
+                top_artists_list = []
+                for item in top_artists["items"]:
+                    top_artists_list.append("\t\t" + item["name"])
+                print("\n\tTop Artists:")
+                print(*top_artists_list, sep="\n")
+
+                top_tracks = get_top_tracks(social)
+                print("\tTop Tracks:")
+                print_tracks(top_tracks)
+
+                recent_tracks = get_recently_played_tracks(social)
+                print("\tRecently Played Tracks:")
+                print_tracks(recent_tracks)
+
+                print("\tPlaylists:")
             except UserSocialAuth.DoesNotExist:
                 print("Error: user doesnt have a Spotify account linked yet")
             except:
