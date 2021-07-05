@@ -160,6 +160,7 @@ SOCIAL_AUTH_SPOTIFY_SCOPE = [
     "user-library-read",
     "user-top-read",
     "user-read-recently-played",
+    "playlist-read-private",
 ]
 
 SOCIAL_AUTH_PIPELINE = (
