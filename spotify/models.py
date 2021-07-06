@@ -4,7 +4,6 @@ from django.db import models
 
 
 class Feature(models.Model):
-    id = models.CharField(primary_key=True, max_length=62)
     danceability = models.DecimalField(max_digits=4, decimal_places=3)
     energy = models.DecimalField(max_digits=4, decimal_places=3)
     key = models.IntegerField()
@@ -18,35 +17,39 @@ class Feature(models.Model):
     tempo = models.DecimalField(max_digits=6, decimal_places=3)
 
 
-class Track(models.Model):
-    id = models.CharField(primary_key=True, max_length=62)
-    name = models.CharField(max_length=62, null=True)
-    # artists =
-    # album =
-    disc_number = models.IntegerField()
-    track_number = models.IntegerField()
-    duration = models.IntegerField()
-    feature = models.OneToOneField(Feature, on_delete=models.CASCADE)
-
-
 class Genre(models.Model):
-    name = models.CharField(max_length=32, null=True)
+    name = models.CharField(primary_key=True, max_length=32)
 
 
 class Album(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
-    name = models.CharField(max_length=62, null=True)
-    genres = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, null=True)
     release_date = models.DateField(blank=True, null=True)
     total_tracks = models.IntegerField()
-    tracks = models.ForeignKey(Track, on_delete=models.CASCADE, null=True)
+    # tracks = models.ManyToOneRel()
+    # tracks = models.ForeignKey(Track, on_delete=models.CASCADE, null=True)
+
+    def get_genres(self):
+        return "\n".join([genre.name for genre in self.genres.all()])
 
 
 class Artist(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
     name = models.CharField(max_length=62, null=True)
-    albums = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
-    tracks = models.ForeignKey(Track, on_delete=models.CASCADE, null=True)
-    genres = models.ForeignKey(Genre, on_delete=models.CASCADE, null=True)
+    genres = models.ManyToManyField(Genre)
     popularity = models.IntegerField()
     # images = models.ForeignKey(Image, on_delete=models.CASCADE)
+
+    def get_genres(self):
+        return "\n".join([genre.name for genre in self.genres.all()])
+
+
+class Track(models.Model):
+    id = models.CharField(primary_key=True, max_length=62)
+    name = models.CharField(max_length=200, null=True)
+    artists = models.ManyToManyField(Artist)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
+    disc_number = models.IntegerField()
+    track_number = models.IntegerField()
+    duration = models.IntegerField()
+    feature = models.OneToOneField(Feature, on_delete=models.CASCADE)

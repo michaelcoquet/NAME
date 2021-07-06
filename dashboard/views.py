@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from social_django.models import UserSocialAuth
 
 from account.models import Profile
-from spotify.functions import build_user_profile
+from spotify.scraper import build_user_profile
 
 
 @login_required
@@ -104,8 +104,9 @@ def dashboard(request):
                 # print("\n")
             except UserSocialAuth.DoesNotExist:
                 print("Error: user doesnt have a Spotify account linked yet")
-            except:
-                print("Unexpected error:", sys.exc_info()[0])
+            except Exception as e:
+                print("\n\nERROR: " + e)
+                print("\n\n")
 
         else:
             print("ERROR: unknown this should not be reachable")
@@ -121,6 +122,8 @@ def dashboard(request):
                 display_name=request.user.first_name,
                 user=request.user,
             )
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
+    except Exception as e:
+        print("\n\nERROR: " + e)
+        print("\n\n")
+
     return render(request, "dashboard/dashboard.html", {"section": "dashboard"})

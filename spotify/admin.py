@@ -4,12 +4,25 @@ from .models import Track, Album, Genre, Artist, Feature
 
 @admin.register(Track)
 class TrackAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "disc_number", "track_number", "duration", "feature"]
+    list_display = [
+        "id",
+        "name",
+        "album",
+        "disc_number",
+        "track_number",
+        "duration",
+        "feature",
+    ]
 
 
 @admin.register(Album)
 class AlbumAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "genres", "release_date", "total_tracks", "tracks"]
+    list_display = [
+        "id",
+        "name",
+        "release_date",
+        "total_tracks",
+    ]
 
 
 @admin.register(Genre)
@@ -19,13 +32,12 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Artist)
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "albums", "tracks", "genres", "popularity"]
+    list_display = ["id", "name", "get_genres", "popularity"]
 
 
 @admin.register(Feature)
 class FeatureAdmin(admin.ModelAdmin):
     list_display = [
-        "id",
         "danceability",
         "energy",
         "key",
