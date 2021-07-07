@@ -176,8 +176,6 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.user.user_details",
 )
 
-SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["spotify-associate"]
-
 #
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
