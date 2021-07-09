@@ -1,179 +1,54 @@
-# Spotify API wrapper, this will handle all the API calls to Spotify
-import requests, json, datetime
+import datetime
 from django.contrib.auth.decorators import login_required
+import spotify.wrapper as spotify
 from spotify.models import Album, Artist, Feature, Track, Genre
 from account.models import Playlist
 
-market = "CA"  # TODO: not quite sure how to deal with this yet, possibly
-#                      request the users location
-time_range = "long_term"  # TODO: not sure again, but for now long_term is probably best
-limit = "50"  # for top artists/tracks
-offset = "0"
-
-
-def build_get(url, token):
-    headers = {
-        "content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer %s" % (token),
-    }
-    response = requests.request("GET", url, headers=headers)
-    return response
-
-
+# TODO: Implement batch api calls. The methods used here are slow 
+#       and can be improved by using spotify batch api calls where
+#       available
+# TODO: Unit testing
 @login_required
-def get_token(social):
-    return social.access_token
-
-
-@login_required
-def get_user_info(social):
-    response = build_get("https://api.spotify.com/v1/me", get_token(social))
-    return json.loads(response.text)
-
-
-@login_required
-def get_playing_track(social):
-    url = "https://api.spotify.com/v1/me/player/currently-playing?market={}".format(
-        market
-    )
-    response = build_get(url, get_token(social))
-    if response.status_code == 204 and response.reason == "No Content":
-        # user is not currently playing a track, or the user has private session
-        # enabled
-        return None
-    elif (
-        response.status_code == 200 and response.text == "" and response.reason == "OK"
-    ):
-        # no available devices found
-        return None
-    elif (
-        response.status_code == 200 and response.reason == "OK" and response.text != ""
-    ):
-        return json.loads(response.text)
-    else:
-        # some unknown possible error
-        return None
-
-
-@login_required
-def get_saved_albums(social):
-    url = "https://api.spotify.com/v1/me/albums?limit={}&market={}".format(
-        limit, market
-    )
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-@login_required
-def get_saved_tracks(social):
-    url = "https://api.spotify.com/v1/me/tracks?market={}".format(market)
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-@login_required
-def get_top_artists(social):
-    url = "https://api.spotify.com/v1/me/top/artists?time_range={}&limit={}".format(
-        time_range, limit
-    )
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-@login_required
-def get_top_tracks(social):
-    url = "https://api.spotify.com/v1/me/top/tracks?time_range={}&limit={}".format(
-        time_range, limit
-    )
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-@login_required
-def get_recently_played_tracks(social):
-    url = "https://api.spotify.com/v1/me/player/recently-played?limit={}".format(limit)
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-@login_required
-def get_playlists(social):
-    url = "https://api.spotify.com/v1/me/playlists?limit={}&offset={}".format(
-        limit, offset
-    )
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-def get_playlist_items(social, id):
-    fields = "items(track(href%2C%20id%2C%20name%2C%20artists%2C%20album(href%2C%20id%2C%20name%2C%20release_date%2C%20total_tracks)%2C%20disc_number%2C%20track_number%2C%20duration_ms))"
-    url = "https://api.spotify.com/v1/playlists/{}/tracks?market={}&fields={}&limit={}&offset={}".format(
-        id, market, fields, limit, offset
-    )
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-def get_artist(social, id):
-    url = "https://api.spotify.com/v1/artists/{}".format(id)
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-def get_album(social, id):
-    url = "https://api.spotify.com/v1/albums/{}?market={}".format(id, market)
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-def get_feature(social, id):
-    url = "https://api.spotify.com/v1/audio-features/{}".format(id)
-    response = build_get(url, get_token(social))
-    return json.loads(response.text)
-
-
-@login_required
-def build_user_profile(social):
+def user_profile(social):
     # Profile.objects.filter(user=social.user).update()
-    user_info = get_user_info(social)
+    user_info = spotify.user_info(social)
 
     # Get all the users tracks
-    playing_track = get_playing_track(social)
+    playing_track = spotify.playing_track(social)
     playing_track_obj = build_track(social, playing_track)
 
     track_list = []
-    recent_tracks = get_recently_played_tracks(social)
+    recent_tracks = spotify.recently_played_tracks(social)
     if recent_tracks != None:
         for t in recent_tracks["items"]:
             track_list.append(t["track"])
     recent_tracks_obj = build_tracks(social, track_list)
 
     track_list = []
-    saved_tracks = get_saved_tracks(social)
+    saved_tracks = spotify.saved_tracks(social)
     if saved_tracks != None:
         for t in saved_tracks["items"]:
             track_list.append(t["track"])
     saved_tracks_obj = build_tracks(social, track_list)
 
     track_list = []
-    top_tracks = get_top_tracks(social)
+    top_tracks = spotify.top_tracks(social)
     if top_tracks != None:
         track_list = track_list + top_tracks["items"]
     top_tracks_obj = build_tracks(social, track_list)
 
     saved_album_list = []
-    saved_albums = get_saved_albums(social)
+    saved_albums = spotify.saved_albums(social)
     for item in saved_albums["items"]:
         saved_album_list.append(build_album(social, item["album"]))
         for album_track in item["album"]["tracks"]["items"]:
             album_track["album"] = item["album"]
             build_track(social, album_track)
 
-    top_artists = get_top_artists(social)
+    top_artists = spotify.top_artists(social)
     top_artists_obj = build_artists(social, top_artists["items"])
 
-    playlists = get_playlists(social)
+    playlists = spotify.playlists(social)
     build_playlists(social, playlists)
 
     if playing_track_obj != None:
@@ -240,7 +115,7 @@ def build_album(social, album):
     elif filter.count() > 1:
         print("Error Album should be 0 or 1")
     else:
-        album_obj = get_album(social=social, id=id)
+        album_obj = spotify.album(social=social, id=id)
         # the spotify api returns in the ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
         # Here only the YYYY-MM-DD will be considered
         year = album_obj["release_date"][0:4]
@@ -275,7 +150,7 @@ def build_artists(social, artists):
         elif filter.count() > 1:
             print("Error count should be 0 or 1 for artists")
         else:
-            artist_json = get_artist(social=social, id=id)
+            artist_json = spotify.artist(social=social, id=id)
 
             # add the genres to the db if they dont already exist
             genre_list = []
@@ -306,7 +181,7 @@ def build_feature(social, track):
     elif filter.count() > 1:
         print("Error count should be 0 or 1 for Feature")
     else:
-        feature_obj = get_feature(social, track["id"])
+        feature_obj = spotify.feature(social, track["id"])
         return Feature.objects.create(
             danceability=feature_obj["danceability"],
             energy=feature_obj["energy"],
@@ -326,7 +201,7 @@ def build_playlists(social, playlists):
     all_tracks = []
     for item in playlists["items"]:
         track_obj_list = []
-        playlist_tracks = get_playlist_items(social, item["id"])
+        playlist_tracks = spotify.playlist_items(social, item["id"])
         all_tracks = all_tracks + playlist_tracks["items"]
         for i, track in enumerate(all_tracks):
             track_obj_list.append(build_track(social, all_tracks[i]["track"]))

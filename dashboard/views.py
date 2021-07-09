@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from social_django.models import UserSocialAuth
 
 from account.models import Profile
-from spotify.scraper import build_user_profile
+import spotify.scraper as scrape
 
 
 @login_required
@@ -33,8 +33,8 @@ def dashboard(request):
 
         # Scrape Spotify API user data for the given user
         # to populate data for the dashboard
-        build_user_profile(social_query.get())
-
+        scrape.user_profile(social_query.get())
+ 
     elif profile_query.count() == 0 and social_query.count() == 0:
         # first login must be with email or another method (if implemented)
         Profile.objects.create(
