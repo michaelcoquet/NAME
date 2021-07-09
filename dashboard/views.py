@@ -33,8 +33,7 @@ def dashboard(request):
 
         # Scrape Spotify API user data for the given user
         # to populate data for the dashboard
-        profile_data = build_user_profile(social_query.get())
-        print(profile_data)
+        build_user_profile(social_query.get())
 
     elif profile_query.count() == 0 and social_query.count() == 0:
         # first login must be with email or another method (if implemented)
