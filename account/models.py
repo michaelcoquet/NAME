@@ -47,7 +47,7 @@ class Playlist(models.Model):
     description = models.CharField(max_length=128, null=True)
     collaborative = models.BooleanField()
     followers = None
-    images = models.ForeignKey(Image, on_delete=models.CASCADE)
+    images = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
     tracks = models.ManyToManyField(Track)
 
 

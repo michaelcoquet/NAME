@@ -2,6 +2,7 @@
 import requests, json, datetime
 from django.contrib.auth.decorators import login_required
 from spotify.models import Album, Artist, Feature, Track, Genre
+from account.models import Playlist
 
 market = "CA"  # TODO: not quite sure how to deal with this yet, possibly
 #                      request the users location
@@ -105,6 +106,15 @@ def get_playlists(social):
     return json.loads(response.text)
 
 
+def get_playlist_items(social, id):
+    fields = "items(track(href%2C%20id%2C%20name%2C%20artists%2C%20album(href%2C%20id%2C%20name%2C%20release_date%2C%20total_tracks)%2C%20disc_number%2C%20track_number%2C%20duration_ms))"
+    url = "https://api.spotify.com/v1/playlists/{}/tracks?market={}&fields={}&limit={}&offset={}".format(
+        id, market, fields, limit, offset
+    )
+    response = build_get(url, get_token(social))
+    return json.loads(response.text)
+
+
 def get_artist(social, id):
     url = "https://api.spotify.com/v1/artists/{}".format(id)
     response = build_get(url, get_token(social))
@@ -148,51 +158,60 @@ def build_user_profile(social):
         for t in recent_tracks["items"]:
             track_list.append(t["track"])
 
-    build_tracks(social=social, tracks=track_list)
-
     saved_albums = get_saved_albums(social)
 
     top_artists = get_top_artists(social)
 
     playlists = get_playlists(social)
+    build_playlists(social, playlists)
+
+    build_tracks(social=social, tracks=track_list)
+
     print("done building profile")
 
 
+def build_track(social, track):
+    id = track["id"]
+    # 1: check whether id already exists in db
+    filter = Track.objects.filter(id=id)
+    if filter.count() == 1:
+        pass
+    elif filter.count() > 1:
+        print("Error count should be 0 or 1 for tacks")
+    else:
+        # add the artists to the db if they dont already exist
+        artists = build_artists(social=social, artists=track["artists"])
+        # add the albums to the db if they dont already exist
+        album = build_album(social=social, album=track["album"])
+        # add the features to the db if they dont already exist
+        feature = build_feature(social=social, track=track)
+
+        track_obj = Track.objects.create(
+            id=id,
+            name=track["name"],
+            album=album,
+            disc_number=track["disc_number"],
+            track_number=track["track_number"],
+            duration=track["duration_ms"],
+            feature=feature,
+        )
+
+        track_obj.artists.set(artists)
+        return track_obj
+
+
 def build_tracks(social, tracks):
+    track_list = []
     for track in tracks:
-        id = track["id"]
-        # 1: check whether id already exists in db
-        filter = Track.objects.filter(id=id)
-        if filter.count() == 1:
-            print("Track already Exists")
-        elif filter.count() > 1:
-            print("Error count should be 0 or 1 for tacks")
-        else:
-            # add the artists to the db if they dont already exist
-            artists = build_artists(social=social, artists=track["artists"])
-            # add the albums to the db if they dont already exist
-            album = build_album(social=social, album=track["album"])
-            # add the features to the db if they dont already exist
-            feature = build_feature(social=social, track=track)
-
-            track_obj = Track.objects.create(
-                id=id,
-                name=track["name"],
-                album=album,
-                disc_number=track["disc_number"],
-                track_number=track["track_number"],
-                duration=track["duration_ms"],
-                feature=feature,
-            )
-
-            track_obj.artists.set(artists)
+        track_list.append(build_track(social, track))
+    return track_list
 
 
 def build_album(social, album):
     id = album["id"]
     filter = Album.objects.filter(id=id)
     if filter.count() == 1:
-        print("Album already exists")
+        pass
     elif filter.count() > 1:
         print("Error Album should be 0 or 1")
     else:
@@ -220,7 +239,7 @@ def build_artists(social, artists):
         id = artist["id"]
         filter = Artist.objects.filter(id=id)
         if filter.count() == 1:
-            print("Artist already exists")
+            continue
         elif filter.count() > 1:
             print("Error count should be 0 or 1 for artists")
         else:
@@ -251,7 +270,7 @@ def build_feature(social, track):
     id = track["id"]
     filter = Track.objects.filter(id=id)
     if filter.count() == 1:
-        print("Feature already exists")
+        pass
     elif filter.count() > 1:
         print("Error count should be 0 or 1 for Feature")
     else:
@@ -269,3 +288,24 @@ def build_feature(social, track):
             valence=feature_obj["valence"],
             tempo=feature_obj["tempo"],
         )
+
+
+def build_playlists(social, playlists):
+    all_tracks = []
+    for item in playlists["items"]:
+        track_obj_list = []
+        playlist_tracks = get_playlist_items(social, item["id"])
+        all_tracks = all_tracks + playlist_tracks["items"]
+        for i, track in enumerate(all_tracks):
+            track_obj_list.append(build_track(social, all_tracks[i]["track"]))
+
+        new_playlist = Playlist.objects.create(
+            id=item["id"],
+            name=item["name"],
+            owner=social.user.profile,
+            public=item["public"],
+            description=item["description"],
+            collaborative=item["collaborative"],
+        )
+
+        new_playlist.tracks.set(track_obj_list)
