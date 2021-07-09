@@ -1,8 +1,8 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.db.models.deletion import CASCADE
 
-from spotify.models import Track
+from spotify.models import Artist, Track, Album
 
 
 class Contact(models.Model):
@@ -34,6 +34,14 @@ class Profile(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     photo = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, blank=True)
     spotify_connected = models.BooleanField(null=True)
+    current_track = models.ForeignKey(
+        Track, on_delete=CASCADE, null=True, related_name="+"
+    )
+    recent_tracks = models.ManyToManyField(Track, related_name="+")
+    saved_albums = models.ManyToManyField(Album)
+    saved_tracks = models.ManyToManyField(Track, related_name="+")
+    top_tracks = models.ManyToManyField(Track, related_name="+")
+    top_artists = models.ManyToManyField(Artist)
 
     def __str__(self):
         return f"Profile for user {self.user.username}"
@@ -49,12 +57,3 @@ class Playlist(models.Model):
     followers = None
     images = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
     tracks = models.ManyToManyField(Track)
-
-
-# user_model = get_user_model()
-# user_model.add_to_class(
-#     "following",
-#     models.ManyToManyField(
-#         "self", through=Contact, related_name="followers", symmetrical=False
-#     ),
-# )
