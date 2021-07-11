@@ -15,7 +15,7 @@ def user_profile(social):
 
     # Get all the users tracks
     playing_track = spotify.playing_track(social)
-    playing_track_obj = build_track(social, playing_track)
+    playing_track_obj = build_track(social, playing_track["item"])
 
     track_list = []
     recent_tracks = spotify.recently_played_tracks(social)
@@ -52,7 +52,8 @@ def user_profile(social):
     build_playlists(social, playlists)
 
     if playing_track_obj != None:
-        social.user.profile.current_track.set(playing_track_obj)
+        social.user.profile.current_track = playing_track_obj
+        social.user.profile.save()
     if recent_tracks_obj != None:
         social.user.profile.recent_tracks.set(recent_tracks_obj)
     if saved_album_list != None:
