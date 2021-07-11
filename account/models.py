@@ -2,7 +2,9 @@ from django.db import models
 from django.conf import settings
 from django.db.models.deletion import CASCADE
 
-from spotify.models import Artist, Track, Album
+from spotify.models import Artist, Track, Album, Genre
+
+top_n = 5  # the top number of songs or artists to return
 
 
 class Contact(models.Model):
@@ -40,11 +42,56 @@ class Profile(models.Model):
     recent_tracks = models.ManyToManyField(Track, related_name="+")
     saved_albums = models.ManyToManyField(Album)
     saved_tracks = models.ManyToManyField(Track, related_name="+")
-    top_tracks = models.ManyToManyField(Track, related_name="+")
-    top_artists = models.ManyToManyField(Artist)
+    top_tracks = models.ManyToManyField(
+        Track, related_name="profiles", through="TopTrack"
+    )
+    top_artists = models.ManyToManyField(
+        Artist, related_name="profiles", through="TopArtist"
+    )
+    top_genres = models.ManyToManyField(Genre)
+
+    def __repr__(self):
+        top_track_list = []
+        track_queryset = (
+            TopTrack.objects.filter(owner=self).order_by("rank").values()[0:top_n]
+        )
+        for track in track_queryset:
+            top_track_list.append(
+                Track.objects.filter(id=track["track_id"]).get().__str__()
+            )
+
+        top_artist_list = []
+        artist_queryset = (
+            TopArtist.objects.filter(owner=self).order_by("rank").values()[0:top_n]
+        )
+        for artist in artist_queryset:
+            top_artist_list.append(
+                Artist.objects.filter(id=artist["artist_id"]).get().__str__()
+            )
+
+        self.top_genre_list = [i[0] for i in self.top_genres.values_list()]
+        self.top_artist_list = top_artist_list
+        self.top_track_list = top_track_list
+
+        return self
+
+
+class TopTrack(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    rank = models.IntegerField()
 
     def __str__(self):
-        return f"Profile for user {self.user.username}"
+        return self.track.__str__()
+
+
+class TopArtist(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
+    rank = models.IntegerField()
+
+    def __str__(self):
+        return self.artist.__str__()
 
 
 class Playlist(models.Model):

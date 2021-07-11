@@ -31,8 +31,9 @@ class Feature(models.Model):
             float(self.valence) * 100,
         ]
 
+
 class Genre(models.Model):
-    name = models.CharField(primary_key=True, max_length=32)
+    name = models.CharField(primary_key=True, max_length=62)
 
 
 class Album(models.Model):
@@ -57,6 +58,9 @@ class Artist(models.Model):
     def get_genres(self):
         return "\n".join([genre.name for genre in self.genres.all()])
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Track(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
@@ -67,6 +71,12 @@ class Track(models.Model):
     track_number = models.IntegerField()
     duration = models.IntegerField()
     feature = models.OneToOneField(Feature, on_delete=models.CASCADE)
+
+    def __str__(self):
+        artists_str = []
+        for artist in self.artists.values():
+            artists_str.append(artist["name"])
+        return f"{self.name} --- {[artist for artist in artists_str]}"
 
     def __repr__(self):
         self.feature_repr = self.feature.__repr__()

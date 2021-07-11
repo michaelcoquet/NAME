@@ -2,9 +2,9 @@ import datetime
 from django.contrib.auth.decorators import login_required
 import spotify.wrapper as spotify
 from spotify.models import Album, Artist, Feature, Track, Genre
-from account.models import Playlist
+from account.models import Playlist, TopTrack, TopArtist
 
-# TODO: Implement batch api calls. The methods used here are slow 
+# TODO: Implement batch api calls. The methods used here are slow
 #       and can be improved by using spotify batch api calls where
 #       available
 # TODO: Unit testing
@@ -15,7 +15,8 @@ def user_profile(social):
 
     # Get all the users tracks
     playing_track = spotify.playing_track(social)
-    playing_track_obj = build_track(social, playing_track["item"])
+    if playing_track != None:
+        playing_track_obj = build_track(social, playing_track["item"])
 
     track_list = []
     recent_tracks = spotify.recently_played_tracks(social)
@@ -35,7 +36,7 @@ def user_profile(social):
     top_tracks = spotify.top_tracks(social)
     if top_tracks != None:
         track_list = track_list + top_tracks["items"]
-    top_tracks_obj = build_tracks(social, track_list)
+    top_tracks_obj = build_top_tracks(social, track_list)
 
     saved_album_list = []
     saved_albums = spotify.saved_albums(social)
@@ -46,14 +47,24 @@ def user_profile(social):
             build_track(social, album_track)
 
     top_artists = spotify.top_artists(social)
-    top_artists_obj = build_artists(social, top_artists["items"])
+    top_artists_obj = build_top_artists(social, top_artists["items"])
+
+    top_genre_list = []
+    seen = set(top_genre_list)
+    for artist_obj in top_artists_obj:
+        for genre in artist_obj.genres.values():
+            if genre["name"] not in seen:
+                seen.add(genre["name"])
+                filtr = Genre.objects.filter(name=genre["name"])
+                if filtr.count() == 0:
+                    Genre.objects.create(name=genre["name"])
+                top_genre_list.append(filtr.get())
 
     playlists = spotify.playlists(social)
     build_playlists(social, playlists)
-
-    if playing_track_obj != None:
-        social.user.profile.current_track = playing_track_obj
-        social.user.profile.save()
+    if playing_track != None:
+        if playing_track_obj != None:
+            social.user.profile.current_track = playing_track_obj
     if recent_tracks_obj != None:
         social.user.profile.recent_tracks.set(recent_tracks_obj)
     if saved_album_list != None:
@@ -64,6 +75,31 @@ def user_profile(social):
         social.user.profile.top_tracks.set(top_tracks_obj)
     if top_artists_obj != None:
         social.user.profile.top_artists.set(top_artists_obj)
+    if top_genre_list != None:
+        social.user.profile.top_genres.set(top_genre_list)
+    social.user.profile.save()
+
+
+def build_top_tracks(social, tracks):
+    track_list = []
+    for i, track in enumerate(tracks):
+        track_obj = build_top_track(social, track, i)
+        if track_obj != None:
+            track_list.append(track_obj)
+    return track_list
+
+
+def build_top_track(social, track, rank):
+    if track != None:
+        track_obj = build_track(social, track)
+
+        TopTrack.objects.create(
+            owner=social.user.profile,
+            track=track_obj,
+            rank=rank,
+        )
+
+        return track_obj
 
 
 def build_track(social, track):
@@ -141,37 +177,84 @@ def build_album(social, album):
         return album_return
 
 
+def build_top_tracks(social, tracks):
+    track_list = []
+    for i, track in enumerate(tracks):
+        track_obj = build_top_track(social, track, i)
+        if track_obj != None:
+            track_list.append(track_obj)
+    return track_list
+
+
+def build_top_track(social, track, rank):
+    if track != None:
+        track_obj = build_track(social, track)
+
+        TopTrack.objects.create(
+            owner=social.user.profile,
+            track=track_obj,
+            rank=rank,
+        )
+
+        return track_obj
+
+
+def build_top_artists(social, artists):
+    artist_obj_list = []
+    for i, artist in enumerate(artists):
+        artist_obj = build_top_artist(social, artist, i)
+        if artist_obj != None:
+            artist_obj_list.append(artist_obj)
+    return artist_obj_list
+
+
+def build_top_artist(social, artist, rank):
+    if artist != None:
+        artist_obj = build_artist(social, artist)
+
+        TopArtist.objects.create(
+            owner=social.user.profile, artist=artist_obj, rank=rank
+        )
+
+        return artist_obj
+
+
 def build_artists(social, artists):
     artist_obj_list = []
     for artist in artists:
-        id = artist["id"]
-        filter = Artist.objects.filter(id=id)
-        if filter.count() == 1:
-            artist_obj_list.append(filter.get())
-        elif filter.count() > 1:
-            print("Error count should be 0 or 1 for artists")
-        else:
-            artist_json = spotify.artist(social=social, id=id)
-
-            # add the genres to the db if they dont already exist
-            genre_list = []
-            for genre in artist_json["genres"]:
-                filter = Genre.objects.filter(name=genre)
-                if filter.count() == 0:
-                    genre_list.append(Genre.objects.create(name=genre))
-                elif filter.count() == 1:
-                    genre_list.append(filter.get())
-
-            artist_obj = Artist.objects.create(
-                id=id,
-                name=artist_json["name"],
-                popularity=artist_json["popularity"],
-            )
-
-            artist_obj.genres.set(genre_list)
-            artist_obj_list.append(artist_obj)
+        artist_obj = build_artist(social, artist)
+        artist_obj_list.append(artist_obj)
 
     return artist_obj_list
+
+
+def build_artist(social, artist):
+    id = artist["id"]
+    filter = Artist.objects.filter(id=id)
+    if filter.count() == 1:
+        return filter.get()
+    elif filter.count() > 1:
+        print("Error count should be 0 or 1 for artists")
+    else:
+        artist_json = spotify.artist(social=social, id=id)
+
+        # add the genres to the db if they dont already exist
+        genre_list = []
+        for genre in artist_json["genres"]:
+            filter = Genre.objects.filter(name=genre)
+            if filter.count() == 0:
+                genre_list.append(Genre.objects.create(name=genre))
+            elif filter.count() == 1:
+                genre_list.append(filter.get())
+
+        artist_obj = Artist.objects.create(
+            id=id,
+            name=artist_json["name"],
+            popularity=artist_json["popularity"],
+        )
+        artist_obj.genres.set(genre_list)
+
+        return artist_obj
 
 
 def build_feature(social, track):
