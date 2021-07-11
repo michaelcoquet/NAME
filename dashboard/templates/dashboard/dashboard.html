@@ -23,11 +23,41 @@
     </div>
 </div>
 
+<br><br>
 <div id="container" style="width: 75%;">
-    <h3 style="text-align: center"><u>Current Track Analysis</u></h3>
+    <h3 style="text-align: center"><u>Current Track</u></h3>
     <canvas id="current-track-radar"></canvas>
 </div>
 
+<br><br>
+<div id="container" style="width: 75%;">
+    <h3 style="text-align: center"><u>Top 5 Tracks</u></h3>
+    <ol>
+        {% for track in profile.top_track_list %}
+            <li>{{ track|safe }}</li>
+        {% endfor %}
+    </ol>
+</div>
+
+<br><br>
+<div id="container" style="width: 75%;">
+    <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
+    <ol>
+        {% for artist in profile.top_artist_list %}
+            <li>{{ artist|safe }}</li>
+        {% endfor %}
+    </ol>
+</div>
+
+<br><br>
+<div id="container" style="width: 75%;">
+    <h3 style="text-align: center"><u>Top Genres</u></h3>
+    <ul>
+        {% for artist in profile.top_genre_list %}
+            <li>{{ artist|safe }}</li>
+        {% endfor %}
+    </ul>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 

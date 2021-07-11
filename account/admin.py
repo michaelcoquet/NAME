@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Playlist, Profile, Image
+from .models import Playlist, Profile, Image, TopTrack
 
 
 @admin.register(Profile)
@@ -23,4 +23,13 @@ class PlaylistAdmin(admin.ModelAdmin):
         "collaborative",
         "followers",
         "images",
+    ]
+
+
+@admin.register(TopTrack)
+class TopTrackAdmin(admin.ModelAdmin):
+    list_display = [
+        "owner",
+        "track",
+        "rank",
     ]
