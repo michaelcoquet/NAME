@@ -16,6 +16,20 @@ class Feature(models.Model):
     valence = models.DecimalField(max_digits=4, decimal_places=3)
     tempo = models.DecimalField(max_digits=6, decimal_places=3)
 
+    def __str__(self):
+        return "TODO"
+
+    def __repr__(self):
+        return [
+            float(self.danceability) * 100,
+            float(self.energy) * 100,
+            float(self.mode) * 100,
+            float(self.speechiness) * 100,
+            float(self.acousticness) * 100,
+            float(self.instrumentalness) * 100,
+            float(self.liveness) * 100,
+            float(self.valence) * 100,
+        ]
 
 class Genre(models.Model):
     name = models.CharField(primary_key=True, max_length=32)
@@ -53,3 +67,7 @@ class Track(models.Model):
     track_number = models.IntegerField()
     duration = models.IntegerField()
     feature = models.OneToOneField(Feature, on_delete=models.CASCADE)
+
+    def __repr__(self):
+        self.feature_repr = self.feature.__repr__()
+        return self

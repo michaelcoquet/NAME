@@ -22,8 +22,47 @@
         {% endif %}
     </div>
 </div>
-<p>TODO: After first login scrape user data from spotify and display charts/graphs with
-         analytics of users listening habits</p>
+
+<div id="container" style="width: 75%;">
+    <h3 style="text-align: center"><u>Current Track Analysis</u></h3>
+    <canvas id="current-track-radar"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+var config = {
+    type: 'radar',
+    data: {
+        datasets: [{
+            data: {{ current_track.feature_repr|safe }},
+            fill: true,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgb(255, 99, 132)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(255, 99 132)',
+            label: '{{current_track.name|safe}}'
+        }],
+        labels: {{ labels|safe }}
+    },
+    options: {
+        elements: {
+            line: {
+                borderWidth: 2
+            }
+        }
+    },
+};
+
+window.onload = function() {
+    var ctx = document.getElementById('current-track-radar').getContext('2d');
+    window.myPie = new Chart(ctx, config);
+};
+
+</script>
+
+
 <p><a href="{% url "edit" %}">edit your profile</a> or <a
         href="{% url "password_change" %}">change your password</a>.</p>
 {% endblock %}
