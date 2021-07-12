@@ -34,9 +34,9 @@ def dashboard(request):
         # Scrape Spotify API user data for the given user
         # to populate data for the dashboard
         # TODO: Use celery or something similar to do this
-        #       async'ly 
+        #       async'ly
         scrape.user_profile(social_query.get())
- 
+
     elif profile_query.count() == 0 and social_query.count() == 0:
         # first login must be with email or another method (if implemented)
         Profile.objects.create(
@@ -47,18 +47,21 @@ def dashboard(request):
         print("ERROR: something went horribly wrong in the dashboard view")
 
     labels = [
-        'Danceability',
-        'Energy',
-        'Mode',
-        'Speechiness',
-        'Acousticness',
-        'Instrumentalness',
-        'Liveness',
-        'Valence',
+        "Danceability",
+        "Energy",
+        "Speechiness",
+        "Acousticness",
+        "Instrumentalness",
+        "Liveness",
+        "Valence",
     ]
-    return render(request, "dashboard/dashboard.html", {
-        # "section": "dashboard"
-        "labels": labels,
-        "current_track": request.user.profile.current_track.__repr__(),
-        "profile": request.user.profile.__repr__(),
-    })
+    return render(
+        request,
+        "dashboard/dashboard.html",
+        {
+            # "section": "dashboard"
+            "labels": labels,
+            "current_track": request.user.profile.current_track.__repr__(),
+            "profile": request.user.profile.__repr__(),
+        },
+    )

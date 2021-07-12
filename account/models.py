@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db.models.deletion import CASCADE
 
 from spotify.models import Artist, Track, Album, Genre
+from spotify import analyzer
 
 top_n = 5  # the top number of songs or artists to return
 
@@ -52,13 +53,16 @@ class Profile(models.Model):
 
     def __repr__(self):
         top_track_list = []
+        top_track_objs = []
         track_queryset = (
             TopTrack.objects.filter(owner=self).order_by("rank").values()[0:top_n]
         )
         for track in track_queryset:
-            top_track_list.append(
-                Track.objects.filter(id=track["track_id"]).get().__str__()
-            )
+            track_obj = Track.objects.filter(id=track["track_id"]).get()
+            top_track_objs.append(track_obj)
+            top_track_list.append(track_obj.__str__())
+
+        top_track_analysis = analyzer.tracks_avg(top_track_objs)
 
         top_artist_list = []
         artist_queryset = (
@@ -70,8 +74,10 @@ class Profile(models.Model):
             )
 
         self.top_genre_list = [i[0] for i in self.top_genres.values_list()]
+        self.top_genre_list = self.top_genre_list[0:11]
         self.top_artist_list = top_artist_list
         self.top_track_list = top_track_list
+        self.top_5_tracks_analysis = top_track_analysis
 
         return self
 
