@@ -2,97 +2,104 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div class="parent dboard-header">
-    <div class="child dboard-title">
-    <h1>Dashboard</h1>
+   <div class="child dboard-title">
+      <h1>Dashboard</h1>
+   </div>
+   <div class="indicator">
+      {% if request.user.profile.spotify_connected %}
+      <div class="child dboard-sync">
+         <img src="/static/img/spotify_logo.png" class="logo">
+         <div class="spotify-status connected"></div>
+      </div>
+      <a href="">Sync with Spotify</a>
+      {% else %}
+      <div class="child dboard-sync dboard-notconnected">
+         <img src="/static/img/spotify_logo.png" class="logo">
+         <div class="spotify-status notconnected"></div>
+      </div>
+      <a href="{% url "social:begin" "spotify" %}">Connect with Spotify</a>
+      {% endif %}
+   </div>
+</div>
+
+<br><br>
+<div id="table">
+    <div class="table-row">
+        <div class="table-column">
+            <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
+            <ol>
+                {% for artist in profile.top_artist_list %}
+                <li>{{ artist|safe }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="table-column">
+            <h3 style="text-align: center"><u>Top Genres</u></h3>
+            <ul id="two-columns">
+                {% for genre in profile.top_genre_list %}
+                <li>{{ genre|safe }}</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
-
-    <div class="indicator">
-        {% if request.user.profile.spotify_connected %}
-            <div class="child dboard-sync">
-                <img src="/static/img/spotify_logo.png" class="logo">
-                <div class="spotify-status connected"></div>
-            </div>
-            <a href="">Sync with Spotify</a>
-        {% else %}
-            <div class="child dboard-sync dboard-notconnected">
-                <img src="/static/img/spotify_logo.png" class="logo">
-                <div class="spotify-status notconnected"></div>
-            </div>
-            <a href="{% url "social:begin" "spotify" %}">Connect with Spotify</a>
-        {% endif %}
+    <div class="table-row">
+        <div class="table-column">
+            <h3 style="text-align: center"><u>Top 5 Tracks</u></h3>
+            <ol>
+                {% for track in profile.top_track_list %}
+                <li>{{ track|safe }}</li>
+                {% endfor %}
+            </ol>
+            <canvas class="radar" id="top-5-tracks-radar"></canvas>
+        </div>
+        <div class="table-column">
+            <h3 style="text-align: center"><u>Current Track</u></h3>
+            <br><br><br><br><br>
+            <canvas class="radar" id="current-track-radar"></canvas>
+        </div>
     </div>
+    <br><br>
+    <a href="{% url "edit" %}">edit your profile</a> or <a
+    href="{% url "password_change" %}">change your password</a>.
 </div>
 
-<br><br>
-<div id="container" style="width: 75%;">
-    <h3 style="text-align: center"><u>Current Track</u></h3>
-    <canvas id="current-track-radar"></canvas>
-</div>
-
-<br><br>
-<div id="container" style="width: 75%;">
-    <h3 style="text-align: center"><u>Top 5 Tracks</u></h3>
-    <ol>
-        {% for track in profile.top_track_list %}
-            <li>{{ track|safe }}</li>
-        {% endfor %}
-    </ol>
-</div>
-
-<br><br>
-<div id="container" style="width: 75%;">
-    <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
-    <ol>
-        {% for artist in profile.top_artist_list %}
-            <li>{{ artist|safe }}</li>
-        {% endfor %}
-    </ol>
-</div>
-
-<br><br>
-<div id="container" style="width: 75%;">
-    <h3 style="text-align: center"><u>Top Genres</u></h3>
-    <ul>
-        {% for artist in profile.top_genre_list %}
-            <li>{{ artist|safe }}</li>
-        {% endfor %}
-    </ul>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-
-var config = {
-    type: 'radar',
-    data: {
-        datasets: [{
-            data: {{ current_track.feature_repr|safe }},
-            fill: true,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgb(255, 99, 132)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgb(255, 99 132)',
-            label: '{{current_track.name|safe}}'
-        }],
-        labels: {{ labels|safe }}
-    },
-    options: {
-        elements: {
-            line: {
-                borderWidth: 2
-            }
-        }
-    },
-};
-
-window.onload = function() {
-    var ctx = document.getElementById('current-track-radar').getContext('2d');
-    window.myPie = new Chart(ctx, config);
-};
-
+   function makeConfig(data, title) {
+       var config = {
+           type: 'radar',
+           data: {
+               datasets: [{
+                   data: data,
+                   fill: true,
+                   backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                   borderColor: 'rgb(255, 99, 132)',
+                   pointBorderColor: '#fff',
+                   pointHoverBackgroundColor: '#fff',
+                   pointHoverBorderColor: 'rgb(255, 99 132)',
+                   label: title
+               }],
+               labels: {{ labels|safe }}
+           },
+           options: {
+               elements: {
+                   line: {
+                       borderWidth: 2
+                   }
+               }
+           },
+       };
+   
+       return config
+   }
+   
+   window.onload = function() {
+       var ctr = document.getElementById('current-track-radar').getContext('2d');
+       var t5tr = document.getElementById('top-5-tracks-radar').getContext('2d');
+       window.currentTrackRadar = new Chart(ctr, makeConfig({{ current_track.feature_repr|safe }}, '{{current_track.name|safe}}'));
+       window.top5TrackRadar = new Chart(t5tr, makeConfig({{  profile.top_5_tracks_analysis|safe }}, 'Top 5 Track Analysis'));
+   };
+   
+   
 </script>
-
-
-<p><a href="{% url "edit" %}">edit your profile</a> or <a
-        href="{% url "password_change" %}">change your password</a>.</p>
 {% endblock %}

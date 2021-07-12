@@ -20,10 +20,10 @@ class Feature(models.Model):
         return "TODO"
 
     def __repr__(self):
+        # [danceability, energy, speechiness, acousticness, instrumentalness, liveness, valence]
         return [
             float(self.danceability) * 100,
             float(self.energy) * 100,
-            float(self.mode) * 100,
             float(self.speechiness) * 100,
             float(self.acousticness) * 100,
             float(self.instrumentalness) * 100,
