@@ -53,17 +53,17 @@ class Profile(models.Model):
     )
     top_genres = models.ManyToManyField(Genre)
 
-    def expandQueryset(self, track_queryset):
+    def expandQueryset(self, track_queryset, key):
         top_track_objs = []
         for i, track in enumerate(track_queryset):
-            track_obj = Track.objects.filter(id=track["track_id"]).get()
+            track_obj = Track.objects.filter(id=track[key]).get()
             if i < top_n:
                 top_track_objs.append(track_obj.__repr__(rank=(i + 1)))
         return top_track_objs
 
     def __repr__(self):
         track_queryset = TopTrack.objects.filter(owner=self).order_by("rank").values()
-        top_track_objs = self.expandQueryset(track_queryset)
+        top_track_objs = self.expandQueryset(track_queryset, "track_id")
         top_5_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:4])
         top_25_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:24])
         top_50_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:49])
@@ -71,7 +71,7 @@ class Profile(models.Model):
         track_queryset = (
             RecentTrack.objects.filter(owner=self).order_by("rank").values()
         )
-        recent_track_objs = self.expandQueryset(track_queryset)
+        recent_track_objs = self.expandQueryset(track_queryset, "track_id")
         last_5_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:4])
         last_25_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:24])
         last_50_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:49])
@@ -80,6 +80,10 @@ class Profile(models.Model):
             last_25_tracks_analysis,
             last_50_tracks_analysis,
         ]
+
+        liked_tracks = [track for track in self.saved_tracks.values()]
+        liked_tracks_objs = self.expandQueryset(liked_tracks, "id")
+        self.liked_tracks_analysis = analyzer.tracks_avg(liked_tracks_objs)
 
         top_artist_list = []
         artist_queryset = (
