@@ -61,7 +61,7 @@ def dashboard(request):
         {
             # "section": "dashboard"
             "labels": labels,
-            "current_track": request.user.profile.current_track.__repr__(),
+            "current_track": request.user.profile.current_track.__repr__(0),
             "profile": request.user.profile.__repr__(),
         },
     )

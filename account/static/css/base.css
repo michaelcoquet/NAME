@@ -394,22 +394,14 @@ img.user-detail {
     display: block;
 }
 
-#table {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-}
-
-.table-row {
-    display: table-row;
-}
-
-.table-column {
-    display: table-cell;
-    width: 0.1%;
+td {
     border: 1px solid #bbb;
-    padding: 15px;
     text-align: center;
+}
+
+thead {
+    height: 50px;
+    line-height: 50px;
 }
 
 .logo {
@@ -567,4 +559,8 @@ img.user-detail {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+}
+
+canvas {
+    width: 100% !important;
 }

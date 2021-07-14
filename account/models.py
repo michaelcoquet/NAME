@@ -40,7 +40,9 @@ class Profile(models.Model):
     current_track = models.ForeignKey(
         Track, on_delete=CASCADE, null=True, related_name="+"
     )
-    recent_tracks = models.ManyToManyField(Track, related_name="+")
+    recent_tracks = models.ManyToManyField(
+        Track, related_name="+", through="RecentTrack"
+    )
     saved_albums = models.ManyToManyField(Album)
     saved_tracks = models.ManyToManyField(Track, related_name="+")
     top_tracks = models.ManyToManyField(
@@ -51,18 +53,33 @@ class Profile(models.Model):
     )
     top_genres = models.ManyToManyField(Genre)
 
-    def __repr__(self):
-        top_track_list = []
+    def expandQueryset(self, track_queryset):
         top_track_objs = []
-        track_queryset = (
-            TopTrack.objects.filter(owner=self).order_by("rank").values()[0:top_n]
-        )
-        for track in track_queryset:
+        for i, track in enumerate(track_queryset):
             track_obj = Track.objects.filter(id=track["track_id"]).get()
-            top_track_objs.append(track_obj)
-            top_track_list.append(track_obj.__str__())
+            if i < top_n:
+                top_track_objs.append(track_obj.__repr__(rank=(i + 1)))
+        return top_track_objs
 
-        top_track_analysis = analyzer.tracks_avg(top_track_objs)
+    def __repr__(self):
+        track_queryset = TopTrack.objects.filter(owner=self).order_by("rank").values()
+        top_track_objs = self.expandQueryset(track_queryset)
+        top_5_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:4])
+        top_25_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:24])
+        top_50_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:49])
+
+        track_queryset = (
+            RecentTrack.objects.filter(owner=self).order_by("rank").values()
+        )
+        recent_track_objs = self.expandQueryset(track_queryset)
+        last_5_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:4])
+        last_25_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:24])
+        last_50_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:49])
+        self.recent_tracks_analysis = [
+            last_5_tracks_analysis,
+            last_25_tracks_analysis,
+            last_50_tracks_analysis,
+        ]
 
         top_artist_list = []
         artist_queryset = (
@@ -76,13 +93,26 @@ class Profile(models.Model):
         self.top_genre_list = [i[0] for i in self.top_genres.values_list()]
         self.top_genre_list = self.top_genre_list[0:11]
         self.top_artist_list = top_artist_list
-        self.top_track_list = top_track_list
-        self.top_5_tracks_analysis = top_track_analysis
+        self.top_track_list = top_track_objs
+        self.top_tracks_analysis = [
+            top_5_tracks_analysis,
+            top_25_tracks_analysis,
+            top_50_tracks_analysis,
+        ]
 
         return self
 
 
 class TopTrack(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    rank = models.IntegerField()
+
+    def __str__(self):
+        return self.track.__str__()
+
+
+class RecentTrack(models.Model):
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     rank = models.IntegerField()
