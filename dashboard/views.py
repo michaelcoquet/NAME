@@ -46,7 +46,7 @@ def dashboard(request):
     else:
         print("ERROR: something went horribly wrong in the dashboard view")
 
-    labels = [
+    radar_labels = [
         "Danceability",
         "Energy",
         "Speechiness",
@@ -55,13 +55,34 @@ def dashboard(request):
         "Liveness",
         "Valence",
     ]
+    current_track = request.user.profile.current_track.__repr__(0)
+    current_track_dict = {}
+    current_track_dict["name"] = (
+        current_track.name + " --- " + ", ".join(current_track.artists_repr)
+    )
+    current_track_dict["feature_repr"] = current_track.feature_repr
+
+    profile_obj = request.user.profile.__repr__()
+    profile_dict = {}
+    profile_dict["top_tracks_analysis"] = [
+        profile_obj.top_tracks_analysis[0],
+        profile_obj.top_tracks_analysis[1],
+        profile_obj.top_tracks_analysis[2],
+    ]
+    profile_dict["recent_tracks_analysis"] = [
+        profile_obj.recent_tracks_analysis[0],
+        profile_obj.recent_tracks_analysis[1],
+        profile_obj.recent_tracks_analysis[2],
+    ]
+    profile_dict["liked_tracks_analysis"] = profile_obj.liked_tracks_analysis
     return render(
         request,
         "dashboard/dashboard.html",
         {
             # "section": "dashboard"
-            "labels": labels,
-            "current_track": request.user.profile.current_track.__repr__(0),
-            "profile": request.user.profile.__repr__(),
+            "radar_labels": radar_labels,
+            "current_track": current_track_dict,
+            "profile": profile_obj,
+            "profile_dict": profile_dict,
         },
     )
