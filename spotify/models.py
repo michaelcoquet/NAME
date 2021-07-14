@@ -78,6 +78,8 @@ class Track(models.Model):
             artists_str.append(artist["name"])
         return f"{self.name} --- {[artist for artist in artists_str]}"
 
-    def __repr__(self):
+    def __repr__(self, rank):
+        self.rank = rank  # used for users top lists
+        self.artists_repr = [artist["name"] for artist in self.artists.values()]
         self.feature_repr = self.feature.__repr__()
         return self

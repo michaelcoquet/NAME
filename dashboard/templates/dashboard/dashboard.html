@@ -23,83 +23,139 @@
 </div>
 
 <br><br>
-<div id="table">
-    <div class="table-row">
-        <div class="table-column">
-            <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
-            <ol>
-                {% for artist in profile.top_artist_list %}
-                <li>{{ artist|safe }}</li>
-                {% endfor %}
-            </ol>
-        </div>
-        <div class="table-column">
-            <h3 style="text-align: center"><u>Top Genres</u></h3>
-            <ul id="two-columns">
-                {% for genre in profile.top_genre_list %}
-                <li>{{ genre|safe }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    <div class="table-row">
-        <div class="table-column">
-            <h3 style="text-align: center"><u>Top 5 Tracks</u></h3>
-            <ol>
-                {% for track in profile.top_track_list %}
-                <li>{{ track|safe }}</li>
-                {% endfor %}
-            </ol>
-            <canvas class="radar" id="top-5-tracks-radar"></canvas>
-        </div>
-        <div class="table-column">
-            <h3 style="text-align: center"><u>Current Track</u></h3>
-            <br><br><br><br><br>
-            <canvas class="radar" id="current-track-radar"></canvas>
-        </div>
-    </div>
-    <br><br>
-    <a href="{% url "edit" %}">edit your profile</a> or <a
-    href="{% url "password_change" %}">change your password</a>.
-</div>
+<table style="width: 100%">
+    <colgroup>
+        <col span="1" style="width: 50%;">
+        <col span="1" style="width: 50%;">
+    </colgroup>
+    <tbody>
+        <tr>
+            <td>
+                <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
+                <ol>
+                    {% for artist in profile.top_artist_list %}
+                    <li>{{ artist|safe }}</li>
+                    {% endfor %}
+                </ol>
+            </td>
+            <td>
+                <h3 style="text-align: center"><u>Top Genres</u></h3>
+                <ul id="two-columns">
+                    {% for genre in profile.top_genre_list %}
+                    <li>{{ genre|safe }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td colspan=2>
+                <table style="width: 100%">
+                    <colgroup>
+                        <col span="1" style="width: 15%;">
+                        <col span="1" style="width: 55%;">
+                        <col span="1" style="width: 30%;">
+                    </colgroup>
+                    <caption><h3 style="text-align: center"><u>Top 5 Tracks</u></h3></caption>
+                    <thead>
+                        <td>Rank</td>
+                        <td>Track Title</td>
+                        <td>Artists</td>
+                    </thead>
+                    <tbody>
+                        {% for track in profile.top_track_list %}
+                            <tr>
+                                <td>{{ track.rank|safe }}.</td>
+                                <td>{{ track.name|safe }}</td>
+                                <td>
+                                    <ul style="padding-left: 20px;">
+                                    {% for artist in track.artists_repr %}
+                                        <li>{{ artist|safe }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3 style="text-align: center"><u>Current Track Analysis</u></h3>
+                <canvas class="radar" id="current-track-radar"></canvas>
+            </td>
+            <td>
+                <h3 style="text-align: center"><u>Top Tracks Analysis</u></h3>
+                <canvas class="radar" id="top-tracks-radar"></canvas>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3 style="text-align: center"><u>Recent Tracks Analysis</u></h3>
+                <canvas class="radar" id="recent-tracks-radar"></canvas>
+            </td>
+            <td>
+                <h3 style="text-align: center"><u>Liked Tracks Analysis</u></h3>
+                <canvas class="radar" id="liked-tracks-radar"></canvas>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
+<a href="{% url "edit" %}">edit your profile</a> or <a
+href="{% url "password_change" %}">change your password</a>.
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-   function makeConfig(data, title) {
-       var config = {
-           type: 'radar',
-           data: {
-               datasets: [{
-                   data: data,
-                   fill: true,
-                   backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                   borderColor: 'rgb(255, 99, 132)',
-                   pointBorderColor: '#fff',
-                   pointHoverBackgroundColor: '#fff',
-                   pointHoverBorderColor: 'rgb(255, 99 132)',
-                   label: title
-               }],
-               labels: {{ labels|safe }}
-           },
-           options: {
-               elements: {
-                   line: {
-                       borderWidth: 2
-                   }
-               }
-           },
-       };
+    function makeDataset(data, backgroundColor, title) {
+        var dataset = {
+                data: data,
+                fill: true,
+                backgroundColor: backgroundColor,
+                borderColor: backgroundColor,
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(255, 99 132)',
+                label: title
+        }
+        return dataset
+    }
+
+    function makeConfig(datasets) {
+        var config = {
+            type: 'radar',
+            data: {
+                datasets: datasets,
+                labels: {{ labels|safe }}
+            },
+            options: {
+                responsive: true,
+            },
+        };
    
-       return config
-   }
+        return config
+    }
    
-   window.onload = function() {
-       var ctr = document.getElementById('current-track-radar').getContext('2d');
-       var t5tr = document.getElementById('top-5-tracks-radar').getContext('2d');
-       window.currentTrackRadar = new Chart(ctr, makeConfig({{ current_track.feature_repr|safe }}, '{{current_track.name|safe}}'));
-       window.top5TrackRadar = new Chart(t5tr, makeConfig({{  profile.top_5_tracks_analysis|safe }}, 'Top 5 Track Analysis'));
-   };
-   
-   
+    window.onload = function() {
+        var ctr = document.getElementById('current-track-radar').getContext('2d');
+        var t5tr = document.getElementById('top-tracks-radar').getContext('2d');
+        var l5tr = document.getElementById('recent-tracks-radar').getContext('2d');
+
+        currentTrackDataset = [makeDataset({{ current_track.feature_repr|safe }}, 'rgba(255, 99, 132, 0.2)', '{{current_track.name|safe}}')];
+        top5Dataset = makeDataset({{ profile.top_tracks_analysis.0|safe }}, 'rgba(255, 145, 0, 0.2)', 'Top 5');
+        top25Dataset = makeDataset({{ profile.top_tracks_analysis.1|safe }}, 'rgba(52, 78, 173, 0.2)', 'Top 25');
+        top50Dataset = makeDataset({{ profile.top_tracks_analysis.2|safe }}, 'rgba(159, 52, 173, 0.2)', 'Top 50');
+        topDatasets = [top5Dataset, top25Dataset, top50Dataset];
+        
+        last5Dataset = makeDataset({{ profile.recent_tracks_analysis.0|safe }}, 'rgba(255, 145, 0, 0.2)', 'Last 5');
+        last25Dataset = makeDataset({{ profile.recent_tracks_analysis.1|safe }}, 'rgba(52, 78, 173, 0.2)', 'Last 25');
+        last50Dataset = makeDataset({{ profile.recent_tracks_analysis.2|safe }}, 'rgba(159, 52, 173, 0.2)', 'Last 50');
+        lastDatasets = [last5Dataset, last25Dataset, last50Dataset];
+
+        window.currentTrackRadar = new Chart(ctr, makeConfig(currentTrackDataset));
+        window.topTracksRadar = new Chart(t5tr, makeConfig(topDatasets));
+        window.lastTracksRadar = new Chart(l5tr, makeConfig(lastDatasets));
+    };
 </script>
 {% endblock %}

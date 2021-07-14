@@ -2,7 +2,7 @@ import datetime
 from django.contrib.auth.decorators import login_required
 import spotify.wrapper as spotify
 from spotify.models import Album, Artist, Feature, Track, Genre
-from account.models import Playlist, TopTrack, TopArtist
+from account.models import Playlist, TopTrack, TopArtist, RecentTrack
 
 # TODO: Implement batch api calls. The methods used here are slow
 #       and can be improved by using spotify batch api calls where
@@ -23,7 +23,7 @@ def user_profile(social):
     if recent_tracks != None:
         for t in recent_tracks["items"]:
             track_list.append(t["track"])
-    recent_tracks_obj = build_tracks(social, track_list)
+    recent_tracks_obj = build_recent_tracks(social, track_list)
 
     track_list = []
     saved_tracks = spotify.saved_tracks(social)
@@ -78,6 +78,28 @@ def user_profile(social):
     if top_genre_list != None:
         social.user.profile.top_genres.set(top_genre_list)
     social.user.profile.save()
+
+
+def build_recent_tracks(social, tracks):
+    track_list = []
+    for i, track in enumerate(tracks):
+        track_obj = build_recent_track(social, track, i)
+        if track_obj != None:
+            track_list.append(track_obj)
+    return track_list
+
+
+def build_recent_track(social, track, rank):
+    if track != None:
+        track_obj = build_track(social, track)
+
+        RecentTrack.objects.create(
+            owner=social.user.profile,
+            track=track_obj,
+            rank=rank,
+        )
+
+        return track_obj
 
 
 def build_top_tracks(social, tracks):
