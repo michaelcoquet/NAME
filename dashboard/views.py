@@ -1,8 +1,5 @@
-import sys
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from social_django.models import UserSocialAuth
 
 from account.models import Profile
 import spotify.scraper as scrape
@@ -46,6 +43,24 @@ def dashboard(request):
     else:
         print("ERROR: something went horribly wrong in the dashboard view")
 
+    radar_labels, current_track_dict, profile_obj, profile_dict = build_radars(
+        request.user.profile
+    )
+
+    return render(
+        request,
+        "dashboard/dashboard.html",
+        {
+            # "section": "dashboard"
+            "radar_labels": radar_labels,
+            "current_track": current_track_dict,
+            "profile": profile_obj,
+            "profile_dict": profile_dict,
+        },
+    )
+
+
+def build_radars(profile):
     radar_labels = [
         "Danceability",
         "Energy",
@@ -55,14 +70,14 @@ def dashboard(request):
         "Liveness",
         "Valence",
     ]
-    current_track = request.user.profile.current_track.__repr__(0)
+    current_track = profile.current_track.__repr__(0)
     current_track_dict = {}
     current_track_dict["name"] = (
         current_track.name + " --- " + ", ".join(current_track.artists_repr)
     )
     current_track_dict["feature_repr"] = current_track.feature_repr
 
-    profile_obj = request.user.profile.__repr__()
+    profile_obj = profile.__repr__()
     profile_dict = {}
     profile_dict["top_tracks_analysis"] = [
         profile_obj.top_tracks_analysis[0],
@@ -75,14 +90,8 @@ def dashboard(request):
         profile_obj.recent_tracks_analysis[2],
     ]
     profile_dict["liked_tracks_analysis"] = profile_obj.liked_tracks_analysis
-    return render(
-        request,
-        "dashboard/dashboard.html",
-        {
-            # "section": "dashboard"
-            "radar_labels": radar_labels,
-            "current_track": current_track_dict,
-            "profile": profile_obj,
-            "profile_dict": profile_dict,
-        },
-    )
+
+    profile_dict["playlist_tracks_analysis"] = profile_obj.playlist_tracks_analysis
+    profile_dict["album_tracks_analysis"] = profile_obj.album_tracks_analysis
+
+    return radar_labels, current_track_dict, profile_obj, profile_dict
