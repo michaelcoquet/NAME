@@ -19,9 +19,8 @@ class Feature(models.Model):
     def __str__(self):
         return "TODO"
 
-    def __repr__(self):
-        # [danceability, energy, speechiness, acousticness, instrumentalness, liveness, valence]
-        return [
+    def __repr__(self, size):
+        base_features = [
             float(self.danceability) * 100,
             float(self.energy) * 100,
             float(self.speechiness) * 100,
@@ -30,6 +29,21 @@ class Feature(models.Model):
             float(self.liveness) * 100,
             float(self.valence) * 100,
         ]
+        if size == "full":
+            # [danceability, energy, key, loudness, Mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo]
+            full_features = [
+                base_features[0],
+                base_features[1],
+                self.key,
+                self.loudness,
+                self.mode,
+            ]
+            full_features += base_features[2:]
+            full_features.append(self.tempo)
+            return full_features
+        else:
+            # [danceability, energy, speechiness, acousticness, instrumentalness, liveness, valence]
+            return base_features
 
 
 class Genre(models.Model):
@@ -81,5 +95,5 @@ class Track(models.Model):
     def __repr__(self, rank):
         self.rank = rank  # used for users top lists
         self.artists_repr = [artist["name"] for artist in self.artists.values()]
-        self.feature_repr = self.feature.__repr__()
+        self.feature_repr = self.feature.__repr__("base")
         return self
