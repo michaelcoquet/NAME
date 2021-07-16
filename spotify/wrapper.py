@@ -50,12 +50,16 @@ def playing_track(social):
         # enabled
         return None
     elif (
-        api_response.status_code == 200 and api_response.text == "" and api_response.reason == "OK"
+        api_response.status_code == 200
+        and api_response.text == ""
+        and api_response.reason == "OK"
     ):
         # no available devices found
         return None
     elif (
-        api_response.status_code == 200 and api_response.reason == "OK" and api_response.text != ""
+        api_response.status_code == 200
+        and api_response.reason == "OK"
+        and api_response.text != ""
     ):
         return json.loads(api_response.text)
     else:

@@ -1,7 +1,11 @@
+import pandas as pd
+import numpy as np
+from numpy import dtype
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from account.models import Profile
+from spotify.models import Feature
 import spotify.scraper as scrape
 
 
@@ -46,6 +50,7 @@ def dashboard(request):
     radar_labels, current_track_dict, profile_obj, profile_dict = build_radars(
         request.user.profile
     )
+    histo_bins, histo_data = build_histograms(request.user.profile)
 
     return render(
         request,
@@ -56,6 +61,8 @@ def dashboard(request):
             "current_track": current_track_dict,
             "profile": profile_obj,
             "profile_dict": profile_dict,
+            "histo_bins": histo_bins,
+            "histo_data": histo_data,
         },
     )
 
@@ -95,3 +102,77 @@ def build_radars(profile):
     profile_dict["album_tracks_analysis"] = profile_obj.album_tracks_analysis
 
     return radar_labels, current_track_dict, profile_obj, profile_dict
+
+
+def build_histograms(profile_obj):
+    labels = [
+        "Danceability",
+        "Energy",
+        "Key",
+        "Loudness",
+        "Mode",
+        "Speechiness",
+        "Acousticness",
+        "Instrumentalness",
+        "Liveness",
+        "Valence",
+        "Tempo",
+    ]
+    # 1. collect track features for each scope below:
+    #   - last 5 tracks
+    #   - last 25 tracks
+    #   - last 50 tracks
+    #   - liked tracks
+    #   - recent tracks
+    #   - top tracks
+    #   - saved album tracks
+    #   - playlist tracks
+    last_5_track_features = []
+    last_25_track_features = []
+    last_50_track_features = []
+    for i, track in enumerate(profile_obj.recent_tracks.values()):
+        if i < 5:
+            last_5_track_features.append(
+                Feature.objects.filter(id=track["feature_id"]).get().__repr__("full")
+            )
+        if i >= 5 and i < 25:
+            last_25_track_features.append(
+                Feature.objects.filter(id=track["feature_id"]).get().__repr__("full")
+            )
+        if i >= 25 and i < 50:
+            last_50_track_features.append(
+                Feature.objects.filter(id=track["feature_id"]).get().__repr__("full")
+            )
+
+    last_25_track_features = last_5_track_features + last_25_track_features
+    last_50_track_features = last_25_track_features + last_50_track_features
+
+    last_5_dataframe = pd.DataFrame(last_5_track_features, columns=labels)
+    last_25_dataframe = pd.DataFrame(last_25_track_features, columns=labels)
+    last_50_dataframe = pd.DataFrame(last_50_track_features, columns=labels)
+    last_dataframes = [last_50_dataframe, last_25_dataframe, last_5_dataframe]
+
+    bin_single = []
+    bins = []
+    data_single = []
+    data = []
+    for dataframe in last_dataframes:
+        for i, metric in enumerate(dataframe):
+            bin_single.append(
+                np.linspace(
+                    float(dataframe[metric].min()),
+                    float(dataframe[metric].max()),
+                    10,
+                    dtype="int",
+                ).tolist()
+            )
+            g = dataframe.groupby(
+                pd.cut(dataframe[metric], bin_single[i], duplicates="drop")
+            )
+            data_single.append(g.count()[metric].tolist())
+        data.append(data_single)
+        bins.append(bin_single)
+        data_single = []
+        bin_single = []
+
+    return bins, data
