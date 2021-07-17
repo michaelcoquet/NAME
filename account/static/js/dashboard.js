@@ -12,22 +12,48 @@ function makeDataset(data, backgroundColor, title) {
   return dataset
 }
 
-function makeConfig(datasets, type, labels) {
+function makeConfig(datasets, type, labels, options) {
   var config = {
     type: type,
     data: {
       datasets: datasets,
-      labels: labels
+      labels: labels,
     },
-    options: {
-      responsive: true,
-    },
+    options: options,
   };
 
   return config
 }
 
 window.onload = function () {
+  var radar_options = {
+    responsive: true,
+  };
+  var histo_options = {
+    responsive: false,
+    legend: {
+      display: false
+    },
+    animation: {
+      animateScale: true
+    },
+    scales: {
+      xAxes: [{
+        barThickness: 45
+      }],
+      yAxes: [{
+        barPercentage: 1,
+        categoryPercentage: 1,
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    },
+    tooltips: {
+
+    }
+  };
+
   var curr_track_cntxt = document.getElementById('current-track-radar').getContext('2d');
   var top_tracks_cntxt = document.getElementById('top-tracks-radar').getContext('2d');
   var last_tracks_cntxt = document.getElementById('recent-tracks-radar').getContext('2d');
@@ -64,12 +90,12 @@ window.onload = function () {
 
   albumDataset = [makeDataset(profile.album_tracks_analysis, 'rgba(255, 99, 132, 0.2)', 'Tracks')]
 
-  window.currentTrackRadar = new Chart(curr_track_cntxt, makeConfig(currentTrackDataset, "radar", radar_labels));
-  window.topTracksRadar = new Chart(top_tracks_cntxt, makeConfig(topDatasets, "radar", radar_labels));
-  window.lastTracksRadar = new Chart(last_tracks_cntxt, makeConfig(lastDatasets, "radar", radar_labels));
-  window.likedTracksRadar = new Chart(liked_tracks_cntxt, makeConfig(likedDataset, "radar", radar_labels));
-  window.playlistTracksRadar = new Chart(playlist_tracks_cntxt, makeConfig(playlistDataset, "radar", radar_labels));
-  window.albumTracksRadar = new Chart(album_tracks_cntxt, makeConfig(albumDataset, "radar", radar_labels));
+  window.currentTrackRadar = new Chart(curr_track_cntxt, makeConfig(currentTrackDataset, "radar", radar_labels, radar_options));
+  window.topTracksRadar = new Chart(top_tracks_cntxt, makeConfig(topDatasets, "radar", radar_labels, radar_options));
+  window.lastTracksRadar = new Chart(last_tracks_cntxt, makeConfig(lastDatasets, "radar", radar_labels, radar_options));
+  window.likedTracksRadar = new Chart(liked_tracks_cntxt, makeConfig(likedDataset, "radar", radar_labels, radar_options));
+  window.playlistTracksRadar = new Chart(playlist_tracks_cntxt, makeConfig(playlistDataset, "radar", radar_labels, radar_options));
+  window.albumTracksRadar = new Chart(album_tracks_cntxt, makeConfig(albumDataset, "radar", radar_labels, radar_options));
 
   danceability_dataset = [makeDataset(histo_data[0][0], 'rgba(255, 99, 132)', "Last 50 Tracks")];
   energy_dataset = [makeDataset(histo_data[0][1], 'rgba(255, 99, 132)', "Last 50 Tracks")];
@@ -83,15 +109,15 @@ window.onload = function () {
   valence_dataset = [makeDataset(histo_data[0][9], 'rgba(255, 99, 132)', "Last 50 Tracks")];
   tempo_dataset = [makeDataset(histo_data[0][10], 'rgba(255, 99, 132)', "Last 50 Tracks")];
 
-  window.danceabilityBar = new Chart(danceability_dist_cntxt, makeConfig(danceability_dataset, "bar", histo_bins[0][0]));
-  window.energyBar = new Chart(energy_dist_cntxt, makeConfig(energy_dataset, "bar", histo_bins[0][1]));
-  window.keyBar = new Chart(key_dist_cntxt, makeConfig(key_dataset, "bar", histo_bins[0][2]));
-  window.loudnessBar = new Chart(loudness_dist_cntxt, makeConfig(loudness_dataset, "bar", histo_bins[0][3]));
-  window.modeBar = new Chart(mode_dist_cntxt, makeConfig(mode_dataset, "bar", histo_bins[0][4]));
-  window.speechinessBar = new Chart(speechiness_dist_cntxt, makeConfig(speechiness_dataset, "bar", histo_bins[0][5]));
-  window.acousticnessBar = new Chart(acousticness_dist_cntxt, makeConfig(acousticness_dataset, "bar", histo_bins[0][6]));
-  window.instrumentalnessBar = new Chart(instrumentalness_dist_cntxt, makeConfig(instrumentalness_dataset, "bar", histo_bins[0][7]));
-  window.livenessBar = new Chart(liveness_dist_cntxt, makeConfig(liveness_dataset, "bar", histo_bins[0][8]));
-  window.valenceBar = new Chart(valence_dist_cntxt, makeConfig(valence_dataset, "bar", histo_bins[0][9]));
-  window.tempoBar = new Chart(tempo_dist_cntxt, makeConfig(tempo_dataset, "bar", histo_bins[0][10]));
+  window.danceabilityBar = new Chart(danceability_dist_cntxt, makeConfig(danceability_dataset, "bar", histo_bins[0][0], histo_options));
+  window.energyBar = new Chart(energy_dist_cntxt, makeConfig(energy_dataset, "bar", histo_bins[0][1], histo_options));
+  window.keyBar = new Chart(key_dist_cntxt, makeConfig(key_dataset, "bar", histo_bins[0][2], histo_options));
+  window.loudnessBar = new Chart(loudness_dist_cntxt, makeConfig(loudness_dataset, "bar", histo_bins[0][3], histo_options));
+  window.modeBar = new Chart(mode_dist_cntxt, makeConfig(mode_dataset, "bar", histo_bins[0][4], histo_options));
+  window.speechinessBar = new Chart(speechiness_dist_cntxt, makeConfig(speechiness_dataset, "bar", histo_bins[0][5], histo_options));
+  window.acousticnessBar = new Chart(acousticness_dist_cntxt, makeConfig(acousticness_dataset, "bar", histo_bins[0][6], histo_options));
+  window.instrumentalnessBar = new Chart(instrumentalness_dist_cntxt, makeConfig(instrumentalness_dataset, "bar", histo_bins[0][7], histo_options));
+  window.livenessBar = new Chart(liveness_dist_cntxt, makeConfig(liveness_dataset, "bar", histo_bins[0][8], histo_options));
+  window.valenceBar = new Chart(valence_dist_cntxt, makeConfig(valence_dataset, "bar", histo_bins[0][9], histo_options));
+  window.tempoBar = new Chart(tempo_dist_cntxt, makeConfig(tempo_dataset, "bar", histo_bins[0][10], histo_options));
 };
