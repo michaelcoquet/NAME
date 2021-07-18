@@ -84,7 +84,7 @@ class Track(models.Model):
     disc_number = models.IntegerField()
     track_number = models.IntegerField()
     duration = models.IntegerField()
-    feature = models.OneToOneField(Feature, on_delete=models.CASCADE)
+    feature = models.OneToOneField(Feature, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         artists_str = []

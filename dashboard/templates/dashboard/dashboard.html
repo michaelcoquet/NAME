@@ -84,31 +84,55 @@
     <tr>
       <td>
         <h3 style="text-align: center"><u>Current Track Analysis</u></h3>
-        <canvas class="radar" id="current-track-radar"></canvas>
+        {% if radar_charts.0 %}
+          {{ radar_charts.0|safe }}
+        {% else %}
+          <p>No graph was provided.</p>
+        {% endif %}
       </td>
       <td>
         <h3 style="text-align: center"><u>Top Tracks Analysis</u></h3>
-        <canvas class="radar" id="top-tracks-radar"></canvas>
+        {% if radar_charts.6 %}
+          {{ radar_charts.6|safe }}
+        {% else %}
+          <p>No graph was provided.</p>
+        {% endif %}
       </td>
     </tr>
     <tr>
       <td>
         <h3 style="text-align: center"><u>Recent Tracks Analysis</u></h3>
-        <canvas class="radar" id="recent-tracks-radar"></canvas>
+        {% if radar_charts.3 %}
+          {{ radar_charts.3|safe }}
+        {% else %}
+          <p>No graph was provided.</p>
+        {% endif %}
       </td>
       <td>
         <h3 style="text-align: center"><u>Liked Tracks Analysis</u></h3>
-        <canvas class="radar" id="liked-tracks-radar"></canvas>
+        {% if radar_charts.2 %}
+          {{ radar_charts.2|safe }}
+        {% else %}
+          <p>No graph was provided.</p>
+        {% endif %}
       </td>
     </tr>
     <tr>
       <td>
         <h3 style="text-align: center"><u>Playlist Tracks Analysis</u></h3>
-        <canvas class="radar" id="playlist-tracks-radar"></canvas>
+        {% if radar_charts.9 %}
+          {{ radar_charts.9|safe }}
+        {% else %}
+          <p>No graph was provided.</p>
+        {% endif %}
       </td>
       <td>
         <h3 style="text-align: center"><u>Saved Album Tracks Analysis</u></h3>
-        <canvas class="radar" id="saved-ablum-tracks-radar"></canvas>
+        {% if radar_charts.1 %}
+          {{ radar_charts.1|safe }}
+        {% else %}
+          <p>No graph was provided.</p>
+        {% endif %}
       </td>
     </tr>
     <tr>
@@ -118,9 +142,7 @@
         <div class="dropdown">
           <button class="dropbtn">All Tracks</button>
           <div class="dropdown-content">
-            <a href="#">Last 5 Tracks</a>
-            <a href="#">Last 25 Tracks</a>
-            <a href="#">Last 50 Tracks</a>
+            <a href="#">All Tracks </a>
             <a href="#">Liked Tracks</a>
             <a href="#">Recent Tracks</a>
             <a href="#">Top Tracks</a>
@@ -135,23 +157,89 @@
             </colgroup>
             <tbody>
               <tr>
-                <td><br><u>Danceability</u><canvas class="bar" id="danceability-bar"></canvas></td>
-                <td><br><u>Energy</u><canvas class="bar" id="energy-bar"></canvas></td>
-                <td><br><u>Key</u><canvas class="bar" id="key-bar"></canvas></td>
+                <td><br><u>Danceability</u><br>
+                  {% if histo_charts.1.0 %}
+                    {{ histo_charts.1.0|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
+                <td><br><u>Energy</u><br>
+                  {% if histo_charts.1.1 %}
+                    {{ histo_charts.1.1|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
+                <td><br><u>Key</u><br>
+                  {% if histo_charts.1.2 %}
+                    {{ histo_charts.1.2|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
               </tr>
               <tr>
-                <td><br><u>Loudness</u><canvas class="bar" id="loudness-bar"></canvas></td>
-                <td><br><u>Mode</u><canvas class="bar" id="mode-bar"></canvas></td>
-                <td><br><u>Speechiness</u><canvas class="bar" id="speechiness-bar"></canvas></td>
+                <td><br><u>Loudness</u><br>
+                  {% if histo_charts.1.3 %}
+                    {{ histo_charts.1.3|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
+                <td><br><u>Mode</u><br>
+                  {% if histo_charts.1.4 %}
+                    {{ histo_charts.1.4|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
+                <td><br><u>Speechiness</u><br>
+                  {% if histo_charts.1.5 %}
+                    {{ histo_charts.1.5|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
               </tr>
               <tr>
-                <td><br><u>Acousticness</u><canvas class="bar" id="acousticness-bar"></canvas></td>
-                <td><br><u>Instrumentalness</u><canvas class="bar" id="instrumentalness-bar"></canvas></td>
-                <td><br><u>Liveness</u><canvas class="bar" id="liveness-bar"></canvas></td>
+                <td><br><u>Acousticness</u><br>
+                  {% if histo_charts.1.6 %}
+                    {{ histo_charts.1.6|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
+                <td><br><u>Instrumentalness</u><br>
+                  {% if histo_charts.1.7 %}
+                    {{ histo_charts.1.7|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
+                <td><br><u>Liveness</u><br>
+                  {% if histo_charts.1.8 %}
+                    {{ histo_charts.1.8|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
               </tr>
               <tr>
-                <td><br><u>Valence</u><canvas class="bar" id="valence-bar"></canvas></td>
-                <td><br><u>Tempo</u><canvas class="bar" id="tempo-bar"></canvas></td>
+                <td><br><u>Valence</u><br>
+                  {% if histo_charts.1.9 %}
+                    {{ histo_charts.1.9|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
+                <td><br><u>Tempo</u><br>
+                  {% if histo_charts.1.10 %}
+                    {{ histo_charts.1.10|safe }}
+                  {% else %}
+                    <p>No graph was provided.</p>
+                  {% endif %}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -163,18 +251,16 @@
 <a href="{% url "edit" %}">edit your profile</a> or <a
 href="{% url "password_change" %}">change your password</a>.
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.4.1"></script>
-{{ radar_labels|json_script:"radar_labels" }}
-{{ current_track|json_script:"current_track" }}
+<!-- {{ radar_labels|json_script:"radar_labels" }}
+{{ current_track|json_script:"current_track" }} -->
 {{ profile_dict|json_script:"profile" }}
-{{ histo_bins|json_script:"histo_bins" }}
-{{ histo_data|json_script:"histo_data" }}
+<!-- {{ histo_bins|json_script:"histo_bins" }}
+{{ histo_data|json_script:"histo_data" }} -->
 <script>
-  const radar_labels = JSON.parse(document.getElementById("radar_labels").textContent);
-  const current_track = JSON.parse(document.getElementById("current_track").textContent);
+  // const radar_labels = JSON.parse(document.getElementById("radar_labels").textContent);
+  // const current_track = JSON.parse(document.getElementById("current_track").textContent);
   const profile = JSON.parse(document.getElementById("profile").textContent);
-  const histo_bins = JSON.parse(document.getElementById("histo_bins").textContent);
-  const histo_data = JSON.parse(document.getElementById("histo_data").textContent);
+  // const histo_bins = JSON.parse(document.getElementById("histo_bins").textContent);
+  // const histo_data = JSON.parse(document.getElementById("histo_data").textContent);
 </script>
-<script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

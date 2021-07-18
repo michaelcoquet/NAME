@@ -288,19 +288,27 @@ def build_feature(social, track):
         print("Error count should be 0 or 1 for Feature")
     else:
         feature_obj = spotify.feature(social, track["id"])
-        return Feature.objects.create(
-            danceability=feature_obj["danceability"],
-            energy=feature_obj["energy"],
-            key=feature_obj["key"],
-            loudness=feature_obj["loudness"],
-            mode=feature_obj["mode"],
-            speechiness=feature_obj["speechiness"],
-            acousticness=feature_obj["acousticness"],
-            instrumentalness=feature_obj["instrumentalness"],
-            liveness=feature_obj["liveness"],
-            valence=feature_obj["valence"],
-            tempo=feature_obj["tempo"],
-        )
+        if "error" in feature_obj:
+            if feature_obj["error"]["message"] == "analysis not found":
+                return None
+            else:
+                raise ValueError(
+                    "Unknown error retrieving analysis for track: %s", track["id"]
+                )
+        else:
+            return Feature.objects.create(
+                danceability=feature_obj["danceability"],
+                energy=feature_obj["energy"],
+                key=feature_obj["key"],
+                loudness=feature_obj["loudness"],
+                mode=feature_obj["mode"],
+                speechiness=feature_obj["speechiness"],
+                acousticness=feature_obj["acousticness"],
+                instrumentalness=feature_obj["instrumentalness"],
+                liveness=feature_obj["liveness"],
+                valence=feature_obj["valence"],
+                tempo=feature_obj["tempo"],
+            )
 
 
 def build_playlists(social, playlists):

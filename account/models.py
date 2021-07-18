@@ -58,13 +58,15 @@ class Profile(models.Model):
         track_objs = []
         for i, track in enumerate(track_queryset):
             track_obj = Track.objects.filter(id=track[key]).get()
-            if n != 0:
-                if i < n:
-                    track_objs.append(track_obj.__repr__(rank=(i + 1)))
+            # exclude the track if there is no available analysis for it
+            if track_obj.feature_id != None:
+                if n != 0:
+                    if i < n:
+                        track_objs.append(track_obj.__repr__(rank=(i + 1)))
+                    else:
+                        pass
                 else:
-                    pass
-            else:
-                track_objs.append(track_obj.__repr__(rank=(i + 1)))
+                    track_objs.append(track_obj.__repr__(rank=(i + 1)))
 
         return track_objs
 
