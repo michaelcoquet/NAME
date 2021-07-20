@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "social_django",
     "django_extensions",
     "easy_thumbnails",
+    "django_celery_results",
+    "celery",
 ]
 
 MIDDLEWARE = [
@@ -176,7 +178,13 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.user.user_details",
 )
 
-#
+# REDIS SETTTINGS
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
 REDIS_DB = 0
+
+
+# CELERY SETTINGS
+CELERY_RESULT_BACKEND = "django-db"
+BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
