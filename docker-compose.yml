@@ -2,19 +2,20 @@ version: "3.8"
 
 services:
   web:
+    restart: on-failure
     container_name: name
     build: ./
     ports:
       - 8000:8000
-      - 3000:3000
     env_file:
       - .env.dev
     depends_on:
       - data
-      - celery
-      - rabbit
+      - flower
     entrypoint: ["./entrypoint.sh"]
-    
+    networks:
+      - app-network 
+
   data:
     container_name: data
     image: postgres:latest
@@ -31,6 +32,8 @@ services:
       - ./db/data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    networks:
+      - app-network 
 
   celery:
     restart: always
@@ -51,6 +54,8 @@ services:
     depends_on:
       - rabbit
     entrypoint: ["./celery_entrypoint.sh"]
+    networks:
+      - app-network 
 
   rabbit:
     restart: always
@@ -60,9 +65,33 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
     ports:
-      - "5673:5672"
-      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - app-network 
 
+  flower:
+    build:
+      context: .
+    image: mher/flower
+    volumes:
+      - ./db/data/flower:/db/data/flower
+    ports:
+      - ${FLOWER_PORT}:${FLOWER_PORT}
+    env_file:
+      - .env.dev
+    environment: 
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+    depends_on: 
+      - rabbit
+    entrypoint: ["./flower_entrypoint.sh"]
+    networks:
+        - app-network 
+
+networks:
+  app-network:
+    driver: bridge
+    
 volumes:
   data:
     external: true
