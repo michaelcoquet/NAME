@@ -18,7 +18,6 @@ COPY requirements.txt .
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install Pillow
 RUN pip install --requirement ./requirements.txt
-# RUN rabbitmq-plugins enable --offline rabbitmq_management
 # copy project
 COPY . .
 
