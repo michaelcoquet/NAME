@@ -1,12 +1,10 @@
-from spotify.wrapper import saved_albums
+from django.core import serializers
 from django.db import models
 from django.conf import settings
 from django.db.models.deletion import CASCADE
 
+# from account.tasks import expand_queryset
 from spotify.models import Artist, Track, Album, Genre
-from spotify import analyzer
-
-top_n = 5  # the top number of songs or artists to return
 
 
 class Contact(models.Model):
@@ -53,84 +51,6 @@ class Profile(models.Model):
         Artist, related_name="profiles", through="TopArtist"
     )
     top_genres = models.ManyToManyField(Genre)
-
-    def expandQueryset(self, track_queryset, key, n):
-        track_objs = []
-        for i, track in enumerate(track_queryset):
-            track_obj = Track.objects.filter(id=track[key]).get()
-            # exclude the track if there is no available analysis for it
-            if track_obj.feature_id != None:
-                if n != 0:
-                    if i < n:
-                        track_objs.append(track_obj.__repr__(rank=(i + 1)))
-                    else:
-                        pass
-                else:
-                    track_objs.append(track_obj.__repr__(rank=(i + 1)))
-
-        return track_objs
-
-    def __repr__(self):
-        track_queryset = TopTrack.objects.filter(owner=self).order_by("rank").values()
-        top_track_objs = self.expandQueryset(track_queryset, "track_id", 0)
-        top_5_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:4])
-        top_25_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:24])
-        top_50_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:49])
-
-        track_queryset = (
-            RecentTrack.objects.filter(owner=self).order_by("rank").values()
-        )
-        recent_track_objs = self.expandQueryset(track_queryset, "track_id", 0)
-        last_5_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:4])
-        last_25_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:24])
-        last_50_tracks_analysis = analyzer.tracks_avg(recent_track_objs[0:49])
-
-        liked_tracks = [track for track in self.saved_tracks.values()]
-        liked_tracks_objs = self.expandQueryset(liked_tracks, "id", 0)
-
-        top_artist_list = []
-        artist_queryset = (
-            TopArtist.objects.filter(owner=self).order_by("rank").values()[0:top_n]
-        )
-        for artist in artist_queryset:
-            top_artist_list.append(
-                Artist.objects.filter(id=artist["artist_id"]).get().__str__()
-            )
-
-        playlist_queryset = (
-            Playlist.objects.filter(id=self.playlist_set.values()[0]["id"])
-            .get()
-            .tracks.values()
-        )
-        playlist_track_objs = self.expandQueryset(playlist_queryset, "id", 0)
-        playlist_tracks_analysis = analyzer.tracks_avg(playlist_track_objs)
-
-        album_tracks_objs = []
-        for album in self.saved_albums.values():
-            album_tracks_queryset = Track.objects.filter(album_id=album["id"]).values()
-            album_tracks_objs = album_tracks_objs + self.expandQueryset(
-                album_tracks_queryset, "id", 0
-            )
-        album_tracks_analysis = analyzer.tracks_avg(album_tracks_objs)
-
-        self.top_genre_list = [i[0] for i in self.top_genres.values_list()]
-        self.top_genre_list = self.top_genre_list[0:11]
-        self.top_artist_list = top_artist_list
-        self.top_track_list = top_track_objs[0:top_n]
-        self.top_tracks_analysis = [
-            top_5_tracks_analysis,
-            top_25_tracks_analysis,
-            top_50_tracks_analysis,
-        ]
-        self.recent_tracks_analysis = [
-            last_5_tracks_analysis,
-            last_25_tracks_analysis,
-            last_50_tracks_analysis,
-        ]
-        self.liked_tracks_analysis = analyzer.tracks_avg(liked_tracks_objs)
-        self.playlist_tracks_analysis = playlist_tracks_analysis
-        self.album_tracks_analysis = album_tracks_analysis
-        return self
 
 
 class TopTrack(models.Model):

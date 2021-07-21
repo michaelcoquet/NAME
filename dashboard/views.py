@@ -1,12 +1,14 @@
-import pandas as pd
-import numpy as np
-import plotly.express as px
+import json
+from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
+from django.http.response import HttpResponse
+from account.tasks import build_radars, build_histograms, analyze_profile
 from account.models import Profile
-from spotify.models import Feature
 import spotify.scraper as scrape
+from common.decorators import ajax_required
+from django.views.decorators.http import require_GET
+from celery.result import AsyncResult
 
 
 @login_required
@@ -47,232 +49,49 @@ def dashboard(request):
     else:
         print("ERROR: something went horribly wrong in the dashboard view")
 
-    profile_obj = request.user.profile.__repr__()
-    radar_charts = build_radars(request.user.profile, profile_obj)
-    histo_charts = build_histograms(profile_obj)
+    profile_query_json = serializers.serialize("json", profile_query.only())
+    analyze_task_id = analyze_profile.delay(profile_query_json)
+    # top_lists, radar_charts, histo_charts = analyze_profile(profile_query_json)
 
     return render(
         request,
         "dashboard/dashboard.html",
         {
-            # "section": "dashboard"
-            "profile": request.user.profile.__repr__(),
-            "radar_charts": radar_charts,
-            "histo_charts": histo_charts,
+            "section": "dashboard",
+            "profile": profile_query.values()[0],
+            "analyze_task_id": analyze_task_id,
+            # "top_lists": top_lists,
+            # "radar_charts": radar_charts,
+            # "histo_charts": histo_charts,
         },
     )
 
 
-def build_radar_chart(data):
-    labels = [
-        "Danceability",
-        "Energy",
-        "Speechiness",
-        "Acousticness",
-        "Instrumentalness",
-        "Liveness",
-        "Valence",
-    ]
-    dataframe = pd.DataFrame(
-        dict(
-            r=data,
-            theta=labels,
-        )
-    )
-    fig = px.line_polar(dataframe, r="r", theta="theta", line_close=True)
-    return fig.to_html(full_html=False)
+@ajax_required
+@require_GET
+def get_task_status(request):
+    task_id = request.GET.get("task_id", None)
+    if task_id is not None:
+        task = AsyncResult(task_id)
+        while task.status != "SUCCESS":
+            pass
+        top_lists = task.result[0]
+        radar_charts = task.result[1]
+        histo_charts = task.result[2]
+        response_data = {
+            "state": task.state,
+            "result": task.result,
+            "top_lists": top_lists,
+            "radar_charts": radar_charts,
+            "histo_charts": histo_charts,
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+    else:
+        return HttpResponse("No job id given.")
 
 
-def build_bar_charts(metrics, dataframe):
-    chart_list = []
-    for metric in metrics:
-        chart_list.append(build_bar_chart(metric, dataframe))
-
-    return chart_list
-
-
-def build_bar_chart(metric, dataframe):
-    fig = px.histogram(dataframe, x=metric)
-    fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
-    fig.update_xaxes(title_text="")
-    fig.update_yaxes(title_text="track count")
-    return fig.to_html(full_html=False)
-
-
-# build_radars: returns a list of plotly html code to embed in dashboard.html
-#               the datasource for each list element is as follows:
-#                   charts[0] = current track
-#                   charts[1] = tracks from saved albums
-#                   charts[2] = liked tracks
-#                   charts[3] = last 50 tracks
-#                   charts[4] = last 25 tracks
-#                   charst[5] = last 5 tracks
-#                   charts[6] = top 50 tracks
-#                   charts[7] = top 25 tracks
-#                   charts[8] = top 5 tracks
-#                   charts[9] = playlists
-def build_radars(profile, profile_obj):
-
-    charts = []  # the return list of plotly html code
-
-    # 0 -- current track
-    current_track = profile.current_track.__repr__(rank=0)
-    charts.append(build_radar_chart(current_track.feature_repr))
-
-    # 1 -- tracks from saved albums
-    charts.append(build_radar_chart(profile_obj.album_tracks_analysis))
-
-    # 2 -- liked tracks
-    charts.append(build_radar_chart(profile_obj.liked_tracks_analysis))
-
-    # 3 -- last 50 tracks
-    charts.append(build_radar_chart(profile_obj.recent_tracks_analysis[0]))
-
-    # 4 -- last 25 tracks
-    charts.append(build_radar_chart(profile_obj.recent_tracks_analysis[1]))
-
-    # 5 -- last 5 tracks
-    charts.append(build_radar_chart(profile_obj.recent_tracks_analysis[2]))
-
-    # 6 -- top 50 tracks
-    charts.append(build_radar_chart(profile_obj.top_tracks_analysis[0]))
-
-    # 7 -- top 25 tracks
-    charts.append(build_radar_chart(profile_obj.top_tracks_analysis[1]))
-
-    # 8 -- top 5 tracks
-    charts.append(build_radar_chart(profile_obj.top_tracks_analysis[2]))
-
-    # 9 -- playlists
-    charts.append(build_radar_chart(profile_obj.playlist_tracks_analysis))
-
-    return charts
-
-
-# build_histograms: returns a matrix of plotly html code to embed in dashboard.html
-#               the datasource for each list element is as follows:
-#
-#   charts[0][0:10] = all tracks analysis
-#   charts[1][0:10] = liked tracks analysis
-#   charts[2][0:10] = recent tracks analysis
-#   charts[3][0:10] = top tracks analysis
-#   charts[4][0:10] = saved album tracks analysis
-
-
-def build_histograms(profile_obj):
-    metrics = [
-        "Danceability",
-        "Energy",
-        "Key",
-        "Loudness",
-        "Mode",
-        "Speechiness",
-        "Acousticness",
-        "Instrumentalness",
-        "Liveness",
-        "Valence",
-        "Tempo",
-    ]
-
-    charts = []
-
-    # # 1 -- liked tracks analysis
-    charts.append(build_bar_charts(["total_bill"], px.data.tips()))
-
-    # 2 -- recent tracks analysis
-    recent_track_features = []
-    for track in profile_obj.recent_tracks.values():
-        if track["feature_id"] == None:
-            continue
-        else:
-            recent_track_features.append(
-                Feature.objects.filter(id=track["feature_id"]).get().__repr__("full")
-            )
-    recent_dataframe = pd.DataFrame(recent_track_features, columns=metrics)
-
-    charts.append(build_bar_charts(metrics, recent_dataframe))
-
-    # # 3 -- top tracks analysis
-    # charts.append(build_bar_charts(top_tracks_analysis))
-
-    # # 4 -- saved album tracks analysis
-    # charts.append(build_bar_charts(saved_album_tracks_analysis))
-
-    # # 0 -- all tracks analysis
-    # charts.append(build_bar_charts(all_tracks_analysis))
-
-    return charts
-    # labels = [
-    #     "Danceability",
-    #     "Energy",
-    #     "Key",
-    #     "Loudness",
-    #     "Mode",
-    #     "Speechiness",
-    #     "Acousticness",
-    #     "Instrumentalness",
-    #     "Liveness",
-    #     "Valence",
-    #     "Tempo",
-    # ]
-    # 1. collect track features for each scope below:
-    #   - last 5 tracks
-    #   - last 25 tracks
-    #   - last 50 tracks
-    #   - liked tracks
-    #   - recent tracks
-    #   - top tracks
-    #   - saved album tracks
-    #   - playlist tracks
-
-    # last_5_track_features = []
-    # last_25_track_features = []
-    # recent_track_features = []
-    # for i, track in enumerate(profile_obj.recent_tracks.values()):
-    #     if track["feature_id"] == None:
-    #         continue
-    #     if i < 5:
-    #         last_5_track_features.append(
-    #             Feature.objects.filter(id=track["feature_id"]).get().__repr__("full")
-    #         )
-    #     if i >= 5 and i < 25:
-    #         last_25_track_features.append(
-    #             Feature.objects.filter(id=track["feature_id"]).get().__repr__("full")
-    #         )
-    #     if i >= 25 and i < 50:
-    #         recent_track_features.append(
-    #             Feature.objects.filter(id=track["feature_id"]).get().__repr__("full")
-    #         )
-
-    # last_25_track_features = last_5_track_features + last_25_track_features
-    # recent_track_features = last_25_track_features + recent_track_features
-
-    # last_5_dataframe = pd.DataFrame(last_5_track_features, columns=labels)
-    # last_25_dataframe = pd.DataFrame(last_25_track_features, columns=labels)
-    # last_50_dataframe = pd.DataFrame(recent_track_features, columns=labels)
-    # last_dataframes = [last_50_dataframe, last_25_dataframe, last_5_dataframe]
-
-    # bin_single = []
-    # bins = []
-    # data_single = []
-    # data = []
-    # for dataframe in last_dataframes:
-    #     for i, metric in enumerate(dataframe):
-    #         bin_single.append(
-    #             np.linspace(
-    #                 float(dataframe[metric].min()),
-    #                 float(dataframe[metric].max()),
-    #                 10,
-    #                 dtype="int",
-    #             ).tolist()
-    #         )
-    #         g = dataframe.groupby(
-    #             pd.cut(dataframe[metric], bin_single[i], duplicates="drop")
-    #         )
-    #         data_single.append(g.count()[metric].tolist())
-    #     data.append(data_single)
-    #     bins.append(bin_single)
-    #     data_single = []
-    #     bin_single = []
-
-    # return None
+# @ajax_required
+# @require_GET
+# def get_task_results(request):
+#     data = request.GET.get("data", None)
+#     return HttpResponse("No job id given.")
