@@ -33,52 +33,33 @@
     <tr>
       <td>
         <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
-        <ol>
-          {% for artist in profile.top_artist_list %}
-          <li>{{ artist|safe }}</li>
-          {% endfor %}
-        </ol>
+        <div id="top_artists"></div>
       </td>
       <td>
         <h3 style="text-align: center"><u>Top Genres</u></h3>
         <ul id="two-columns">
-          {% for genre in profile.top_genre_list %}
-          <li>{{ genre|safe }}</li>
-          {% endfor %}
+          <div id="top_genres"></div>
         </ul>
       </td>
     </tr>
     <tr>
       <td colspan=2>
-          <table style="width: 100%">
-            <colgroup>
-              <col span="1" style="width: 15%;">
-              <col span="1" style="width: 55%;">
-              <col span="1" style="width: 30%;">
-            </colgroup>
-            <caption><h3 style="text-align: center"><u>Top 5 Tracks</u></h3></caption>
-            <thead>
-              <td>Rank</td>
-              <td>Track Title</td>
-              <td>Artists</td>
-            </thead>
-            <tbody>
-              {% for track in profile.top_track_list %}
-                <tr>
-                  <td>{{ track.rank|safe }}.</td>
-                  <td>{{ track.name|safe }}</td>
-                  <td>
-                    <ul style="padding-left: 20px;">
-                      {% for artist in track.artists_repr %}
-                      <li>{{ artist|safe }}</li>
-                      {% endfor %}
-                    </ul>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          <br><br>
+        <table style="width: 100%">
+          <colgroup>
+            <col span="1" style="width: 15%;">
+            <col span="1" style="width: 85%;">
+          </colgroup>
+          <caption>
+            <h3 style="text-align: center"><u>Top 5 Tracks</u></h3>
+          </caption>
+          <thead>
+            <td>Rank</td>
+            <td>Track</td>
+          </thead>
+          <tbody id="top_tracks">
+          </tbody>
+        </table>
+        <br><br>
       </td>
     </tr>
     <tr>
@@ -250,17 +231,49 @@
 <br><br>
 <a href="{% url "edit" %}">edit your profile</a> or <a
 href="{% url "password_change" %}">change your password</a>.
-
-<!-- {{ radar_labels|json_script:"radar_labels" }}
-{{ current_track|json_script:"current_track" }} -->
-{{ profile_dict|json_script:"profile" }}
-<!-- {{ histo_bins|json_script:"histo_bins" }}
-{{ histo_data|json_script:"histo_data" }} -->
-<script>
-  // const radar_labels = JSON.parse(document.getElementById("radar_labels").textContent);
-  // const current_track = JSON.parse(document.getElementById("current_track").textContent);
-  const profile = JSON.parse(document.getElementById("profile").textContent);
-  // const histo_bins = JSON.parse(document.getElementById("histo_bins").textContent);
-  // const histo_data = JSON.parse(document.getElementById("histo_data").textContent);
-</script>
 {% endblock %}
+{% block domready %}
+var taskid = "{{analyze_task_id}}";
+
+get_task_info(taskid);
+
+function get_task_info(tid) {
+    $.ajax({
+        type: 'get',
+        url: '/get-task-status/',
+        data: {'task_id': tid},
+        success: function (data) {
+            if(data.state == 'SUCCESS'){
+              var artists_list_html = "<ol>";
+              for (var i=0; i < data.top_lists[0].length; i++) {
+                artists_list_html += "<li>" + data.top_lists[0][i] + "</li>";
+              }
+              artists_list_html += "</ol>";
+              $('#top_artists').html(artists_list_html);
+
+              var genre_list_html = "";
+              for (var i=0; i < data.top_lists[1].length; i++) {
+                genre_list_html += "<li>" + data.top_lists[1][i] + "</li>";
+              }
+              $('#top_genres').html(genre_list_html);
+
+              var top_tracks_html = "";
+              for (var i=0; i < data.top_lists[2].length; i++) {
+                top_tracks_html += "<tr>";
+                top_tracks_html += "<td>" + (i + 1) + "</td>";
+                top_tracks_html += "<td>" + data.top_lists[2][i] + "</td>";
+                top_tracks_html += "</tr>";
+              }
+              $('#top_tracks').html(top_tracks_html);
+            }
+            if (data.state != 'SUCCESS') {
+                setTimeout(function () {
+                    get_task_info(tid)
+                }, 500);
+            }
+        }
+    });
+}
+{% endblock %}
+
+

@@ -6,7 +6,8 @@ services:
     container_name: name
     build: ./
     ports:
-      - 8000:8000
+      - ${NAME_PORT}:${NAME_PORT}
+      - ${DEBUG_PORT}:${DEBUG_PORT}
     env_file:
       - .env.dev
     depends_on:
@@ -31,7 +32,7 @@ services:
       - ./db:/docker-entrypoint-initdb.d/
       - ./db/data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     networks:
       - app-network 
 
@@ -65,7 +66,7 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
     ports:
-      - "5672:5672"
+      - ${RABBIT_PORT}:${RABBIT_PORT}
     networks:
       - app-network 
 
@@ -73,8 +74,6 @@ services:
     build:
       context: .
     image: mher/flower
-    volumes:
-      - ./db/data/flower:/db/data/flower
     ports:
       - ${FLOWER_PORT}:${FLOWER_PORT}
     env_file:
