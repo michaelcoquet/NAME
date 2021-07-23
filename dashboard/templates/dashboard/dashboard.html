@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <div class="parent dboard-header">
   <div class="child dboard-title">
     <h1>Dashboard</h1>
@@ -46,8 +47,9 @@
       <td colspan=2>
         <table style="width: 100%">
           <colgroup>
-            <col span="1" style="width: 15%;">
-            <col span="1" style="width: 85%;">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 55%;">
+            <col span="1" style="width: 40%;">
           </colgroup>
           <caption>
             <h3 style="text-align: center"><u>Top 5 Tracks</u></h3>
@@ -55,65 +57,42 @@
           <thead>
             <td>Rank</td>
             <td>Track</td>
+            <td>Artists</td>
           </thead>
           <tbody id="top_tracks">
           </tbody>
         </table>
-        <br><br>
+        <br>
       </td>
     </tr>
     <tr>
       <td>
         <h3 style="text-align: center"><u>Current Track Analysis</u></h3>
-        {% if radar_charts.0 %}
-          {{ radar_charts.0|safe }}
-        {% else %}
-          <p>No graph was provided.</p>
-        {% endif %}
+        <div id="radar_charts_0"></div>
       </td>
       <td>
         <h3 style="text-align: center"><u>Top Tracks Analysis</u></h3>
-        {% if radar_charts.6 %}
-          {{ radar_charts.6|safe }}
-        {% else %}
-          <p>No graph was provided.</p>
-        {% endif %}
+        <div id="radar_charts_1"></div>
       </td>
     </tr>
     <tr>
       <td>
         <h3 style="text-align: center"><u>Recent Tracks Analysis</u></h3>
-        {% if radar_charts.3 %}
-          {{ radar_charts.3|safe }}
-        {% else %}
-          <p>No graph was provided.</p>
-        {% endif %}
+        <div id="radar_charts_2"></div>
       </td>
       <td>
         <h3 style="text-align: center"><u>Liked Tracks Analysis</u></h3>
-        {% if radar_charts.2 %}
-          {{ radar_charts.2|safe }}
-        {% else %}
-          <p>No graph was provided.</p>
-        {% endif %}
+        <div id="radar_charts_3"></div>
       </td>
     </tr>
     <tr>
       <td>
         <h3 style="text-align: center"><u>Playlist Tracks Analysis</u></h3>
-        {% if radar_charts.9 %}
-          {{ radar_charts.9|safe }}
-        {% else %}
-          <p>No graph was provided.</p>
-        {% endif %}
+        <div id="radar_charts_4"></div>
       </td>
       <td>
         <h3 style="text-align: center"><u>Saved Album Tracks Analysis</u></h3>
-        {% if radar_charts.1 %}
-          {{ radar_charts.1|safe }}
-        {% else %}
-          <p>No graph was provided.</p>
-        {% endif %}
+        <div id="radar_charts_5"></div>
       </td>
     </tr>
     <tr>
@@ -139,87 +118,43 @@
             <tbody>
               <tr>
                 <td><br><u>Danceability</u><br>
-                  {% if histo_charts.1.0 %}
-                    {{ histo_charts.1.0|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_0"></div>
                 </td>
                 <td><br><u>Energy</u><br>
-                  {% if histo_charts.1.1 %}
-                    {{ histo_charts.1.1|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_1"></div>
                 </td>
                 <td><br><u>Key</u><br>
-                  {% if histo_charts.1.2 %}
-                    {{ histo_charts.1.2|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_2"></div>
                 </td>
               </tr>
               <tr>
                 <td><br><u>Loudness</u><br>
-                  {% if histo_charts.1.3 %}
-                    {{ histo_charts.1.3|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_3"></div>
                 </td>
                 <td><br><u>Mode</u><br>
-                  {% if histo_charts.1.4 %}
-                    {{ histo_charts.1.4|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_4"></div>
                 </td>
                 <td><br><u>Speechiness</u><br>
-                  {% if histo_charts.1.5 %}
-                    {{ histo_charts.1.5|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_5"></div>
                 </td>
               </tr>
               <tr>
                 <td><br><u>Acousticness</u><br>
-                  {% if histo_charts.1.6 %}
-                    {{ histo_charts.1.6|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_6"></div>
                 </td>
                 <td><br><u>Instrumentalness</u><br>
-                  {% if histo_charts.1.7 %}
-                    {{ histo_charts.1.7|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_7"></div>
                 </td>
                 <td><br><u>Liveness</u><br>
-                  {% if histo_charts.1.8 %}
-                    {{ histo_charts.1.8|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_8"></div>
                 </td>
               </tr>
               <tr>
                 <td><br><u>Valence</u><br>
-                  {% if histo_charts.1.9 %}
-                    {{ histo_charts.1.9|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_9"></div>
                 </td>
                 <td><br><u>Tempo</u><br>
-                  {% if histo_charts.1.10 %}
-                    {{ histo_charts.1.10|safe }}
-                  {% else %}
-                    <p>No graph was provided.</p>
-                  {% endif %}
+                  <div id="histo_charts_10"></div>
                 </td>
               </tr>
             </tbody>
@@ -259,12 +194,37 @@ function get_task_info(tid) {
 
               var top_tracks_html = "";
               for (var i=0; i < data.top_lists[2].length; i++) {
+                var artist_json = JSON.parse(data.top_lists[2][i])
                 top_tracks_html += "<tr>";
                 top_tracks_html += "<td>" + (i + 1) + "</td>";
-                top_tracks_html += "<td>" + data.top_lists[2][i] + "</td>";
+                top_tracks_html += "<td>" + artist_json.name + "</td>";
+                top_tracks_html += "<td><ul>";
+                for (var j=0; j < artist_json.artists.length; j++) {
+                  top_tracks_html += "<li>" + artist_json.artists[j] + "</li>";
+                }
+                top_tracks_html += "</ul></td>";
                 top_tracks_html += "</tr>";
               }
               $('#top_tracks').html(top_tracks_html);
+
+              $('#radar_charts_0').html(data.radar_charts[0]);
+              $('#radar_charts_1').html(data.radar_charts[1]);
+              $('#radar_charts_2').html(data.radar_charts[2]);
+              $('#radar_charts_3').html(data.radar_charts[3]);
+              $('#radar_charts_4').html(data.radar_charts[4]);
+              $('#radar_charts_5').html(data.radar_charts[5]);
+
+              $('#histo_charts_0').html(data.histo_charts[1][0]);
+              $('#histo_charts_1').html(data.histo_charts[1][1]);
+              $('#histo_charts_2').html(data.histo_charts[1][2]);
+              $('#histo_charts_3').html(data.histo_charts[1][3]);
+              $('#histo_charts_4').html(data.histo_charts[1][4]);
+              $('#histo_charts_5').html(data.histo_charts[1][5]);
+              $('#histo_charts_6').html(data.histo_charts[1][6]);
+              $('#histo_charts_7').html(data.histo_charts[1][7]);
+              $('#histo_charts_8').html(data.histo_charts[1][8]);
+              $('#histo_charts_9').html(data.histo_charts[1][9]);
+              $('#histo_charts_10').html(data.histo_charts[1][10]);
             }
             if (data.state != 'SUCCESS') {
                 setTimeout(function () {
