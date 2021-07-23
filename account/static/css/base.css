@@ -46,6 +46,7 @@ ol {
 ul {
     padding: 0;
     margin: 0;
+    padding-left: 20px;
     width: auto;
     display: inline-block;
 }

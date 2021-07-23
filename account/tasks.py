@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from django.core import serializers
 from spotify.models import Feature, Artist, Track
 from spotify import analyzer
@@ -26,7 +27,7 @@ def expand_queryset(track_queryset, key, n):
     return track_objs
 
 
-def build_radar_chart(data):
+def build_radar_chart(datasets):
     labels = [
         "Danceability",
         "Energy",
@@ -36,64 +37,85 @@ def build_radar_chart(data):
         "Liveness",
         "Valence",
     ]
-    dataframe = pd.DataFrame(
-        dict(
-            r=data,
-            theta=labels,
-        )
-    )
-    fig = px.line_polar(dataframe, r="r", theta="theta", line_close=True)
-    return fig.to_html(full_html=False)
+    if len(datasets) == 1:
+        fig = go.Figure()
+        fig.add_trace(go.Scatterpolar(r=datasets[0], theta=labels, fill="toself"))
+        fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100])))
+        return fig.to_html(full_html=False, include_plotlyjs=False)
+    elif len(datasets) > 1:
+        fig = go.Figure()
+        names = []
+        for i, dataset in enumerate(datasets):
+            if i == 0:
+                if len(dataset) != len(datasets) - 1:
+                    raise ("ERROR something went wrong")
+                else:
+                    names = dataset
+            else:
+                fig.add_trace(
+                    go.Scatterpolar(
+                        r=dataset, theta=labels, fill="toself", name=names[i - 1]
+                    )
+                )
+
+        fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100])))
+        return fig.to_html(full_html=False, include_plotlyjs=False)
 
 
 # build_radars: returns a list of plotly html code to embed in dashboard.html
 #               the datasource for each list element is as follows:
-#                   charts[0] = current track
-#                   charts[1] = tracks from saved albums
-#                   charts[2] = liked tracks
-#                   charts[3] = last 50 tracks
-#                   charts[4] = last 25 tracks
-#                   charst[5] = last 5 tracks
-#                   charts[6] = top 50 tracks
-#                   charts[7] = top 25 tracks
-#                   charts[8] = top 5 tracks
-#                   charts[9] = playlists
+#                    = current track
+#                   analyses[0] = tracks from saved albums
+#                   analyses[1] = liked tracks
+#                   analyses[2] = last 50 tracks
+#                   analyses[3] = last 25 tracks
+#                   analyses[4] = last 5 tracks
+#                   analyses[5] = top 50 tracks
+#                   analyses[6] = top 25 tracks
+#                   analyses[7] = top 5 tracks
+#                   analyses[8] = playlists
 def build_radars(profile_obj, analyses):
     charts = []  # the return list of plotly html code
 
-    # 0 -- current track
+    # charts[0] -- current track
     if profile_obj.current_track != None:
         current_track = profile_obj.current_track.__repr__(0)
-        charts.append(build_radar_chart(current_track.feature_repr))
+        charts.append(build_radar_chart([current_track.feature_repr]))
     else:
         charts.append(None)
 
-    # 1 -- tracks from saved albums
-    charts.append(build_radar_chart(analyses[0]))
+    # charts[1] -- top tracks
+    charts.append(
+        build_radar_chart(
+            [
+                ["Top 50 Tracks", "Top 25 Tracks", "Top 5 Tracks"],
+                analyses[5],
+                analyses[6],
+                analyses[7],
+            ]
+        )
+    )
 
-    # 2 -- liked tracks
-    charts.append(build_radar_chart(analyses[1]))
+    # charts[2] -- last tracks
+    charts.append(
+        build_radar_chart(
+            [
+                ["Last 50 Tracks", "Last 25 Tracks", "Last 5 Tracks"],
+                analyses[2],
+                analyses[3],
+                analyses[4],
+            ]
+        )
+    )
 
-    # 3 -- last 50 tracks
-    charts.append(build_radar_chart(analyses[2]))
+    # charts[3] -- liked tracks
+    charts.append(build_radar_chart([analyses[1]]))
 
-    # 4 -- last 25 tracks
-    charts.append(build_radar_chart(analyses[3]))
+    # charts[4] -- playlists
+    charts.append(build_radar_chart([analyses[8]]))
 
-    # 5 -- last 5 tracks
-    charts.append(build_radar_chart(analyses[4]))
-
-    # 6 -- top 50 tracks
-    charts.append(build_radar_chart(analyses[5]))
-
-    # 7 -- top 25 tracks
-    charts.append(build_radar_chart(analyses[6]))
-
-    # 8 -- top 5 tracks
-    charts.append(build_radar_chart(analyses[7]))
-
-    # 9 -- playlists
-    charts.append(build_radar_chart(analyses[8]))
+    # charts[5] -- tracks from saved albums
+    charts.append(build_radar_chart([analyses[0]]))
 
     return charts
 
@@ -111,7 +133,7 @@ def build_bar_chart(metric, dataframe):
     fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
     fig.update_xaxes(title_text="")
     fig.update_yaxes(title_text="track count")
-    return fig.to_html(full_html=False)
+    return fig.to_html(full_html=False, include_plotlyjs=False)
 
 
 # build_histograms: returns a matrix of plotly html code to embed in dashboard.html
@@ -174,7 +196,7 @@ def analyze_profile(profile_json):
     top_25_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:24])
     top_50_tracks_analysis = analyzer.tracks_avg(top_track_objs[0:49])
     for track in top_track_objs[0:top_n]:
-        top_track_list.append(track.__str__())
+        top_track_list.append(track.to_json())
 
     track_queryset = (
         RecentTrack.objects.filter(owner=profile_obj).order_by("rank").values()

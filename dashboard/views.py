@@ -88,10 +88,3 @@ def get_task_status(request):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
     else:
         return HttpResponse("No job id given.")
-
-
-# @ajax_required
-# @require_GET
-# def get_task_results(request):
-#     data = request.GET.get("data", None)
-#     return HttpResponse("No job id given.")

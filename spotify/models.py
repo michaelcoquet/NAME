@@ -1,3 +1,4 @@
+import json
 from django.db import models
 
 # from account.models import Image
@@ -86,11 +87,21 @@ class Track(models.Model):
     duration = models.IntegerField()
     feature = models.OneToOneField(Feature, on_delete=models.CASCADE, null=True)
 
+    def to_json(self):
+        artists = []
+        for artist in self.artists.values():
+            artists.append(artist["name"])
+        track_dict = {
+            "name": self.name,
+            "artists": artists,
+        }
+        return json.dumps(track_dict)
+
     def __str__(self):
         artists_str = []
         for artist in self.artists.values():
             artists_str.append(artist["name"])
-        return f"{self.name} --- {[artist for artist in artists_str]}"
+        return self.name + " --- " + ", ".join([artist for artist in artists_str])
 
     def __repr__(self, rank):
         self.rank = rank  # used for users top lists
