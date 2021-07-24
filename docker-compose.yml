@@ -40,8 +40,6 @@ services:
     restart: always
     build:
       context: .
-    volumes:
-      - ./celery:/celery
     env_file:
       - .env.dev
     environment:
