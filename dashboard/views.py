@@ -38,8 +38,6 @@ def dashboard(request):
 
         # Scrape Spotify API user data for the given user
         # to populate data for the dashboard
-        # TODO: Use celery or something similar to do this
-        #       async'ly
         scrape_task_id = scrape.user_profile(social_query)
         return render(
             request,

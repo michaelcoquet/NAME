@@ -16,13 +16,7 @@ class ImageAdmin(admin.ModelAdmin):
 class PlaylistAdmin(admin.ModelAdmin):
     list_display = [
         "id",
-        "name",
-        "owner",
-        "public",
-        "description",
-        "collaborative",
-        "followers",
-        "images",
+        "data",
     ]
 
 
