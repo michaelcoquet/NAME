@@ -17,6 +17,9 @@ offset = "0"
 #       header which represents the number of seconds
 #       to wait before retrying
 #       https://developer.spotify.com/documentation/web-api/
+# TODO: Implement scraping all data with the spotify api cursor since
+#       the max limit for any API call is 50 results you need to continue
+#       calling until the next pointer is null to get all results
 # TODO: Unit testing
 def build_get(url, token):
     headers = {
@@ -78,7 +81,9 @@ def saved_albums(social):
 
 @login_required
 def saved_tracks(social):
-    url = "https://api.spotify.com/v1/me/tracks?market={}".format(market)
+    url = "https://api.spotify.com/v1/me/tracks?limit={}&market={}".format(
+        limit, market
+    )
     api_response = build_get(url, token(social))
     return json.loads(api_response.text)
 

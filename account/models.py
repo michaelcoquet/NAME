@@ -82,11 +82,12 @@ class TopArtist(models.Model):
 
 class Playlist(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
-    name = models.CharField(max_length=62, null=True)
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    public = models.BooleanField()
-    description = models.CharField(max_length=128, null=True)
-    collaborative = models.BooleanField()
-    followers = None
-    images = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
-    tracks = models.ManyToManyField(Track)
+    data = models.JSONField(null=True)
+    # name = models.CharField(max_length=62, null=True)
+    # owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    # public = models.BooleanField()
+    # description = models.CharField(max_length=128, null=True)
+    # collaborative = models.BooleanField()
+    # followers = None
+    # images = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
+    # tracks = models.ManyToManyField(Track)

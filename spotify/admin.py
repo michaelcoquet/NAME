@@ -6,12 +6,13 @@ from .models import Track, Album, Genre, Artist, Feature
 class TrackAdmin(admin.ModelAdmin):
     list_display = [
         "id",
-        "name",
-        "album",
-        "disc_number",
-        "track_number",
-        "duration",
-        "feature",
+        "data",
+        # "name",
+        # "album",
+        # "disc_number",
+        # "track_number",
+        # "duration",
+        # "feature",
     ]
 
 
@@ -19,9 +20,10 @@ class TrackAdmin(admin.ModelAdmin):
 class AlbumAdmin(admin.ModelAdmin):
     list_display = [
         "id",
-        "name",
-        "release_date",
-        "total_tracks",
+        "data",
+        # "name",
+        # "release_date",
+        # "total_tracks",
     ]
 
 
@@ -32,21 +34,12 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Artist)
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "get_genres", "popularity"]
+    list_display = ["id", "data"]
 
 
 @admin.register(Feature)
 class FeatureAdmin(admin.ModelAdmin):
     list_display = [
-        "danceability",
-        "energy",
-        "key",
-        "loudness",
-        "mode",
-        "speechiness",
-        "acousticness",
-        "instrumentalness",
-        "liveness",
-        "valence",
-        "tempo",
+        "id",
+        "data",
     ]
