@@ -3,12 +3,13 @@ from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
-from account.tasks import build_radars, build_histograms, analyze_profile
+from account.tasks import analyze_profile
 from account.models import Profile
 import spotify.scraper as scrape
 from common.decorators import ajax_required
 from django.views.decorators.http import require_GET
 from celery.result import AsyncResult
+from django_celery_results.models import TaskResult
 
 
 @login_required
@@ -18,7 +19,8 @@ def dashboard(request):
 
     if profile_query.count() == 1 and social_query.count() == 1:
         # returning user has spotify connnected
-        print("TODO: build the graphs and whatever, possibly here")
+        # possibly need to do some caching here
+        pass
     elif profile_query.count() == 1 and social_query.count() == 0:
         # returning user hasn't connected their Spotify account yet
         print("Error: user doesnt have a Spotify account linked yet")
@@ -38,7 +40,16 @@ def dashboard(request):
         # to populate data for the dashboard
         # TODO: Use celery or something similar to do this
         #       async'ly
-        scrape.user_profile(social_query.get())
+        scrape_task_id = scrape.user_profile(social_query)
+        return render(
+            request,
+            "dashboard/dashboard_loading.html",
+            {
+                "section": "dashboard",
+                "profile": profile_query.values()[0],
+                "scrape_task_id": scrape_task_id,
+            },
+        )
 
     elif profile_query.count() == 0 and social_query.count() == 0:
         # first login must be with email or another method (if implemented)
@@ -51,7 +62,6 @@ def dashboard(request):
 
     profile_query_json = serializers.serialize("json", profile_query.only())
     analyze_task_id = analyze_profile.delay(profile_query_json)
-    # top_lists, radar_charts, histo_charts = analyze_profile(profile_query_json)
 
     return render(
         request,
@@ -60,11 +70,25 @@ def dashboard(request):
             "section": "dashboard",
             "profile": profile_query.values()[0],
             "analyze_task_id": analyze_task_id,
-            # "top_lists": top_lists,
-            # "radar_charts": radar_charts,
-            # "histo_charts": histo_charts,
         },
     )
+
+
+@ajax_required
+@require_GET
+def get_scraper_status(request):
+    task_id = request.GET.get("task_id", None)
+    if task_id is not None:
+        task = AsyncResult(task_id)
+        while task.status != "SUCCESS":
+            pass
+        response_data = {
+            "state": task.state,
+        }
+        TaskResult.objects.filter(task_id=task_id).delete()
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+    else:
+        return HttpResponse("No job id given")
 
 
 @ajax_required
@@ -85,6 +109,7 @@ def get_task_status(request):
             "radar_charts": radar_charts,
             "histo_charts": histo_charts,
         }
+        TaskResult.objects.filter(task_id=task_id).delete()
         return HttpResponse(json.dumps(response_data), content_type="application/json")
     else:
         return HttpResponse("No job id given.")
