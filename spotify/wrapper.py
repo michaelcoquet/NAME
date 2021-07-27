@@ -43,7 +43,7 @@ def user_info(social):
 
 
 @login_required
-def playing_track(social):
+def current_track(social):
     url = "https://api.spotify.com/v1/me/player/currently-playing?market={}".format(
         market
     )
