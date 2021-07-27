@@ -181,7 +181,7 @@ function get_task_info(tid) {
             if(data.state == 'SUCCESS'){
               var artists_list_html = "<ol>";
               for (var i=0; i < data.top_lists[0].length; i++) {
-                artists_list_html += "<li>" + data.top_lists[0][i] + "</li>";
+                artists_list_html += "<li>" + data.top_lists[0][i]["name"] + "</li>";
               }
               artists_list_html += "</ol>";
               $('#top_artists').html(artists_list_html);
@@ -194,13 +194,12 @@ function get_task_info(tid) {
 
               var top_tracks_html = "";
               for (var i=0; i < data.top_lists[2].length; i++) {
-                var artist_json = JSON.parse(data.top_lists[2][i])
                 top_tracks_html += "<tr>";
                 top_tracks_html += "<td>" + (i + 1) + "</td>";
-                top_tracks_html += "<td>" + artist_json.name + "</td>";
+                top_tracks_html += "<td>" + data.top_lists[2][i]["data"]["name"] + "</td>";
                 top_tracks_html += "<td><ul>";
-                for (var j=0; j < artist_json.artists.length; j++) {
-                  top_tracks_html += "<li>" + artist_json.artists[j] + "</li>";
+                for (var j=0; j < data.top_lists[2][i]["data"]["artists"].length; j++) {
+                  top_tracks_html += "<li>" + data.top_lists[2][i]["data"]["artists"][j]["name"] + "</li>";
                 }
                 top_tracks_html += "</ul></td>";
                 top_tracks_html += "</tr>";
