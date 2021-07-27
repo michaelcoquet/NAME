@@ -147,3 +147,28 @@ def feature(social, id):
     url = "https://api.spotify.com/v1/audio-features/{}".format(id)
     api_response = build_get(url, token(social))
     return json.loads(api_response.text)
+
+
+def features(social, ids):
+    if len(ids) <= 100:
+        ids = ",".join(ids)
+        url = "https://api.spotify.com/v1/audio-features?ids={}".format(ids)
+        api_response = build_get(url, token(social))
+        return json.loads(api_response.text)
+    else:
+        api_responses = []
+        id_chunks = split_list(ids, 100)
+        for id_chunk in id_chunks:
+            id_chunk_str = ",".join(id_chunk)
+            url = "https://api.spotify.com/v1/audio-features?ids={}".format(
+                id_chunk_str
+            )
+            api_response = build_get(url, token(social))
+            api_response = json.loads(api_response.text)
+            api_response = api_response["audio_features"]
+            api_responses = api_responses + api_response
+        return api_responses
+
+
+def split_list(list, n):
+    return [list[i : i + n] for i in range(0, len(list), n)]

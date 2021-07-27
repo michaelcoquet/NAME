@@ -3,12 +3,11 @@ import spotify.wrapper as spotify
 from django.db import models
 
 
-class TrackManager(models.Manager):
-    def create_track(self, *args, **kwargs):
-        social = kwargs.pop("social", False)
-        new_track = self.model(**kwargs)
-        new_track.save(social=social)
-        return new_track
+# class TrackManager(models.Manager):
+#     def save_feature(self, *args, **kwargs):
+#         feature = kwargs.pop("feature", False)
+#         self.save
+#         return new_track
 
 
 class Track(models.Model):
@@ -16,12 +15,11 @@ class Track(models.Model):
     data = models.JSONField()
     feature = models.JSONField(null=True)
 
-    objects = TrackManager()
+    # objects = TrackManager()
 
-    def save(self, social, *args, **kwargs):
-        feature = spotify.feature(social, self.id)
-        self.feature = feature
-        super().save(*args, **kwargs)
+    # def save(self, feature, *args, **kwargs):
+    #     self.feature = feature
+    #     super().save(*args, **kwargs)
 
 
 class Album(models.Model):
