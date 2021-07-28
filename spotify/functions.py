@@ -30,13 +30,13 @@ def build_playlists(social, playlists):
 def build_tracks(tracks):
     track_list = []
     track_ids = []
-    for track in tracks:
+    for i, track in enumerate(tracks):
         if track != None:
             id = track["id"]
             # check whether id already exists in db
             filter = Track.objects.filter(id=id)
             if filter.count() == 0:
-                track_obj = Track.objects.create(id=track["id"], data=track)
+                track_obj = Track.objects.create(id=track["id"], data=track, rank=i)
                 track_list = track_list + [track_obj]
                 track_ids = track_ids + [id]
     return track_list, track_ids

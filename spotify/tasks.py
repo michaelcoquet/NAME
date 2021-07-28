@@ -4,7 +4,7 @@ import spotify.functions as func
 from django.core import serializers
 from celery import shared_task
 
-# TODO: Implement batch api calls to improve performance
+# TODO: Implement batch api calls for multiple album objects to improve performance even more
 # TODO: Unit testing
 @shared_task
 def scrape_user_profile(social_json):
@@ -17,7 +17,6 @@ def scrape_user_profile(social_json):
     current_track = spotify.current_track(social)
     if current_track != None:
         current_track, current_id = func.build_tracks([current_track["item"]])
-        # track_list.append(current_track["item"])
 
     recent_tracks = spotify.recently_played_tracks(social)
     if recent_tracks != None:
