@@ -10,13 +10,13 @@ def tracks_avg(tracks_json):
             track_query = track_query.get()
             feature = track_query.feature
             feature = [
-                feature["danceability"],
-                feature["energy"],
-                feature["speechiness"],
-                feature["acousticness"],
-                feature["instrumentalness"],
-                feature["liveness"],
-                feature["valence"],
+                feature["danceability"] * 100,
+                feature["energy"] * 100,
+                feature["speechiness"] * 100,
+                feature["acousticness"] * 100,
+                feature["instrumentalness"] * 100,
+                feature["liveness"] * 100,
+                feature["valence"] * 100,
             ]
             zipped_features = zip(features_avg, feature)
             features_avg = [x + y for (x, y) in zipped_features]

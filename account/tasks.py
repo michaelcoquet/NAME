@@ -1,4 +1,5 @@
 import json
+import re
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -6,28 +7,11 @@ from django.core import serializers
 import spotify
 from spotify.models import Track
 from spotify import analyzer
-from account.models import TopArtist, TopTrack, RecentTrack, Playlist
+from account.models import Playlist
 from celery import shared_task
+from collections import Counter
 
 top_n = 5  # the top number of songs or artists to return
-
-
-# def get_features(track_json_list, key):
-#     features = []
-#     for i, track in enumerate(track_json_list):
-#         feature = Feature.objects.filter(id=track[key]).get()
-#         # track_obj = Track.objects.filter(id=track[key]).get()
-#         # exclude the track if there is no available analysis for it
-#         # if track_obj.feature_id != None:
-#         #     if n != 0:
-#         #         if i < n:
-#         #             track_objs.append(track_obj.__repr__(rank=(i + 1)))
-#         #         else:
-#         #             pass
-#         #     else:
-#         #         track_objs.append(track_obj.__repr__(rank=(i + 1)))
-
-#     return features
 
 
 def build_radar_chart(datasets):
@@ -43,7 +27,7 @@ def build_radar_chart(datasets):
     if len(datasets) == 1:
         fig = go.Figure()
         fig.add_trace(go.Scatterpolar(r=datasets[0], theta=labels, fill="toself"))
-        fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 1])))
+        fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100])))
         return fig.to_html(full_html=False, include_plotlyjs=False)
     elif len(datasets) > 1:
         fig = go.Figure()
@@ -61,7 +45,7 @@ def build_radar_chart(datasets):
                     )
                 )
 
-        fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 1])))
+        fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 100])))
         return fig.to_html(full_html=False, include_plotlyjs=False)
 
 
@@ -84,13 +68,13 @@ def build_radars(profile, analyses):
     if profile.current_track != None:
         feature = profile.current_track.feature
         feature = [
-            feature["danceability"],
-            feature["energy"],
-            feature["speechiness"],
-            feature["acousticness"],
-            feature["instrumentalness"],
-            feature["liveness"],
-            feature["valence"],
+            feature["danceability"] * 100,
+            feature["energy"] * 100,
+            feature["speechiness"] * 100,
+            feature["acousticness"] * 100,
+            feature["instrumentalness"] * 100,
+            feature["liveness"] * 100,
+            feature["valence"] * 100,
         ]
         charts.append(build_radar_chart([feature]))
     else:
@@ -184,16 +168,16 @@ def build_histograms(profile):
         else:
             feat = track["feature"]
             feat = [
-                feat["danceability"],
-                feat["energy"],
+                feat["danceability"] * 100,
+                feat["energy"] * 100,
                 feat["key"],
                 feat["loudness"],
                 feat["mode"],
-                feat["speechiness"],
-                feat["acousticness"],
-                feat["instrumentalness"],
-                feat["liveness"],
-                feat["valence"],
+                feat["speechiness"] * 100,
+                feat["acousticness"] * 100,
+                feat["instrumentalness"] * 100,
+                feat["liveness"] * 100,
+                feat["valence"] * 100,
                 feat["tempo"],
             ]
             recent_track_features.append(feat)
@@ -204,6 +188,22 @@ def build_histograms(profile):
     return charts
 
 
+def genre_occurrences(top_genres):
+    genre_list = json.loads(top_genres)
+
+    counts = Counter()
+    words = re.compile(r".*")
+
+    for genre in genre_list:
+        counts.update(words.findall(genre.lower()))
+
+    counts = counts.most_common()
+    if counts[0][0] == "":
+        top_genres_list = [item[0] for item in counts[1:]]
+
+    return top_genres_list
+
+
 @shared_task
 def analyze_profile(profile_json):
     deserialize_json = serializers.deserialize("json", profile_json)
@@ -212,20 +212,29 @@ def analyze_profile(profile_json):
     profile = profile.object
 
     top_track_list = []
-    # track_features = get_features(profile.top_tracks, "")
-    top_5_tracks_analysis = analyzer.tracks_avg(profile.top_tracks.values()[0:5])
-    top_25_tracks_analysis = analyzer.tracks_avg(profile.top_tracks.values()[0:25])
-    top_50_tracks_analysis = analyzer.tracks_avg(profile.top_tracks.values()[0:50])
-    for track in profile.top_tracks.values()[0 : top_n + 1]:
+    top_5_tracks_analysis = analyzer.tracks_avg(
+        profile.top_tracks.values().order_by("rank")[0:4]
+    )
+    top_25_tracks_analysis = analyzer.tracks_avg(
+        profile.top_tracks.values().order_by("rank")[0:24]
+    )
+    top_50_tracks_analysis = analyzer.tracks_avg(
+        profile.top_tracks.values().order_by("rank")[0:49]
+    )
+    for track in profile.top_tracks.values().order_by("rank")[0:top_n]:
         top_track_list.append(track)
 
-    # recent_track_objs = get_features(profile.recent_tracks)
-    last_5_tracks_analysis = analyzer.tracks_avg(profile.recent_tracks.values()[0:5])
-    last_25_tracks_analysis = analyzer.tracks_avg(profile.recent_tracks.values()[0:25])
-    last_50_tracks_analysis = analyzer.tracks_avg(profile.recent_tracks.values()[0:50])
+    last_5_tracks_analysis = analyzer.tracks_avg(
+        profile.recent_tracks.values().order_by("rank")[0:4]
+    )
+    last_25_tracks_analysis = analyzer.tracks_avg(
+        profile.recent_tracks.values().order_by("rank")[0:24]
+    )
+    last_50_tracks_analysis = analyzer.tracks_avg(
+        profile.recent_tracks.values().order_by("rank")[0:49]
+    )
 
     liked_tracks = profile.saved_tracks
-    # liked_tracks_objs = get_features(liked_tracks, "id", 0)
     liked_tracks_analysis = analyzer.tracks_avg(liked_tracks.values())
 
     playlist_tracks = []
@@ -233,7 +242,7 @@ def analyze_profile(profile_json):
         playlist_tracks = playlist_tracks + [
             track for track in playlist.tracks.values()
         ]
-    # playlist_track_objs = get_features(playlist_queryset, "id", 0)
+
     playlist_tracks_analysis = analyzer.tracks_avg(playlist_tracks)
 
     album_tracks_objs = []
@@ -241,20 +250,12 @@ def analyze_profile(profile_json):
         album_tracks_objs = album_tracks_objs + [
             track for track in album.tracks.values()
         ]
-        # album_tracks_objs = album_tracks_objs + get_features(
-        #     album_tracks_queryset, "id", 0
-        # )
+
     album_tracks_analysis = analyzer.tracks_avg(album_tracks_objs)
 
     top_artist_list = profile.top_artists["items"][0:top_n]
-    # for artist in artist_queryset:
-    #     top_artist_list.append(
-    #         Artist.objects.filter(id=artist["artist_id"]).get().__str__()
-    #     )
 
-    top_genre_list = json.loads(profile.top_genres)[
-        0:11
-    ]  # TODO: find a better way to condense this list
+    top_genre_list = genre_occurrences(profile.top_genres)[0:top_n]
 
     # analyses[0] -- tracks from saved albums
     # analyses[1] -- liked tracks

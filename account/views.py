@@ -8,8 +8,6 @@ from django.views.decorators.http import require_POST
 
 from common.decorators import ajax_required
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
-from .models import Contact
-from account.models import Playlist, TopArtist, TopTrack, RecentTrack
 
 
 def user_login(request):

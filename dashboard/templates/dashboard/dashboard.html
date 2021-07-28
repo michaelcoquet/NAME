@@ -33,14 +33,40 @@
   <tbody>
     <tr>
       <td>
-        <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
-        <div id="top_artists"></div>
+        <table style="width: 100%">
+          <colgroup>
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 90%;">
+          </colgroup>
+          <caption>
+            <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
+          </caption>
+          <thead>
+            <td>Rank</td>
+            <td>Artist</td>
+          </thead>
+          <tbody id="top_artists">
+          </tbody>
+        </table>
+        <br>
       </td>
       <td>
-        <h3 style="text-align: center"><u>Top Genres</u></h3>
-        <ul id="two-columns">
-          <div id="top_genres"></div>
-        </ul>
+        <table style="width: 100%">
+          <colgroup>
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 90%;">
+          </colgroup>
+          <caption>
+            <h3 style="text-align: center"><u>Top Genres</u></h3>
+          </caption>
+          <thead>
+            <td>Rank</td>
+            <td>Genre</td>
+          </thead>
+          <tbody id="top_genres">
+          </tbody>
+        </table>
+        <br>
       </td>
     </tr>
     <tr>
@@ -179,16 +205,21 @@ function get_task_info(tid) {
         data: {'task_id': tid},
         success: function (data) {
             if(data.state == 'SUCCESS'){
-              var artists_list_html = "<ol>";
+              var artists_list_html = "";
               for (var i=0; i < data.top_lists[0].length; i++) {
-                artists_list_html += "<li>" + data.top_lists[0][i]["name"] + "</li>";
+                artists_list_html += "<tr>";
+                artists_list_html += "<td>" + (i + 1) + "</td>";
+                artists_list_html += "<td>" + data.top_lists[0][i]["name"] + "</td>";
+                artists_list_html += "</tr>";
               }
-              artists_list_html += "</ol>";
               $('#top_artists').html(artists_list_html);
 
               var genre_list_html = "";
               for (var i=0; i < data.top_lists[1].length; i++) {
-                genre_list_html += "<li>" + data.top_lists[1][i] + "</li>";
+                genre_list_html += "<tr>";
+                genre_list_html += "<td>" + (i + 1) + "</td>";
+                genre_list_html += "<td>" + data.top_lists[1][i] + "</td>";
+                genre_list_html += "</tr>";
               }
               $('#top_genres').html(genre_list_html);
 
