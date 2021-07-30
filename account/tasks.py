@@ -4,14 +4,14 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from django.core import serializers
-import spotify
-from spotify.models import Track
 from spotify import analyzer
-from account.models import Playlist
 from celery import shared_task
 from collections import Counter
+from django.conf import settings
+from .models import TopTrack, RecentTrack
+from spotify.models import Track
 
-top_n = 5  # the top number of songs or artists to return
+top_n = settings.TOP_N  # the top number of songs or artists to return
 
 
 def build_radar_chart(datasets):
@@ -81,37 +81,52 @@ def build_radars(profile, analyses):
         charts.append(None)
 
     # charts[1] -- top tracks
-    charts.append(
-        build_radar_chart(
-            [
-                ["Top 50 Tracks", "Top 25 Tracks", "Top 5 Tracks"],
-                analyses[5],
-                analyses[6],
-                analyses[7],
-            ]
+    if analyses[5] != 0 and analyses[6] != 0 and analyses[7] != 0:
+        charts.append(
+            build_radar_chart(
+                [
+                    ["Top 50 Tracks", "Top 25 Tracks", "Top 5 Tracks"],
+                    analyses[5],
+                    analyses[6],
+                    analyses[7],
+                ]
+            )
         )
-    )
+    else:
+        charts.append(None)
 
     # charts[2] -- last tracks
-    charts.append(
-        build_radar_chart(
-            [
-                ["Last 50 Tracks", "Last 25 Tracks", "Last 5 Tracks"],
-                analyses[2],
-                analyses[3],
-                analyses[4],
-            ]
+    if analyses[2] != 0 and analyses[3] != 0 and analyses[4] != 0:
+        charts.append(
+            build_radar_chart(
+                [
+                    ["Last 50 Tracks", "Last 25 Tracks", "Last 5 Tracks"],
+                    analyses[2],
+                    analyses[3],
+                    analyses[4],
+                ]
+            )
         )
-    )
+    else:
+        charts.append(None)
 
     # charts[3] -- liked tracks
-    charts.append(build_radar_chart([analyses[1]]))
+    if analyses[1] != 0:
+        charts.append(build_radar_chart([analyses[1]]))
+    else:
+        charts.append(None)
 
     # charts[4] -- playlists
-    charts.append(build_radar_chart([analyses[8]]))
+    if analyses[8] != 0:
+        charts.append(build_radar_chart([analyses[8]]))
+    else:
+        charts.append(None)
 
     # charts[5] -- tracks from saved albums
-    charts.append(build_radar_chart([analyses[0]]))
+    if analyses[0] != 0:
+        charts.append(build_radar_chart([analyses[0]]))
+    else:
+        charts.append(None)
 
     return charts
 
@@ -132,15 +147,7 @@ def build_bar_chart(metric, dataframe):
     return fig.to_html(full_html=False, include_plotlyjs=False)
 
 
-# build_histograms: returns a matrix of plotly html code to embed in dashboard.html
-#               the datasource for each list element is as follows:
-#
-#   charts[0][0:10] = all tracks analysis
-#   charts[1][0:10] = liked tracks analysis
-#   charts[2][0:10] = recent tracks analysis
-#   charts[3][0:10] = top tracks analysis
-#   charts[4][0:10] = saved album tracks analysis
-def build_histograms(profile):
+def append_histo_chart(charts, tracks):
     metrics = [
         "Danceability",
         "Energy",
@@ -155,14 +162,8 @@ def build_histograms(profile):
         "Tempo",
     ]
 
-    charts = []
-
-    # 1 -- liked tracks analysis
-    charts.append(build_bar_charts(["total_bill"], px.data.tips()))
-
-    # 2 -- recent tracks analysis
-    recent_track_features = []
-    for track in profile.recent_tracks.values():
+    track_features = []
+    for track in tracks:
         if track["feature"] == None:
             continue
         else:
@@ -180,16 +181,53 @@ def build_histograms(profile):
                 feat["valence"] * 100,
                 feat["tempo"],
             ]
-            recent_track_features.append(feat)
-    recent_dataframe = pd.DataFrame(recent_track_features, columns=metrics)
+            track_features.append(feat)
+    dataframe = pd.DataFrame(track_features, columns=metrics)
 
-    charts.append(build_bar_charts(metrics, recent_dataframe))
+    if len(dataframe) > 0:
+        charts.append(build_bar_charts(metrics, dataframe))
+    else:
+        charts.append(None)
+
+    return charts
+
+
+# build_histograms: returns a matrix of plotly html code to embed in dashboard.html
+#               the datasource for each list element is as follows:
+#
+#   charts[0][0:10] = all tracks analysis
+#   charts[1][0:10] = liked tracks analysis
+#   charts[2][0:10] = recent tracks analysis
+#   charts[3][0:10] = top tracks analysis
+#   charts[4][0:10] = saved album tracks analysis
+#   charts[5][0:10] = playlist tracks analysis
+def build_histograms(profile):
+    charts = []
+
+    # 0 -- all tracks chart
+    charts = append_histo_chart(charts, profile.all_tracks.values())
+
+    # 1 -- liked tracks chart
+    charts = append_histo_chart(charts, profile.saved_tracks.values())
+
+    # 2 -- recent tracks chart
+    charts = append_histo_chart(charts, profile.recent_tracks.values())
+
+    # 3 -- top tracks chart
+    charts = append_histo_chart(charts, profile.top_tracks.values())
+
+    # 4 -- saved album tracks chart
+    charts = append_histo_chart(charts, profile.saved_album_tracks.values())
+
+    # 5 -- playlist tracks chart
+    charts = append_histo_chart(charts, profile.playlist_tracks.values())
 
     return charts
 
 
 def genre_occurrences(top_genres):
     genre_list = json.loads(top_genres)
+    top_genres_list = []
 
     counts = Counter()
     words = re.compile(r".*")
@@ -198,9 +236,11 @@ def genre_occurrences(top_genres):
         counts.update(words.findall(genre.lower()))
 
     counts = counts.most_common()
-    if counts[0][0] == "":
-        top_genres_list = [item[0] for item in counts[1:]]
-
+    if len(counts) > 1:
+        if counts[0][0] == "":
+            top_genres_list = [item[0] for item in counts[1:]]
+        else:
+            top_genres_list = [item[0] for item in counts]
     return top_genres_list
 
 
@@ -211,28 +251,25 @@ def analyze_profile(profile_json):
         profile.save()
     profile = profile.object
 
-    top_track_list = []
-    top_5_tracks_analysis = analyzer.tracks_avg(
-        profile.top_tracks.values().order_by("rank")[0:4]
-    )
-    top_25_tracks_analysis = analyzer.tracks_avg(
-        profile.top_tracks.values().order_by("rank")[0:24]
-    )
-    top_50_tracks_analysis = analyzer.tracks_avg(
-        profile.top_tracks.values().order_by("rank")[0:49]
-    )
-    for track in profile.top_tracks.values().order_by("rank")[0:top_n]:
-        top_track_list.append(track)
+    top_track_list = TopTrack.objects.filter(owner=profile).values().order_by("rank")
+    top_track_list = [
+        Track.objects.filter(id=track["track_id"]).values()[0]
+        for track in top_track_list
+    ]
+    top_5_tracks_analysis = analyzer.tracks_avg(top_track_list[0:4])
+    top_25_tracks_analysis = analyzer.tracks_avg(top_track_list[0:24])
+    top_50_tracks_analysis = analyzer.tracks_avg(top_track_list[0:49])
 
-    last_5_tracks_analysis = analyzer.tracks_avg(
-        profile.recent_tracks.values().order_by("rank")[0:4]
+    recent_track_list = (
+        RecentTrack.objects.filter(owner=profile).values().order_by("rank")
     )
-    last_25_tracks_analysis = analyzer.tracks_avg(
-        profile.recent_tracks.values().order_by("rank")[0:24]
-    )
-    last_50_tracks_analysis = analyzer.tracks_avg(
-        profile.recent_tracks.values().order_by("rank")[0:49]
-    )
+    recent_track_list = [
+        Track.objects.filter(id=track["track_id"]).values()[0]
+        for track in recent_track_list
+    ]
+    last_5_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:4])
+    last_25_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:24])
+    last_50_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:49])
 
     liked_tracks = profile.saved_tracks
     liked_tracks_analysis = analyzer.tracks_avg(liked_tracks.values())
@@ -280,7 +317,7 @@ def analyze_profile(profile_json):
     # top_lists[0] -- Top Artists
     # top_lists[1] -- Top Genres
     # top_lists[2] -- Top Tracks
-    top_lists = [top_artist_list, top_genre_list, top_track_list]
+    top_lists = [top_artist_list, top_genre_list, top_track_list[0:top_n]]
 
     radar_charts = build_radars(profile, analyses)
     histo_charts = build_histograms(profile)

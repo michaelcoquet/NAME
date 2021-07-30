@@ -3,6 +3,7 @@ import spotify.wrapper as spotify
 import spotify.functions as func
 from django.core import serializers
 from celery import shared_task
+from django.conf import settings
 
 # TODO: Implement batch api calls for multiple album objects to improve performance even more
 # TODO: Unit testing
@@ -20,24 +21,28 @@ def scrape_user_profile(social_json):
 
     recent_tracks = spotify.recently_played_tracks(social)
     if recent_tracks != None:
-        recent_tracks, recent_ids = func.build_tracks(
-            [track["track"] for track in recent_tracks["items"]]
+        recent_tracks, recent_ids = func.build_tops(
+            social.user.profile,
+            [track["track"] for track in recent_tracks["items"]],
+            "recent",
         )
 
     saved_tracks = spotify.saved_tracks(social)
     if saved_tracks != None:
         saved_tracks, saved_ids = func.build_tracks(
-            [track["track"] for track in saved_tracks["items"]]
+            [track["track"] for track in saved_tracks]
         )
 
     top_tracks = spotify.top_tracks(social)
     if top_tracks != None:
-        top_tracks, top_ids = func.build_tracks(top_tracks["items"])
+        top_tracks, top_ids = func.build_tops(
+            social.user.profile, top_tracks["items"], "top"
+        )
 
     album_tracks = []
     saved_albums = spotify.saved_albums(social)
     if saved_albums != None:
-        saved_albums, album_tracks, album_ids = func.build_albums(social, saved_albums)
+        saved_albums, album_tracks, album_ids = func.build_albums(saved_albums)
 
     top_artists = spotify.top_artists(social)
 
@@ -76,6 +81,7 @@ def scrape_user_profile(social_json):
         all_ids = all_ids + top_ids
     if saved_albums != None:
         social.user.profile.saved_albums.set(saved_albums)
+        social.user.profile.saved_album_tracks.set(album_tracks)
         all_tracks = all_tracks + album_tracks
         all_ids = all_ids + album_ids
     if top_artists != None:
@@ -84,8 +90,11 @@ def scrape_user_profile(social_json):
         social.user.profile.top_genres = json.dumps(top_genre_list)
     if playlists != None:
         social.user.profile.playlists.set(playlists)
+        social.user.profile.playlist_tracks.set(playlist_tracks)
         all_tracks = all_tracks + playlist_tracks
         all_ids = all_ids + playlist_ids
+    if all_tracks != None:
+        social.user.profile.all_tracks.set(all_tracks)
 
     func.build_features(social, all_tracks, all_ids)
 

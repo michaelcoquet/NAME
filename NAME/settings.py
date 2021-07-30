@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["mysite.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = json.loads(os.getenv("ALLOWED_HOSTS"))
 
 # Application definition
 
@@ -179,12 +180,15 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 # REDIS SETTTINGS
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
-REDIS_DB = 0
+REDIS_HOST = "redis"
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_DB = os.getenv("REDIS_DB")
 
 
 # CELERY SETTINGS
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+
+# Number of items for top lists
+TOP_N = 5

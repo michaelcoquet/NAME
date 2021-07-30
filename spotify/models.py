@@ -7,7 +7,6 @@ class Track(models.Model):
     id = models.CharField(primary_key=True, max_length=62)
     data = models.JSONField()
     feature = models.JSONField(null=True)
-    rank = models.IntegerField(null=True)
 
 
 class Album(models.Model):
