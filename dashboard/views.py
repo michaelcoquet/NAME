@@ -100,12 +100,24 @@ def get_task_status(request):
         top_lists = task.result[0]
         radar_charts = task.result[1]
         histo_charts = task.result[2]
+        all_track_count = request.user.profile.all_tracks.all().count()
+        liked_track_count = request.user.profile.saved_tracks.all().count()
+        recent_track_count = request.user.profile.recent_tracks.all().count()
+        top_track_count = request.user.profile.top_tracks.all().count()
+        saved_album_track_count = request.user.profile.saved_album_tracks.all().count()
+        playlist_track_count = request.user.profile.playlist_tracks.all().count()
         response_data = {
             "state": task.state,
             "result": task.result,
             "top_lists": top_lists,
             "radar_charts": radar_charts,
             "histo_charts": histo_charts,
+            "all_track_count": all_track_count,
+            "liked_track_count": liked_track_count,
+            "recent_track_count": recent_track_count,
+            "top_track_count": top_track_count,
+            "saved_album_track_count": saved_album_track_count,
+            "playlist_track_count": playlist_track_count,
         }
         TaskResult.objects.filter(task_id=task_id).delete()
         return HttpResponse(json.dumps(response_data), content_type="application/json")

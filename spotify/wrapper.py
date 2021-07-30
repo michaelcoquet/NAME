@@ -1,6 +1,7 @@
 # Spotify API wrapper, this will handle all the API calls to Spotify
 import requests, json
 from django.contrib.auth.decorators import login_required
+from requests import api
 
 market = "CA"  # TODO: not quite sure how to deal with this yet, possibly
 #                      request the users location
@@ -29,6 +30,21 @@ def build_get(url, token):
     }
     api_response = requests.request("GET", url, headers=headers)
     return api_response
+
+
+def get_all(url, token):
+    responses_json = []
+    api_response = build_get(url, token)
+    resp_json = json.loads(api_response.text)
+    responses_json = responses_json + resp_json["items"]
+    if "next" in resp_json:
+        while resp_json["next"] != None:
+            url = resp_json["next"]
+            api_response = build_get(url, token)
+            resp_json = json.loads(api_response.text)
+            responses_json = responses_json + resp_json["items"]
+
+    return responses_json
 
 
 @login_required
@@ -75,8 +91,7 @@ def saved_albums(social):
     url = "https://api.spotify.com/v1/me/albums?limit={}&market={}".format(
         limit, market
     )
-    api_response = build_get(url, token(social))
-    return json.loads(api_response.text)
+    return get_all(url, token(social))
 
 
 @login_required
@@ -84,8 +99,7 @@ def saved_tracks(social):
     url = "https://api.spotify.com/v1/me/tracks?limit={}&market={}".format(
         limit, market
     )
-    api_response = build_get(url, token(social))
-    return json.loads(api_response.text)
+    return get_all(url, token(social))
 
 
 @login_required
@@ -118,8 +132,7 @@ def playlists(social):
     url = "https://api.spotify.com/v1/me/playlists?limit={}&offset={}".format(
         limit, offset
     )
-    api_response = build_get(url, token(social))
-    return json.loads(api_response.text)
+    return get_all(url, token(social))
 
 
 def playlist_items(social, id):
@@ -127,8 +140,7 @@ def playlist_items(social, id):
     url = "https://api.spotify.com/v1/playlists/{}/tracks?market={}&fields={}&limit={}&offset={}".format(
         id, market, fields, limit, offset
     )
-    api_response = build_get(url, token(social))
-    return json.loads(api_response.text)
+    return get_all(url, token(social))
 
 
 def artist(social, id):

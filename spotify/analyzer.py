@@ -9,6 +9,8 @@ def tracks_avg(tracks_json):
         if track_query.count() > 0:
             track_query = track_query.get()
             feature = track_query.feature
+            if feature == None:
+                continue
             feature = [
                 feature["danceability"] * 100,
                 feature["energy"] * 100,

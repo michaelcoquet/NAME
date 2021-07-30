@@ -13,6 +13,7 @@ services:
     depends_on:
       - data
       - flower
+      - redis
     entrypoint: ["./entrypoint.sh"]
     networks:
       - app-network 
@@ -83,7 +84,16 @@ services:
       - rabbit
     entrypoint: ["./flower_entrypoint.sh"]
     networks:
-        - app-network 
+        - app-network
+
+  redis:
+    image: redis:6.0-buster
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    networks:
+      - app-network
+    expose: 
+      - ${REDIS_PORT}
 
 networks:
   app-network:

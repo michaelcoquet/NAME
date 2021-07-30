@@ -573,6 +573,7 @@ canvas {
         sans-serif;
     font-weight: normal;
     vertical-align: middle;
+    margin-bottom: 5px;
 }
 
 .dropbtn {
@@ -588,6 +589,7 @@ canvas {
     position: relative;
     margin-right: 15px;
     margin-bottom: 15px;
+    margin-top: -42px;
 }
 
 .dropdown-content {

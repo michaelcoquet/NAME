@@ -25,13 +25,30 @@ class Profile(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     photo = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, blank=True)
     spotify_connected = models.BooleanField(null=True)
+    all_tracks = models.ManyToManyField(Track, related_name="all")
     playlists = models.ManyToManyField(Playlist)
+    playlist_tracks = models.ManyToManyField(Track, related_name="playlist")
     current_track = models.ForeignKey(
         Track, on_delete=models.CASCADE, null=True, blank=True
     )
-    recent_tracks = models.ManyToManyField(Track, related_name="recent")
+    recent_tracks = models.ManyToManyField(
+        Track, related_name="recent", through="RecentTrack"
+    )
     saved_albums = models.ManyToManyField(Album)
+    saved_album_tracks = models.ManyToManyField(Track, related_name="saved_album")
     saved_tracks = models.ManyToManyField(Track, related_name="saved")
-    top_tracks = models.ManyToManyField(Track, related_name="top")
+    top_tracks = models.ManyToManyField(Track, related_name="top", through="TopTrack")
     top_artists = models.JSONField(null=True)
     top_genres = models.JSONField(null=True)
+
+
+class TopTrack(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    rank = models.IntegerField()
+
+
+class RecentTrack(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    rank = models.IntegerField()
