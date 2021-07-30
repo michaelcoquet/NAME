@@ -127,7 +127,7 @@
         <div class="distributionHeader"><u>Track Features Distribution</u></div>
         <div id="track_count">Tracks Analyzed: </div>
         <div class="dropdown">
-          <button class="dropbtn">All Tracks</button>
+          <button class="dropbtn" id="selected_btn">All Tracks</button>
           <div class="dropdown-content">
             <a id="all_btn" onclick='change_scope("all");'>All Tracks </a>
             <a id="liked_btn" onclick='change_scope("liked");'>Liked Tracks</a>
@@ -202,26 +202,32 @@ href="{% url "password_change" %}">change your password</a>.
     if (scope == 'all') {
       count = $data.all_track_count;
       chart_index = 0;
+      $('#selected_btn').html("All Tracks");
     }
     else if (scope == 'liked') {
       count = $data.liked_track_count;
       chart_index = 1;
+      $('#selected_btn').html("Liked Tracks");
     }
     else if (scope == 'recent') {
       count = $data.recent_track_count;
       chart_index = 2;
+      $('#selected_btn').html("Recent Tracks");
     }
     else if (scope == 'top') {
       count = $data.top_track_count;
       chart_index = 3;
+      $('#selected_btn').html("Top Tracks");
     }
     else if (scope == 'albums') {
       count = $data.saved_album_track_count;
       chart_index = 4;
+      $('#selected_btn').html("Saved Album Tracks");
     }
     else if (scope == 'playlist') {
       count = $data.playlist_track_count;
       chart_index = 5;
+      $('#selected_btn').html("Playlist Tracks");
     }
     else {
       throw 'ERROR: invalid scope';
