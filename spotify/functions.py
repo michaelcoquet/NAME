@@ -9,19 +9,24 @@ def build_playlists(social, playlists):
     playlist_tracks = []
     playlist_track_ids = []
     for playlist in playlists:
-        if Playlist.objects.filter(id=playlist["id"]).count() == 0:
-            playlist_items_response = spotify.playlist_items(social, playlist["id"])
-            playlist_tracks_json = [track["track"] for track in playlist_items_response]
-            playlist_tracks_temp, track_ids_temp = build_tracks(playlist_tracks_json)
-            playlist_tracks = playlist_tracks + playlist_tracks_temp
-            playlist_track_ids = playlist_track_ids + track_ids_temp
+        playlist_query = Playlist.objects.filter(id=playlist["id"])
+        playlist_items_response = spotify.playlist_items(social, playlist["id"])
+        playlist_tracks_json = [track["track"] for track in playlist_items_response]
+        playlist_tracks_temp, track_ids_temp = build_tracks(playlist_tracks_json)
+        if playlist_query.count() == 0:
             playlist_obj = Playlist.objects.create(
                 id=playlist["id"],
                 data=playlist,
             )
             playlist_obj.tracks.set(playlist_tracks_temp)
             playlist_obj.save()
-            playlist_objs.append(playlist_obj)
+        elif playlist_query.count() == 1:
+            playlist_obj = playlist_query.get()
+        else:
+            playlist_obj = playlist_query.get()[0]
+        playlist_objs.append(playlist_obj)
+        playlist_tracks = playlist_tracks + playlist_tracks_temp
+        playlist_track_ids = playlist_track_ids + track_ids_temp
     return playlist_objs, playlist_tracks, playlist_track_ids
 
 
@@ -90,15 +95,21 @@ def build_albums(albums):
     album_track_ids = []
     for album in albums:
         track_list, track_ids = build_tracks(album["album"]["tracks"]["items"])
-        if Album.objects.filter(id=album["album"]["id"]).count() == 0:
+        album_query = Album.objects.filter(id=album["album"]["id"])
+        if album_query.count() == 0:
             new_album = Album.objects.create(
                 id=album["album"]["id"],
                 data=album["album"],
             )
             new_album.tracks.set(track_list)
-            album_list.append(new_album)
-            album_track_ids = album_track_ids + track_ids
-            album_tracks = album_tracks + track_list
+        elif album_query.count() == 1:
+            new_album = album_query.get()
+        else:
+            new_album = album_query.get()[0]
+
+        album_list.append(new_album)
+        album_track_ids = album_track_ids + track_ids
+        album_tracks = album_tracks + track_list
     return album_list, album_tracks, album_track_ids
 
 

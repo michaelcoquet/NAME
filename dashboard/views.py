@@ -10,6 +10,8 @@ from common.decorators import ajax_required
 from django.views.decorators.http import require_GET
 from celery.result import AsyncResult
 from django_celery_results.models import TaskResult
+from social_django.utils import load_strategy
+from common import redis_functions as cache
 
 
 @login_required
@@ -92,6 +94,34 @@ def get_scraper_status(request):
 @ajax_required
 @require_GET
 def get_task_status(request):
+    if "radars" in cache.db:
+        top_lists = cache.get("top_lists")
+        radar_charts = cache.get("radars")
+        histo_charts = cache.get("histos")
+        top_lists = json.loads(top_lists)
+        radar_charts = json.loads(radar_charts)
+        histo_charts = json.loads(histo_charts)
+        all_track_count = request.user.profile.all_tracks.all().count()
+        liked_track_count = request.user.profile.saved_tracks.all().count()
+        recent_track_count = request.user.profile.recent_tracks.all().count()
+        top_track_count = request.user.profile.top_tracks.all().count()
+        saved_album_track_count = request.user.profile.saved_album_tracks.all().count()
+        playlist_track_count = request.user.profile.playlist_tracks.all().count()
+        response_data = {
+            "state": "SUCCESS",
+            # "result": task.result,
+            "top_lists": top_lists,
+            "radar_charts": radar_charts,
+            "histo_charts": histo_charts,
+            "all_track_count": all_track_count,
+            "liked_track_count": liked_track_count,
+            "recent_track_count": recent_track_count,
+            "top_track_count": top_track_count,
+            "saved_album_track_count": saved_album_track_count,
+            "playlist_track_count": playlist_track_count,
+        }
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+
     task_id = request.GET.get("task_id", None)
     if task_id is not None:
         task = AsyncResult(task_id)
@@ -123,3 +153,20 @@ def get_task_status(request):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
     else:
         return HttpResponse("No job id given.")
+
+
+def sync_spotify(request):
+    profile_query = Profile.objects.filter(user=request.user)
+    social_query = request.user.social_auth.filter(provider="spotify")
+    social_query.get().refresh_token(load_strategy())
+    if profile_query.count() == 1 and social_query.count() == 1:
+        scrape_task_id = scrape.user_profile(social_query)
+        return render(
+            request,
+            "dashboard/dashboard_loading.html",
+            {
+                "section": "dashboard",
+                "profile": profile_query.values()[0],
+                "scrape_task_id": scrape_task_id,
+            },
+        )
