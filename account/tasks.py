@@ -10,6 +10,7 @@ from collections import Counter
 from django.conf import settings
 from .models import TopTrack, RecentTrack
 from spotify.models import Track
+from common import redis_functions as cache
 
 top_n = settings.TOP_N  # the top number of songs or artists to return
 
@@ -251,75 +252,92 @@ def analyze_profile(profile_json):
         profile.save()
     profile = profile.object
 
-    top_track_list = TopTrack.objects.filter(owner=profile).values().order_by("rank")
-    top_track_list = [
-        Track.objects.filter(id=track["track_id"]).values()[0]
-        for track in top_track_list
-    ]
-    top_5_tracks_analysis = analyzer.tracks_avg(top_track_list[0:4])
-    top_25_tracks_analysis = analyzer.tracks_avg(top_track_list[0:24])
-    top_50_tracks_analysis = analyzer.tracks_avg(top_track_list[0:49])
+    if "radars" not in cache.db:
+        top_track_list = (
+            TopTrack.objects.filter(owner=profile).values().order_by("rank")
+        )
+        top_track_list = [
+            Track.objects.filter(id=track["track_id"]).values()[0]
+            for track in top_track_list
+        ]
+        top_5_tracks_analysis = analyzer.tracks_avg(top_track_list[0:4])
+        top_25_tracks_analysis = analyzer.tracks_avg(top_track_list[0:24])
+        top_50_tracks_analysis = analyzer.tracks_avg(top_track_list[0:49])
 
-    recent_track_list = (
-        RecentTrack.objects.filter(owner=profile).values().order_by("rank")
-    )
-    recent_track_list = [
-        Track.objects.filter(id=track["track_id"]).values()[0]
-        for track in recent_track_list
-    ]
-    last_5_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:4])
-    last_25_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:24])
-    last_50_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:49])
+        recent_track_list = (
+            RecentTrack.objects.filter(owner=profile).values().order_by("rank")
+        )
+        recent_track_list = [
+            Track.objects.filter(id=track["track_id"]).values()[0]
+            for track in recent_track_list
+        ]
+        last_5_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:4])
+        last_25_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:24])
+        last_50_tracks_analysis = analyzer.tracks_avg(recent_track_list[0:49])
 
-    liked_tracks = profile.saved_tracks
-    liked_tracks_analysis = analyzer.tracks_avg(liked_tracks.values())
+        liked_tracks = profile.saved_tracks
+        liked_tracks_analysis = analyzer.tracks_avg(liked_tracks.values())
 
-    playlist_tracks = []
-    for playlist in profile.playlists.all():
-        playlist_tracks = playlist_tracks + [
-            track for track in playlist.tracks.values()
+        playlist_tracks = []
+        for playlist in profile.playlists.all():
+            playlist_tracks = playlist_tracks + [
+                track for track in playlist.tracks.values()
+            ]
+
+        playlist_tracks_analysis = analyzer.tracks_avg(playlist_tracks)
+
+        album_tracks_objs = []
+        for album in profile.saved_albums.all():
+            album_tracks_objs = album_tracks_objs + [
+                track for track in album.tracks.values()
+            ]
+
+        album_tracks_analysis = analyzer.tracks_avg(album_tracks_objs)
+
+        top_artist_list = profile.top_artists["items"][0:top_n]
+
+        top_genre_list = genre_occurrences(profile.top_genres)[0:top_n]
+
+        # analyses[0] -- tracks from saved albums
+        # analyses[1] -- liked tracks
+        # analyses[2] -- last 50 tracks
+        # analyses[3] -- last 25 tracks
+        # analyses[4] -- last 5 tracks
+        # analyses[5] -- top 50 tracks
+        # analyses[6] -- top 25 tracks
+        # analyses[7] -- top 5 tracks
+        # analyses[8] -- playlists
+        analyses = [
+            album_tracks_analysis,
+            liked_tracks_analysis,
+            last_50_tracks_analysis,
+            last_25_tracks_analysis,
+            last_5_tracks_analysis,
+            top_50_tracks_analysis,
+            top_25_tracks_analysis,
+            top_5_tracks_analysis,
+            playlist_tracks_analysis,
         ]
 
-    playlist_tracks_analysis = analyzer.tracks_avg(playlist_tracks)
+        # top_lists[0] -- Top Artists
+        # top_lists[1] -- Top Genres
+        # top_lists[2] -- Top Tracks
+        top_lists = [top_artist_list, top_genre_list, top_track_list[0:top_n]]
 
-    album_tracks_objs = []
-    for album in profile.saved_albums.all():
-        album_tracks_objs = album_tracks_objs + [
-            track for track in album.tracks.values()
-        ]
+        radar_charts = build_radars(profile, analyses)
+        histo_charts = build_histograms(profile)
 
-    album_tracks_analysis = analyzer.tracks_avg(album_tracks_objs)
+        cache.set("top_lists", top_lists)
+        cache.set("radars", radar_charts)
+        cache.set("histos", histo_charts)
 
-    top_artist_list = profile.top_artists["items"][0:top_n]
+        return top_lists, radar_charts, histo_charts
+    else:
+        top_lists = cache.get("top_lists")
+        radar_charts = cache.get("radars")
+        histo_charts = cache.get("histos")
+        top_lists = json.loads(top_lists)
+        radar_charts = json.loads(radar_charts)
+        histo_charts = json.loads(histo_charts)
 
-    top_genre_list = genre_occurrences(profile.top_genres)[0:top_n]
-
-    # analyses[0] -- tracks from saved albums
-    # analyses[1] -- liked tracks
-    # analyses[2] -- last 50 tracks
-    # analyses[3] -- last 25 tracks
-    # analyses[4] -- last 5 tracks
-    # analyses[5] -- top 50 tracks
-    # analyses[6] -- top 25 tracks
-    # analyses[7] -- top 5 tracks
-    # analyses[8] -- playlists
-    analyses = [
-        album_tracks_analysis,
-        liked_tracks_analysis,
-        last_50_tracks_analysis,
-        last_25_tracks_analysis,
-        last_5_tracks_analysis,
-        top_50_tracks_analysis,
-        top_25_tracks_analysis,
-        top_5_tracks_analysis,
-        playlist_tracks_analysis,
-    ]
-    # top_lists[0] -- Top Artists
-    # top_lists[1] -- Top Genres
-    # top_lists[2] -- Top Tracks
-    top_lists = [top_artist_list, top_genre_list, top_track_list[0:top_n]]
-
-    radar_charts = build_radars(profile, analyses)
-    histo_charts = build_histograms(profile)
-
-    return top_lists, radar_charts, histo_charts
+        return top_lists, radar_charts, histo_charts
