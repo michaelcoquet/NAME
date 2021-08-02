@@ -1,4 +1,3 @@
-import datetime
 import spotify.wrapper as spotify
 from spotify.models import Track, Album
 from account.models import Playlist, TopTrack, RecentTrack
@@ -111,16 +110,3 @@ def build_albums(albums):
         album_track_ids = album_track_ids + track_ids
         album_tracks = album_tracks + track_list
     return album_list, album_tracks, album_track_ids
-
-
-def build_features(social, tracks, track_ids):
-    features = []
-    # make sure the lists have equal length
-    if len(tracks) == len(track_ids):
-        features = spotify.features(social, track_ids)
-
-        for i, track in enumerate(tracks):
-            track.feature = features[i]
-            track.save()
-    else:
-        raise ("build_features error list sizes dont match")
