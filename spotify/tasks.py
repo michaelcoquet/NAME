@@ -9,7 +9,6 @@ from django.conf import settings
 from common import redis_functions as cache
 from spotify.models import Track
 
-# TODO: Implement batch api calls for multiple album objects to improve performance even more
 # TODO: Unit testing
 
 
@@ -121,8 +120,6 @@ def scrape_features(social, track_ids):
 
         social.user.profile.all_tracks.set(all_tracks)
         social.user.profile.save()
-    else:
-        raise ("build_features error list sizes dont match")
 
 
 def deserialize(social_json):

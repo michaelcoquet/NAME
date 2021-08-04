@@ -18,9 +18,6 @@ offset = "0"
 #       header which represents the number of seconds
 #       to wait before retrying
 #       https://developer.spotify.com/documentation/web-api/
-# TODO: Implement scraping all data with the spotify api cursor since
-#       the max limit for any API call is 50 results you need to continue
-#       calling until the next pointer is null to get all results
 # TODO: Unit testing
 def build_get(url, token):
     headers = {
