@@ -173,6 +173,8 @@ SOCIAL_AUTH_SPOTIFY_SCOPE = [
     "playlist-read-private",
 ]
 
+SPOTIFY_REDIRECT_URI = os.environ.get("SPOTIFY_REDIRECT_URI")
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["key"]
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
     "social_core.pipeline.social_auth.social_uid",
