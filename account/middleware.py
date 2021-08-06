@@ -1,6 +1,8 @@
-from django.shortcuts import render
+import json, base64, requests, webbrowser
+from django.shortcuts import redirect, render
 from social_core.exceptions import AuthAlreadyAssociated
 from social_django.middleware import SocialAuthExceptionMiddleware
+from django.conf import settings
 
 
 class AuthAlreadyAssociatedMiddleware(SocialAuthExceptionMiddleware):

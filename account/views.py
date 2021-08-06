@@ -1,3 +1,4 @@
+import requests, json
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
@@ -5,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
-
+from django.conf import settings
 from common.decorators import ajax_required
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 
@@ -29,6 +30,42 @@ def user_login(request):
     else:
         form = LoginForm()
     return render(request, "registration/login.html", {"form": form})
+
+
+# def social_auth_complete(request):
+#     client_id = settings.SOCIAL_AUTH_SPOTIFY_KEY
+#     client_secret = settings.SOCIAL_AUTH_SPOTIFY_SECRET
+#     redirect_uri = settings.SPOTIFY_REDIRECT_URI
+#     url = "https://accounts.spotify.com/api/token"
+#     code = request.GET.get("code")
+#     payload = {
+#         "grant_type": "authorization_code",
+#         "code": code,
+#         "redirect_uri": redirect_uri,
+#         "client_id": client_id,
+#         "client_secret": client_secret,
+#     }
+#     api_response = requests.post(url, data=payload)
+#     api_response = json.loads(api_response.text)
+#     access_token = api_response.get("access_token")
+#     print(access_token)
+
+
+# def spotify_login(request):
+#     client_id = settings.SOCIAL_AUTH_SPOTIFY_KEY
+#     response_type = "code"
+#     redirect_uri = settings.SPOTIFY_REDIRECT_URI
+#     scope = settings.SOCIAL_AUTH_SPOTIFY_SCOPE
+#     scope = " ".join(scope)
+#     params = {
+#         "client_id": client_id,
+#         "response_type": response_type,
+#         "redirect_uri": redirect_uri,
+#         "scope": scope,
+#     }
+#     url = "https://accounts.spotify.com/authorize"
+#     r = requests.get(url=url, params=params)
+#     return redirect(r.url)
 
 
 def register(request):
