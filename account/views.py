@@ -1,4 +1,4 @@
-import requests, json
+import requests
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
@@ -33,22 +33,38 @@ def user_login(request):
 
 
 # def social_auth_complete(request):
-#     client_id = settings.SOCIAL_AUTH_SPOTIFY_KEY
-#     client_secret = settings.SOCIAL_AUTH_SPOTIFY_SECRET
-#     redirect_uri = settings.SPOTIFY_REDIRECT_URI
 #     url = "https://accounts.spotify.com/api/token"
-#     code = request.GET.get("code")
 #     payload = {
 #         "grant_type": "authorization_code",
-#         "code": code,
-#         "redirect_uri": redirect_uri,
-#         "client_id": client_id,
-#         "client_secret": client_secret,
+#         "code": request.GET.get("code"),
+#         "redirect_uri": settings.SPOTIFY_REDIRECT_URI,
 #     }
-#     api_response = requests.post(url, data=payload)
+#     auth_str = "{0}:{1}".format(
+#         settings.SOCIAL_AUTH_SPOTIFY_KEY, settings.SOCIAL_AUTH_SPOTIFY_SECRET
+#     )
+#     b64_auth_str = base64.urlsafe_b64encode(auth_str.encode("UTF-8")).decode("ascii")
+#     post_head = {
+#         "Authorization": "Basic {0}".format(b64_auth_str),
+#         "Content-Type": "application/x-www-form-urlencoded",
+#     }
+#     api_response = requests.post(url, data=payload, headers=post_head)
 #     api_response = json.loads(api_response.text)
 #     access_token = api_response.get("access_token")
-#     print(access_token)
+#     me_url = "https://api.spotify.com/v1/me"
+#     me_response = spotify.build_get(me_url, access_token)
+#     print(me_response)
+
+
+#     strategy = load_strategy()
+#     name = "spotify"
+#     redirect_uri = settings.SPOTIFY_REDIRECT_URI
+#     backend = load_backend(strategy=strategy, name=name, redirect_uri=redirect_uri)
+#     user = backend.do_auth(access_token)
+#     if user:
+#         login(request, user)
+#         return "OK"
+#     else:
+#         return "ERROR"
 
 
 # def spotify_login(request):
@@ -56,12 +72,13 @@ def user_login(request):
 #     response_type = "code"
 #     redirect_uri = settings.SPOTIFY_REDIRECT_URI
 #     scope = settings.SOCIAL_AUTH_SPOTIFY_SCOPE
-#     scope = " ".join(scope)
+#     scope = "user-read-private user-read-email"
 #     params = {
 #         "client_id": client_id,
 #         "response_type": response_type,
 #         "redirect_uri": redirect_uri,
 #         "scope": scope,
+#         "show_dialog": "true",
 #     }
 #     url = "https://accounts.spotify.com/authorize"
 #     r = requests.get(url=url, params=params)
@@ -82,6 +99,20 @@ def register(request):
     else:
         user_form = UserRegistrationForm()
     return render(request, "account/register.html", {"user_form": user_form})
+
+
+# @psa("social:complete")
+# def register_by_access_token(request, backend):
+#     # This view expects an access_token GET parameter, if it's needed,
+#     # request.backend and request.strategy will be loaded with the current
+#     # backend and strategy.
+#     token = request.GET.get("access_token")
+#     user = request.backend.do_auth(token)
+#     if user:
+#         login(request, user)
+#         return "OK"
+#     else:
+#         return "ERROR"
 
 
 @login_required
