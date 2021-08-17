@@ -7,6 +7,7 @@ services:
     build: 
       context: ./
       dockerfile: Dockerfile.prod
+    image: mcoquet2/name_app:web
     volumes:
       - ./static:/static
     ports:
@@ -47,6 +48,7 @@ services:
     build: 
       context: ./
       dockerfile: Dockerfile.prod
+    image: mcoquet2/name_app:celery
     env_file:
       - ./env/.env.prod
     environment:
@@ -68,8 +70,8 @@ services:
     hostname: rabbit
     image: rabbitmq:3-management
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
+      - DEFAULT_USER=${RABBIT_USER}
+      - DEFAULT_PASS=${RABBIT_PASS}
     ports:
       - ${RABBIT_PORT}:${RABBIT_PORT}
     networks:
@@ -88,6 +90,7 @@ services:
     build: 
       context: ./
       dockerfile: Dockerfile.prod
+    image: mcoquet2/name_app:nginx
     volumes:
       - ./static:/static
     ports:
