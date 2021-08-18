@@ -13,3 +13,5 @@ django-celery-results==2.2.0
 flower==1.0.0
 django-redis
 gunicorn
+boto3
+pycurl
