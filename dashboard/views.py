@@ -60,8 +60,7 @@ def dashboard(request):
     else:
         print("ERROR: something went horribly wrong in the dashboard view")
 
-    profile_query_json = serializers.serialize("json", profile_query.only())
-    analyze_task_id = analyze_profile.delay(profile_query_json)
+    analyze_task_id = analyze_profile.delay(request.user.id)
 
     return render(
         request,
