@@ -8,9 +8,10 @@ from spotify import analyzer
 from celery import shared_task
 from collections import Counter
 from django.conf import settings
-from .models import TopTrack, RecentTrack
+from .models import TopTrack, RecentTrack, Profile
 from spotify.models import Track
 from common import redis_functions as cache
+from django.contrib.auth.models import User
 
 top_n = settings.TOP_N  # the top number of songs or artists to return
 
@@ -246,11 +247,13 @@ def genre_occurrences(top_genres):
 
 
 @shared_task
-def analyze_profile(profile_json):
-    deserialize_json = serializers.deserialize("json", profile_json)
-    for profile in deserialize_json:
-        profile.save()
-    profile = profile.object
+def analyze_profile(user_id):
+    user = User.objects.filter(id=user_id).get()
+    profile = Profile.objects.filter(user=user).get()
+    # deserialize_json = serializers.deserialize("json", profile_json)
+    # for profile in deserialize_json:
+    #     profile.save()
+    # profile = profile.object
 
     if "radars" not in cache.db:
         top_track_list = (

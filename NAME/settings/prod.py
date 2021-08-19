@@ -3,14 +3,14 @@ import requests
 
 EC2_PRIVATE_IP = None
 
-DEBUG = True
+DEBUG = False
 ADMINS = (("Michael Coquet", "mail@michaelcoquet.ca"),)
 ALLOWED_HOSTS = [
     "mysite.com",
     "192.168.0.11",
     "0.0.0.0",
     ".compute-1.amazonaws.com",
-    "54.158.138.106",
+    "34.207.53.232",
 ]
 
 try:
