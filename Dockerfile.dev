@@ -22,5 +22,7 @@ RUN pip install --requirement ./requirements.txt
 COPY . .
 
 EXPOSE 3000
+EXPOSE 8000
+EXPOSE 443
 
 ENTRYPOINT ["entrypoint.dev.sh"]

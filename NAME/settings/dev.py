@@ -1,6 +1,7 @@
 from .base import *
 
 DEBUG = True
+
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("SQL_ENGINE"),
