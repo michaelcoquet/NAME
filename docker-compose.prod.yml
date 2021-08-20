@@ -91,7 +91,7 @@ services:
       - ./static:/static
     ports:
       - "443:443"
-    entrypoint: ["./nginx_entrypoint.sh"]
+    entrypoint: ["./nginx_entrypoint.prod.sh"]
     networks:
       - nginx-network
 
