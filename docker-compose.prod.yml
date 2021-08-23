@@ -11,35 +11,15 @@ services:
     volumes:
       - ./static:/static
     ports:
-      - ${NAME_PORT}:${NAME_PORT}
-    expose: 
       - "8000"
-      - "3000"
+    expose:
+      - "8000"
     env_file:
       - ./env/.env.prod
     entrypoint: ["./entrypoint.prod.sh"]
     networks:
       - app-network
       - nginx-network
-
-  # data:
-  #   container_name: data
-  #   image: postgres:latest
-  #   env_file:
-  #     - ./env/.env.prod
-  #   environment:
-  #     - POSTGRES_USER=${POSTGRES_USER}
-  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-  #     - APP_DB_USER=${POSTGRES_USER}
-  #     - APP_DB_PASS=${POSTGRES_PASSWORD}
-  #     - APP_DB_NAME=${POSTGRES_NAME}
-  #   volumes:
-  #     - ./db:/docker-entrypoint-initdb.d/
-  #     - ./db/data:/var/lib/postgresql/data
-  #   ports:
-  #     - ${POSTGRES_PORT}:${POSTGRES_PORT}
-  #   networks:
-  #     - app-network 
 
   celery:
     restart: always
@@ -61,46 +41,43 @@ services:
     networks:
       - app-network 
 
-  # rabbit:
-  #   restart: always
-  #   hostname: rabbit
-  #   image: rabbitmq:3-management
-  #   environment:
-  #     - DEFAULT_USER=${RABBIT_USER}
-  #     - DEFAULT_PASS=${RABBIT_PASS}
-  #   ports:
-  #     - ${RABBIT_PORT}:${RABBIT_PORT}
-  #   networks:
-  #     - app-network 
-
   redis:
     image: redis:6.0-buster
     ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
+      - "6379"
     networks:
       - app-network
     expose: 
-      - ${REDIS_PORT}
+      - "6379"
       
   nginx:
     build: 
       context: ./
       dockerfile: Dockerfile.prod
-    image: mcoquet2/name_app:nginx
+    image: nginx
+    restart: always
     volumes:
       - ./static:/static
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     ports:
-      - "443:443"
+      - "80"
+      - "443"
+    expose: 
+      - "443"
     entrypoint: ["./nginx_entrypoint.prod.sh"]
-    networks:
+    networks: 
       - nginx-network
+
+  certbot:
+    image: certbot/certbot
+    restart: always
+    volumes:
+        - ./data/certbot/conf:/etc/letsencrypt
+        - ./data/certbot/www:/var/www/certbot
 
 networks:
   app-network:
     driver: bridge
   nginx-network:
     driver: bridge
-    
-# volumes:
-#   data:
-#     external: true

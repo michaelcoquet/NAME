@@ -8,6 +8,7 @@
 python3 manage.py makemigrations
 python3 manage.py migrate
 python3 manage.py initadmin
-gunicorn --bind ${APP_HOST}:8000 NAME.wsgi:application --certfile ssl/name.crt --keyfile ssl/name.key --timeout 90
+gunicorn --bind ${APP_HOST}:8000 NAME.wsgi:application --timeout 300
+# python3 manage.py runserver_plus ${APP_HOST}:8000 --noreload --nothreading
 
 exec "$@"

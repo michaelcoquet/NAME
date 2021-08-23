@@ -1,18 +1,8 @@
 from .base import *
 import requests
 
+
 EC2_PRIVATE_IP = None
-
-DEBUG = False
-ADMINS = (("Michael Coquet", "mail@michaelcoquet.ca"),)
-ALLOWED_HOSTS = [
-    "mysite.com",
-    "192.168.0.11",
-    "0.0.0.0",
-    ".compute-1.amazonaws.com",
-    "3.87.118.92",
-]
-
 try:
     EC2_PRIVATE_IP = requests.get(
         "http://169.254.169.254/latest/meta-data/local-ipv4", timeout=0.01
@@ -22,6 +12,9 @@ except requests.exceptions.RequestException:
 
 if EC2_PRIVATE_IP:
     ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
+
+DEBUG = False
+ADMINS = (("Michael Coquet", "mail@michaelcoquet.ca"),)
 
 DATABASES = {
     "default": {
@@ -35,6 +28,7 @@ DATABASES = {
 }
 SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 BROKER_URL = "sqs://%s:%s@" % (
     os.environ.get("AWS_ACCESS_KEY_ID"),
