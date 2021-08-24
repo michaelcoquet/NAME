@@ -10,7 +10,7 @@ from django.views.decorators.http import require_GET
 from celery.result import AsyncResult
 from django_celery_results.models import TaskResult
 from social_django.utils import load_strategy
-from common import redis_functions as cache
+from django.core.cache import cache
 
 
 @login_required
@@ -92,13 +92,13 @@ def get_scraper_status(request):
 @ajax_required
 @require_GET
 def get_task_status(request):
-    if "radars" in cache.db:
+    if "radars" in cache:
         top_lists = cache.get("top_lists")
         radar_charts = cache.get("radars")
         histo_charts = cache.get("histos")
-        top_lists = json.loads(top_lists)
-        radar_charts = json.loads(radar_charts)
-        histo_charts = json.loads(histo_charts)
+        # top_lists = json.loads(top_lists)
+        # radar_charts = json.loads(radar_charts)
+        # histo_charts = json.loads(histo_charts)
         all_track_count = request.user.profile.all_tracks.all().count()
         liked_track_count = request.user.profile.saved_tracks.all().count()
         recent_track_count = request.user.profile.recent_tracks.all().count()
