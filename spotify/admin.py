@@ -8,10 +8,4 @@ class TrackAdmin(admin.ModelAdmin):
         "id",
         "data",
         "feature",
-        # "name",
-        # "album",
-        # "disc_number",
-        # "track_number",
-        # "duration",
-        # "feature",
     ]

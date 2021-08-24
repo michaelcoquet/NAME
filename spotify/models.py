@@ -1,5 +1,3 @@
-import json
-import spotify.wrapper as spotify
 from django.db import models
 
 
