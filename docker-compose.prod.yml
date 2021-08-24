@@ -11,9 +11,9 @@ services:
     volumes:
       - ./static:/static
     ports:
-      - "8000"
+      - ${NAME_PORT}:${NAME_PORT}
     expose:
-      - "8000"
+      - ${NAME_PORT}
     env_file:
       - ./env/.env.prod
     entrypoint: ["./entrypoint.prod.sh"]
@@ -55,26 +55,17 @@ services:
       context: ./
       dockerfile: Dockerfile.prod
     image: nginx
-    restart: always
     volumes:
       - ./static:/static
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
     ports:
+      - "443:443"
+      - "80:80"
+    expose:
+      - "443"
       - "80"
-      - "443"
-    expose: 
-      - "443"
     entrypoint: ["./nginx_entrypoint.prod.sh"]
     networks: 
       - nginx-network
-
-  certbot:
-    image: certbot/certbot
-    restart: always
-    volumes:
-        - ./data/certbot/conf:/etc/letsencrypt
-        - ./data/certbot/www:/var/www/certbot
 
 networks:
   app-network:

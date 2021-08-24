@@ -223,7 +223,7 @@ ul.messages li a.close {
 
 /* social-auth */
 .social {
-    float: right;
+    text-align: center;
 }
 
 .social li {
@@ -475,6 +475,16 @@ thead {
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
     animation-duration: 0.4s
+}
+
+.modal-content-analyze {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* Add Animation */

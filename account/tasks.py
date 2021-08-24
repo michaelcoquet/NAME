@@ -3,7 +3,6 @@ import re
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from django.core import serializers
 from spotify import analyzer
 from celery import shared_task
 from collections import Counter

@@ -2,6 +2,23 @@
 {% load static %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+<!-- The Modal -->
+<div id="myModal" class="modal modal-loading">
+
+  <!-- Modal content -->
+  <div class="modal-content-analyze">
+    <div class="modal-header">
+      <p style="text-align: center;">Analyzing your taste in music!</p>
+    </div>
+    <div class="modal-body loading">
+      <img src="/static/img/spectrum_spinner.webp">
+    </div>
+    <div class="modal-footer">
+      <p style="text-align: center;">Please wait, this could take a couple minutes to crunch the numbers</p>
+    </div>
+  </div>
+
+</div>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <div class="parent dboard-header">
   <div class="child dboard-title">
@@ -193,8 +210,6 @@
   </tbody>
 </table>
 <br><br>
-<a href="{% url "edit" %}">edit your profile</a> or <a
-href="{% url "password_change" %}">change your password</a>.
 <script>
   function change_scope(scope) {
     var count;
@@ -248,6 +263,12 @@ href="{% url "password_change" %}">change your password</a>.
 </script>
 {% endblock %}
 {% block domready %}
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// set loading spinner modal
+modal.style.display = "block";
+
 var taskid = "{{analyze_task_id}}";
 
 get_task_info(taskid);
@@ -312,6 +333,9 @@ function get_task_info(tid) {
               $('#histo_charts_10').html(data.histo_charts[0][10]);
               
               $data = data;
+              
+              // now close the loading modal
+              modal.style.display = "none";
             }
             if (data.state != 'SUCCESS') {
                 setTimeout(function () {

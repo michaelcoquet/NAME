@@ -26,7 +26,7 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 CSRF_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -42,7 +42,7 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {
     "polling_interval": 1,
     "predefined_queues": {
         "celery": {
-            "url": "https://sqs.us-east-1.amazonaws.com/405486787066/namedb_task_q",
+            "url": os.environ.get("AWS_SQS_ADDR"),
             "access_key_id": os.environ.get("AWS_ACCESS_KEY_ID"),
             "secret_access_key": os.environ.get("AWS_SECRET_ACCESS_KEY"),
         }

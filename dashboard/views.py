@@ -1,5 +1,4 @@
 import json
-from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
