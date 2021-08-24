@@ -40,15 +40,6 @@ services:
     entrypoint: ["./celery_entrypoint.sh"]
     networks:
       - app-network 
-
-  redis:
-    image: redis:6.0-buster
-    ports:
-      - "6379"
-    networks:
-      - app-network
-    expose: 
-      - "6379"
       
   nginx:
     build: 

@@ -6,7 +6,7 @@ from celery import shared_task
 from celery.result import AsyncResult
 from django_celery_results.models import TaskResult
 from django.conf import settings
-from common import redis_functions as cache
+from django.core.cache import cache
 from spotify.models import Track
 
 # TODO: Unit testing
@@ -133,9 +133,9 @@ def deserialize(social_json):
 def scrape_user_profile(social_json):
 
     # clear the cache
-    cache.db.delete("top_lists")
-    cache.db.delete("radars")
-    cache.db.delete("histos")
+    cache.delete("top_lists")
+    cache.delete("radars")
+    cache.delete("histos")
 
     # scrape current track task
     curr_track_task_id = scrape_current_track.delay(social_json)

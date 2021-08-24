@@ -9,8 +9,8 @@ from collections import Counter
 from django.conf import settings
 from .models import TopTrack, RecentTrack, Profile
 from spotify.models import Track
-from common import redis_functions as cache
 from django.contrib.auth.models import User
+from django.core.cache import cache
 
 top_n = settings.TOP_N  # the top number of songs or artists to return
 
@@ -254,7 +254,7 @@ def analyze_profile(user_id):
     #     profile.save()
     # profile = profile.object
 
-    if "radars" not in cache.db:
+    if "radars" not in cache:
         top_track_list = (
             TopTrack.objects.filter(owner=profile).values().order_by("rank")
         )
@@ -338,8 +338,5 @@ def analyze_profile(user_id):
         top_lists = cache.get("top_lists")
         radar_charts = cache.get("radars")
         histo_charts = cache.get("histos")
-        top_lists = json.loads(top_lists)
-        radar_charts = json.loads(radar_charts)
-        histo_charts = json.loads(histo_charts)
 
         return top_lists, radar_charts, histo_charts
