@@ -56,7 +56,11 @@
             <col span="1" style="width: 90%;">
           </colgroup>
           <caption>
-            <h3 style="text-align: center"><u>Top 5 Artists</u></h3>
+            <a id="artistPrev" class="arrow arrow-left" style="margin-left: -140px; margin-top: 10px; display:inline-block;" 
+              title="Previous 5 Artists" onclick="artistPrev();"></a>
+            <a id="artistNext" class="arrow arrow-right" style="margin-left: 90px; margin-top: 10px; display:inline-block;" 
+              title="Next 5 Artists" onclick="artistNext();"></a>
+            <h3 style="text-align: center"><u>Top Artists</u></h3>
           </caption>
           <thead>
             <td>Rank</td>
@@ -74,6 +78,10 @@
             <col span="1" style="width: 90%;">
           </colgroup>
           <caption>
+            <a id="genrePrev" class="arrow arrow-left" style="margin-left: -140px; margin-top: 10px; display:inline-block;"
+              title="Previous 5 Genres" onclick="genrePrev();"></a>
+            <a id="genreNext" class="arrow arrow-right" style="margin-left: 90px; margin-top: 10px; display:inline-block;" 
+            title="Next 5 Genres" onclick="genreNext();"></a>
             <h3 style="text-align: center"><u>Top Genres</u></h3>
           </caption>
           <thead>
@@ -95,7 +103,11 @@
             <col span="1" style="width: 40%;">
           </colgroup>
           <caption>
-            <h3 style="text-align: center"><u>Top 5 Tracks</u></h3>
+            <a id="trackPrev" class="arrow arrow-left" style="margin-left: -240px; margin-top: 10px; display:inline-block;"
+              title="Previous 5 Artists" onclick="trackPrev();"></a>
+            <a id="trackNext" class="arrow arrow-right" style="margin-left: 190px; margin-top: 10px; display:inline-block;"
+              title="Next 5 Artists" onclick="trackNext();"></a>
+            <h3 style="text-align: center"><u>Top Tracks</u></h3>
           </caption>
           <thead>
             <td>Rank</td>
@@ -211,6 +223,110 @@
 </table>
 <br><br>
 <script>
+  var artistPage = 0;
+  var genrePage = 0;
+  var trackPage = 0;
+
+  function artistNext() {
+    var artists_list_html = "";
+    artistPage += 5;
+    if (artistPage > ($data.top_lists[0].length - 5)) {
+      artistPage = ($data.top_lists[0].length - 5);
+    }
+    for (var i = artistPage; i < (artistPage + 5); i++) {
+      artists_list_html += "<tr>";
+      artists_list_html += "<td>" + (i + 1) + "</td>";
+      artists_list_html += "<td>" + $data.top_lists[0][i]["name"] + "</td>";
+      artists_list_html += "</tr>";
+    }
+    $('#top_artists').html(artists_list_html);
+  }
+
+  function artistPrev() {
+    var artists_list_html = "";
+    artistPage -= 5;
+    if (artistPage < 0) {
+      artistPage = 0;
+    }
+    for (var i = artistPage; i < (artistPage + 5); i++) {
+      artists_list_html += "<tr>";
+      artists_list_html += "<td>" + (i + 1) + "</td>";
+      artists_list_html += "<td>" + $data.top_lists[0][i]["name"] + "</td>";
+      artists_list_html += "</tr>";
+    }
+    $('#top_artists').html(artists_list_html);
+  }
+
+  function genreNext() {
+    var genre_list_html = "";
+    genrePage += 5;
+    if (genrePage > ($data.top_lists[1].length - 5)) {
+      genrePage = $data.top_lists[1].length - 5;
+    }
+    for (var i = genrePage; i < (genrePage + 5); i++) {
+      genre_list_html += "<tr>";
+      genre_list_html += "<td>" + (i + 1) + "</td>";
+      genre_list_html += "<td>" + $data.top_lists[1][i] + "</td>";
+      genre_list_html += "</tr>";
+    }
+    $('#top_genres').html(genre_list_html);
+  }
+
+  function genrePrev() {
+    var genre_list_html = "";
+    genrePage -= 5;
+    if (genrePage <= 0) {
+      genrePage = 0;
+    }
+    for (var i = genrePage; i < (genrePage + 5); i++) {
+      genre_list_html += "<tr>";
+      genre_list_html += "<td>" + (i + 1) + "</td>";
+      genre_list_html += "<td>" + $data.top_lists[1][i] + "</td>";
+      genre_list_html += "</tr>";
+    }
+    $('#top_genres').html(genre_list_html);
+  }
+
+  function trackNext() {
+    var top_tracks_html = "";
+    trackPage += 5;
+    if (trackPage > ($data.top_lists[2].length - 5)) {
+      trackPage = $data.top_lists[2].length - 5;
+    }
+    for (var i = trackPage; i < (trackPage + 5); i++) {
+      top_tracks_html += "<tr>";
+      top_tracks_html += "<td>" + (i + 1) + "</td>";
+      top_tracks_html += "<td>" + $data.top_lists[2][i]["data"]["name"] + "</td>";
+      top_tracks_html += "<td><ul>";
+      for (var j = 0; j < $data.top_lists[2][i]["data"]["artists"].length; j++) {
+        top_tracks_html += "<li>" + $data.top_lists[2][i]["data"]["artists"][j]["name"] + "</li>";
+      }
+      top_tracks_html += "</ul></td>";
+      top_tracks_html += "</tr>";
+    }
+    $('#top_tracks').html(top_tracks_html);
+  }
+
+  function trackPrev() {
+    var top_tracks_html = "";
+    trackPage -= 5;
+    if (trackPage <= 0) {
+      trackPage = 0;
+    }
+    for (var i = trackPage; i < (trackPage + 5); i++) {
+      top_tracks_html += "<tr>";
+      top_tracks_html += "<td>" + (i + 1) + "</td>";
+      top_tracks_html += "<td>" + $data.top_lists[2][i]["data"]["name"] + "</td>";
+      top_tracks_html += "<td><ul>";
+      for (var j = 0; j < $data.top_lists[2][i]["data"]["artists"].length; j++) {
+        top_tracks_html += "<li>" + $data.top_lists[2][i]["data"]["artists"][j]["name"] + "</li>";
+      }
+      top_tracks_html += "</ul></td>";
+      top_tracks_html += "</tr>";
+    }
+    $('#top_tracks').html(top_tracks_html);
+  }
+
   function change_scope(scope) {
     var count;
     var chart_index;
@@ -265,6 +381,7 @@
 {% block domready %}
 // Get the modal
 var modal = document.getElementById("myModal");
+
 modal.style.display = "block";
 
 var taskid = "{{analyze_task_id}}";
@@ -279,7 +396,7 @@ function get_task_info(tid) {
         success: function (data) {
             if(data.state == 'SUCCESS'){
               var artists_list_html = "";
-              for (var i=0; i < data.top_lists[0].length; i++) {
+              for (var i=0; i < 5; i++) {
                 artists_list_html += "<tr>";
                 artists_list_html += "<td>" + (i + 1) + "</td>";
                 artists_list_html += "<td>" + data.top_lists[0][i]["name"] + "</td>";
@@ -288,7 +405,7 @@ function get_task_info(tid) {
               $('#top_artists').html(artists_list_html);
 
               var genre_list_html = "";
-              for (var i=0; i < data.top_lists[1].length; i++) {
+              for (var i=0; i < 5; i++) {
                 genre_list_html += "<tr>";
                 genre_list_html += "<td>" + (i + 1) + "</td>";
                 genre_list_html += "<td>" + data.top_lists[1][i] + "</td>";
@@ -297,7 +414,7 @@ function get_task_info(tid) {
               $('#top_genres').html(genre_list_html);
 
               var top_tracks_html = "";
-              for (var i=0; i < data.top_lists[2].length; i++) {
+              for (var i=0; i < 5; i++) {
                 top_tracks_html += "<tr>";
                 top_tracks_html += "<td>" + (i + 1) + "</td>";
                 top_tracks_html += "<td>" + data.top_lists[2][i]["data"]["name"] + "</td>";

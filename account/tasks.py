@@ -296,9 +296,9 @@ def analyze_profile(user_id):
 
         album_tracks_analysis = analyzer.tracks_avg(album_tracks_objs)
 
-        top_artist_list = profile.top_artists["items"][0:top_n]
+        top_artist_list = profile.top_artists["items"]
 
-        top_genre_list = genre_occurrences(profile.top_genres)[0:top_n]
+        top_genre_list = genre_occurrences(profile.top_genres)
 
         # analyses[0] -- tracks from saved albums
         # analyses[1] -- liked tracks
@@ -324,7 +324,7 @@ def analyze_profile(user_id):
         # top_lists[0] -- Top Artists
         # top_lists[1] -- Top Genres
         # top_lists[2] -- Top Tracks
-        top_lists = [top_artist_list, top_genre_list, top_track_list[0:top_n]]
+        top_lists = [top_artist_list, top_genre_list, top_track_list]
 
         radar_charts = build_radars(profile, analyses)
         histo_charts = build_histograms(profile)
