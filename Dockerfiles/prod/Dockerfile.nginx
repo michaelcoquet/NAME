@@ -1,0 +1,13 @@
+# pull official base image
+FROM nginx:latest
+
+EXPOSE 443
+EXPOSE 80
+
+COPY ./static ./static
+COPY ./config ./config
+COPY ./scripts/entrypoints/prod/nginx.sh ./scripts/entrypoints/prod/nginx.sh
+COPY ./ssl/prod/fullchain.pem ./ssl/prod/fullchain.pem
+COPY ./ssl/prod/privkey.pem ./ssl/prod/privkey.pem
+
+ENTRYPOINT ["./scripts/entrypoints/prod/nginx.sh"]

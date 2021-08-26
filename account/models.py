@@ -1,32 +1,22 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.db.models.deletion import CASCADE
 
-from spotify.models import Track
-
-
-class Contact(models.Model):
-    user_from = models.ForeignKey(
-        "auth.User", related_name="rel_from_set", on_delete=models.CASCADE
-    )
-    user_to = models.ForeignKey(
-        "auth.User", related_name="rel_to_set", on_delete=models.CASCADE
-    )
-    created = models.DateTimeField(auto_now_add=True, db_index=True)
-
-    class Meta:
-        ordering = ("-created",)
-
-    def __str__(self):
-        return f"{self.user_from} follows {self.user_to}"
+# from account.tasks import expand_queryset
+from spotify.models import Track, Album
 
 
 class Image(models.Model):
     photo = models.ImageField(blank=True)
 
 
+class Playlist(models.Model):
+    id = models.CharField(primary_key=True, max_length=62)
+    data = models.JSONField(null=True)
+    tracks = models.ManyToManyField(Track, related_name="playlist_tracks")
+
+
 class Profile(models.Model):
-    # id = models.CharField(primary_key=True, max_length=62)
     display_name = models.CharField(max_length=32, default="User")
     followers = None
     follower_count = models.IntegerField(default=0)
@@ -34,27 +24,30 @@ class Profile(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     photo = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, blank=True)
     spotify_connected = models.BooleanField(null=True)
+    all_tracks = models.ManyToManyField(Track, related_name="all")
+    playlists = models.ManyToManyField(Playlist)
+    playlist_tracks = models.ManyToManyField(Track, related_name="playlist")
+    current_track = models.ForeignKey(
+        Track, on_delete=models.CASCADE, null=True, blank=True
+    )
+    recent_tracks = models.ManyToManyField(
+        Track, related_name="recent", through="RecentTrack"
+    )
+    saved_albums = models.ManyToManyField(Album)
+    saved_album_tracks = models.ManyToManyField(Track, related_name="saved_album")
+    saved_tracks = models.ManyToManyField(Track, related_name="saved")
+    top_tracks = models.ManyToManyField(Track, related_name="top", through="TopTrack")
+    top_artists = models.JSONField(null=True)
+    top_genres = models.JSONField(null=True)
 
-    def __str__(self):
-        return f"Profile for user {self.user.username}"
+
+class TopTrack(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    rank = models.IntegerField()
 
 
-class Playlist(models.Model):
-    id = models.CharField(primary_key=True, max_length=62)
-    name = models.CharField(max_length=62, null=True)
-    owner = models.CharField(max_length=62, null=True)
-    public = models.BooleanField()
-    description = models.CharField(max_length=128, null=True)
-    collaborative = models.BooleanField()
-    followers = None
-    images = models.ForeignKey(Image, on_delete=models.CASCADE)
-    tracks = models.ManyToManyField(Track)
-
-
-# user_model = get_user_model()
-# user_model.add_to_class(
-#     "following",
-#     models.ManyToManyField(
-#         "self", through=Contact, related_name="followers", symmetrical=False
-#     ),
-# )
+class RecentTrack(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    rank = models.IntegerField()
