@@ -10,5 +10,12 @@ dashboard/__pycache__/
 spotify/__pycache__/
 common/__pycache__/
 NAME/__pycache__/
+*/__pycache__/
 .env.dev
 db/data
+.dockerignore
+account/static/admin/
+account/static/django_extensions/
+spotify_playground.pem
+ssl/
+static/
