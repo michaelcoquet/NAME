@@ -6,7 +6,7 @@ services:
     container_name: name
     build: 
       context: ./
-      dockerfile: Dockerfile.prod
+      dockerfile: ./Dockerfiles/prod/Dockerfile
     image: mcoquet2/name_app:web
     volumes:
       - ./static:/static
@@ -16,7 +16,7 @@ services:
       - ${NAME_PORT}
     env_file:
       - ./env/.env.prod
-    entrypoint: ["./entrypoint.prod.sh"]
+    entrypoint: ["./scripts/entrypoints/prod/main.sh"]
     networks:
       - app-network
       - nginx-network
@@ -25,7 +25,7 @@ services:
     restart: always
     build: 
       context: ./
-      dockerfile: Dockerfile.prod
+      dockerfile: ./Dockerfiles/prod/Dockerfile
     image: mcoquet2/name_app:celery
     env_file:
       - ./env/.env.prod
@@ -37,15 +37,15 @@ services:
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_NAME}
-    entrypoint: ["./celery_entrypoint.sh"]
+    entrypoint: ["./scripts/entrypoints/prod/celery.sh"]
     networks:
       - app-network 
       
   nginx:
     build: 
       context: ./
-      dockerfile: Dockerfile.prod
-    image: nginx
+      dockerfile: ./Dockerfiles/prod/Dockerfile.nginx
+    image: mcoquet2/name_app:nginx
     volumes:
       - ./static:/static
     ports:
@@ -54,7 +54,9 @@ services:
     expose:
       - "443"
       - "80"
-    entrypoint: ["./nginx_entrypoint.prod.sh"]
+    environment: 
+      - PROXY_SOCK=${PROXY_SOCK}
+    entrypoint: ["./scripts/entrypoints/prod/nginx.sh"]
     networks: 
       - nginx-network
 
