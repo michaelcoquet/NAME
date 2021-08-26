@@ -639,3 +639,23 @@ canvas {
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
 }
+
+.arrow {
+  position: absolute;
+  padding: 0.5rem; /* Arrow size */
+          box-shadow: 2px -2px 0 2px #1db954a4 inset;
+  -webkit-box-shadow: 3px -3px #1db954a4 inset;
+  border: solid transparent;
+  border-width: 0 0 2rem 2rem;
+  transition: 0.2s;
+}
+
+.arrow:hover {
+          box-shadow: 3px -3px 0 3px #1DB954 inset;
+  -webkit-box-shadow: 5px -5px #1DB954 inset;
+}
+
+.arrow-up    { transform:rotate(135deg) }
+.arrow-right { transform:rotate(225deg) }
+.arrow-down  { transform:rotate(-45deg) }
+.arrow-left  { transform:rotate(45deg) }
