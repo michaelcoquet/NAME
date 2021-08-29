@@ -1,2 +1,2 @@
-source ../env/.env.dev
-export $(cut -d= -f1 env/.env.prod)
+source ../../env/.env.dev
+export $(cut -d= -f1 ../../env/.env.dev)

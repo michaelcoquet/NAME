@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 DATABASES = {
     "default": {
@@ -12,6 +12,10 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
+
+SECURE_SSL_REDIRECT = False
+CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")

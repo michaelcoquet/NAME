@@ -20,8 +20,4 @@ RUN pip install --requirement ./requirements.txt
 # copy project
 COPY . .
 
-EXPOSE 8000
-EXPOSE 443
-EXPOSE 80
-
 ENTRYPOINT ["./scripts/entrypoints/prod/main.sh"]

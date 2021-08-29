@@ -1,11 +1,21 @@
 #!/bin/sh
-
-echo "starting nginx"
+echo "starting nginx at ${PROXY_SOCK}"
 # hardcoding the nginx configuration file to hide the proxy address
 # and port
-echo "server {
-    listen 80;
-    server_name spotify.michaelcoquet.ca;
+echo "
+upstream django {
+    server ${PROXY_SOCK};
+}
+
+server {
+    listen 80 deferred;
+    charset utf-8;
+
+    location = /favicon.ico {
+        return 204;
+        access_log       off;
+        log_not_found    off;
+    }
 
     location / {
         return 301 https://\$server_name\$request_uri;
@@ -13,7 +23,7 @@ echo "server {
 }
 
 server {
-    listen                443 ssl;
+    listen                443 ssl deferred;
     server_name           spotify.michaelcoquet.ca;
     ssl_certificate       /etc/nginx/ssl/prod/fullchain.pem;
     ssl_certificate_key   /etc/nginx/ssl/prod/privkey.pem;
@@ -23,7 +33,10 @@ server {
     error_log             /var/log/nginx/nginx_error.log;
     
     location / {
-        proxy_pass                         https://${PROXY_SOCK};
+        proxy_pass                         https://django;
+        proxy_connect_timeout              1650;
+        proxy_send_timeout                 1650;
+        proxy_read_timeout                 1650;
         proxy_set_header X-Forwarded-For   \$proxy_add_x_forwarded_for;
         proxy_set_header Host              \$host;
         proxy_redirect                     off;    
@@ -57,5 +70,5 @@ mkdir -p ./etc/nginx/ssl/prod
 cp ./ssl/prod/fullchain.pem ./etc/nginx/ssl/prod/fullchain.pem
 cp ./ssl/prod/privkey.pem ./etc/nginx/ssl/prod/privkey.pem
 chmod 775 -R ./static 
-nginx -g 'daemon off;'
+nginx
 sleep infinity

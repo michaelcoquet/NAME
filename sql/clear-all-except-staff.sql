@@ -31,5 +31,6 @@ DELETE FROM social_auth_usersocialauth;
 DELETE FROM spotify_album;
 DELETE FROM spotify_album_tracks;
 DELETE FROM spotify_track;
+-- DELETE FROM django_admin_log;
 DELETE FROM auth_user
 WHERE is_staff = FALSE;
