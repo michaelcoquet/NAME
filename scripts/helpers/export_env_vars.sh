@@ -1,4 +1,4 @@
 #!/bin/bash
 
 set -a
-source ./env/.env.prod
+source ./env/.env.dev

@@ -3,6 +3,11 @@ from .base import *
 DEBUG = False
 ADMINS = (("Michael Coquet", "mail@michaelcoquet.ca"),)
 
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("SQL_ENGINE"),

@@ -8,6 +8,7 @@ from django_celery_results.models import TaskResult
 from django.conf import settings
 from django.core.cache import cache
 from spotify.models import Track
+from csv import reader
 
 # TODO: Unit testing
 
@@ -217,3 +218,20 @@ def scrape_user_profile(social_json):
         pass
 
     return None
+
+
+# scrape_tracks used, in conjunction with the csv list of artists
+# obtained from the musicbrainz database (mbdb), mbdb can be set
+# up to automatically update at given intervals so this scraper
+# could also be set up to be triggered at given intervals to up
+# date the data for new tracks (using something like celery beat)
+# but for now this is just a snapsshot of the current spotify
+# database crossed with the mbdb, new tracks can still be discovered
+# through user interactions however
+@shared_task
+def scrape_tracks(csv_path):
+    with open(csv_path, "r") as read_obj:
+        csv_reader = reader(read_obj)
+        n_artists = len(list(csv_reader))
+        print(n_artists)
+    return

@@ -25,4 +25,4 @@ EXPOSE 3000
 EXPOSE 8000
 EXPOSE 443
 
-ENTRYPOINT ["./scripts/entrypoints/main.sh"]
+ENTRYPOINT ["./scripts/entrypoints/dev/main.sh"]
