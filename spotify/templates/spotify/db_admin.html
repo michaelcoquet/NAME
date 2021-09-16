@@ -2,5 +2,6 @@
 {% load static %}
 {% block title %}DB Admin{% endblock %}
 {% block content %}
-logged in to db admin page
+<p>Make sure the mbdb_artist_list.csv is on the server before starting.</p>
+<button><a href="{% url "start-scraping" %}">Start Scraping</a></button>
 {% endblock %}

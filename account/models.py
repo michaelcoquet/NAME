@@ -39,6 +39,7 @@ class Profile(models.Model):
     top_tracks = models.ManyToManyField(Track, related_name="top", through="TopTrack")
     top_artists = models.JSONField(null=True)
     top_genres = models.JSONField(null=True)
+    scrape_in_progress = models.BooleanField(null=True)
 
 
 class TopTrack(models.Model):
