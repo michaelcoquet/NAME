@@ -3,6 +3,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+admin.site.index_template = "admin/index.html"
+admin.autodiscover()
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("db/", include("spotify.urls")),
